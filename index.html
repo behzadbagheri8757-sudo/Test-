@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
-<title>BAGHERI — Invoice Items (Zoho-clean)</title>
+<title>BAGHERI — Invoice Items (Zoho-clean + price info)</title>
 <style>
 :root {
   --blue: #0070D2;
@@ -14,6 +14,7 @@
   --surface: #FFFFFF;
   --bg: #F5F7FA;
   --danger: #D52B36;
+  --success: #0F7A4A;
 }
 [data-theme="dark"] {
   --blue: #4FA3FF;
@@ -24,6 +25,7 @@
   --surface: #1C1C1E;
   --bg: #000000;
   --danger: #FF6B6B;
+  --success: #4ADE80;
 }
 
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -38,8 +40,7 @@ html, body {
 
 /* ---------- Controls bar ---------- */
 .controls {
-  position: fixed; top: 0; left: 0; right: 0;
-  z-index: 100;
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
   background: #0F172A; color: #FFF;
   padding: 8px 12px;
   display: flex; gap: 10px; flex-wrap: wrap; align-items: center;
@@ -47,8 +48,7 @@ html, body {
 }
 .controls .lbl { color: #94A3B8; font-size: 11px; margin-inline-end: 4px; }
 .controls button {
-  background: rgba(255,255,255,.08);
-  color: #E2E8F0;
+  background: rgba(255,255,255,.08); color: #E2E8F0;
   border: 1px solid rgba(255,255,255,.14);
   padding: 5px 10px; border-radius: 6px;
   font-family: inherit; font-size: 11px; cursor: pointer;
@@ -57,9 +57,8 @@ html, body {
   background: #0070D2; border-color: #0070D2;
   color: #FFF; font-weight: 600;
 }
-.controls button.wide { padding: 5px 14px; }
 
-/* ---------- Phone frame ---------- */
+/* ---------- Phone ---------- */
 .phone-wrap {
   padding: 56px 12px 24px;
   display: flex; justify-content: center;
@@ -105,12 +104,9 @@ html, body {
   border-bottom: 0.5px solid var(--divider);
 }
 .hdr-cancel {
-  flex: 0 0 auto;
-  background: transparent;
-  color: var(--muted);
-  border: none;
-  padding: 8px 12px;
-  font-family: inherit; font-size: 15px;
+  flex: 0 0 auto; background: transparent;
+  color: var(--muted); border: none;
+  padding: 8px 12px; font-family: inherit; font-size: 15px;
   cursor: pointer;
 }
 .hdr-title {
@@ -118,12 +114,10 @@ html, body {
   font-size: 16px; font-weight: 600; color: var(--text);
 }
 .hdr-save {
-  flex: 0 0 auto;
-  background: transparent;
-  color: var(--blue);
-  border: none;
-  padding: 8px 12px;
-  font-family: inherit; font-size: 15px; font-weight: 600;
+  flex: 0 0 auto; background: transparent;
+  color: var(--blue); border: none;
+  padding: 8px 12px; font-family: inherit;
+  font-size: 15px; font-weight: 600;
   cursor: pointer;
 }
 
@@ -139,12 +133,6 @@ html, body {
   padding: 0 20px 8px;
   font-size: 12px;
   color: var(--muted);
-  text-transform: none;
-}
-.sec-lbl-sub {
-  float: left;
-  color: var(--blue);
-  font-weight: 500;
 }
 
 /* ---------- Customer / date ---------- */
@@ -178,7 +166,7 @@ html, body {
 .date-line .lbl { color: var(--muted); }
 .date-line .val { color: var(--text); font-weight: 500; }
 
-/* ---------- Items card (the STAR) ---------- */
+/* ---------- Items card ---------- */
 .items-card {
   margin: 0 16px 20px;
   background: var(--surface);
@@ -201,31 +189,21 @@ html, body {
 .item-row:active { background: rgba(127,127,127,.06); }
 
 .item-name {
-  font-size: 15px;
-  font-weight: 500;
-  color: var(--text);
+  font-size: 15px; font-weight: 500; color: var(--text);
   line-height: 1.35;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
-.item-amount {
-  text-align: left;
-  min-width: 0;
-}
+.item-amount { text-align: left; min-width: 0; }
 .item-total {
   display: block;
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--text);
+  font-size: 16px; font-weight: 600; color: var(--text);
   font-variant-numeric: tabular-nums;
   line-height: 1.2;
   white-space: nowrap;
 }
 .item-calc {
   display: block;
-  font-size: 12px;
-  color: var(--muted);
+  font-size: 12px; color: var(--muted);
   font-variant-numeric: tabular-nums;
   line-height: 1.3;
   margin-top: 3px;
@@ -240,12 +218,10 @@ html, body {
   cursor: pointer;
   border-top: 0.5px solid var(--divider);
   color: var(--blue);
-  font-size: 15px;
-  font-weight: 500;
+  font-size: 15px; font-weight: 500;
   background: transparent;
   border-left: none; border-right: none; border-bottom: none;
-  width: 100%;
-  font-family: inherit;
+  width: 100%; font-family: inherit;
 }
 .add-line:active { background: rgba(0,112,210,.05); }
 .add-line-plus {
@@ -260,7 +236,7 @@ html, body {
   padding-bottom: 1px;
 }
 
-/* ---------- Summary (in same card below add-line) ---------- */
+/* ---------- Summary ---------- */
 .summary {
   margin: 0 16px 20px;
   background: var(--surface);
@@ -277,14 +253,43 @@ html, body {
 .sum-row:last-child { border-bottom: none; }
 .sum-row .lbl { color: var(--muted); }
 .sum-row .val { color: var(--text); font-weight: 500; font-variant-numeric: tabular-nums; }
-.sum-row.total {
-  padding: 15px 0;
-  font-size: 16px;
-}
+.sum-row.total { padding: 15px 0; font-size: 16px; }
 .sum-row.total .lbl { color: var(--text); font-weight: 600; }
 .sum-row.total .val { color: var(--text); font-weight: 700; font-size: 17px; }
 
-/* ---------- Edit sheet (opens on tap) ---------- */
+/* ---------- Payment ---------- */
+.pay-sec { margin: 0 16px 20px; }
+.pay-hd {
+  padding: 0 4px 8px;
+  font-size: 12px; color: var(--muted);
+  display: flex; justify-content: space-between;
+}
+.pay-hd .total { color: var(--text); font-weight: 600; }
+.pay-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0,1fr));
+  gap: 8px;
+}
+.pay-btn {
+  min-height: 58px;
+  background: var(--surface);
+  border: 0.5px solid var(--divider);
+  border-radius: 12px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 4px;
+  font-family: inherit; font-size: 11px; font-weight: 500;
+  color: var(--text); cursor: pointer;
+}
+.pay-btn svg {
+  width: 20px; height: 20px;
+  stroke: currentColor; stroke-width: 1.6;
+  fill: none; stroke-linecap: round; stroke-linejoin: round;
+}
+
+/* =========================================================
+   EDIT SHEET (bottom sheet)
+   ========================================================= */
 .edit-sheet-bg {
   position: absolute; inset: 0;
   background: rgba(0,0,0,.35);
@@ -302,7 +307,7 @@ html, body {
   z-index: 60;
   transform: translateY(110%);
   transition: transform 260ms cubic-bezier(.22,1,.36,1);
-  max-height: 80%;
+  max-height: 88%;
   overflow-y: auto;
   padding-bottom: 20px;
 }
@@ -328,9 +333,7 @@ html, body {
 }
 
 .edit-body { padding: 16px 18px; }
-.edit-field {
-  margin-bottom: 14px;
-}
+.edit-field { margin-bottom: 14px; }
 .edit-field label {
   display: block;
   font-size: 12px;
@@ -351,32 +354,135 @@ html, body {
   color: var(--text);
   text-align: right;
 }
-.edit-field input { text-align: center; font-variant-numeric: tabular-nums; }
+.edit-field input {
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
 .edit-field select:focus,
 .edit-field input:focus {
   outline: none;
   border-color: rgba(0,112,210,.45);
   box-shadow: 0 0 0 3px rgba(0,112,210,.08);
 }
+.edit-field-hint {
+  display: block;
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 5px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+.edit-field-hint b {
+  color: var(--text);
+  font-weight: 600;
+}
+
 .edit-row-2 {
   display: grid;
   grid-template-columns: minmax(0,1fr) minmax(0,1.4fr);
   gap: 10px;
 }
 
+/* ---------- Line total + profit ---------- */
 .edit-line-total {
-  display: flex; justify-content: space-between; align-items: baseline;
-  padding: 12px 0;
+  padding: 14px 0;
   border-top: 0.5px solid var(--divider);
   border-bottom: 0.5px solid var(--divider);
-  margin: 6px 0 14px;
+  margin: 4px 0 14px;
 }
-.edit-line-total .lbl { color: var(--muted); font-size: 13px; }
-.edit-line-total .val {
-  font-size: 17px; font-weight: 700;
+.edit-line-total-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+.edit-line-total-main .lbl {
+  font-size: 13px;
+  color: var(--muted);
+}
+.edit-line-total-main .val {
+  font-size: 18px;
+  font-weight: 700;
   font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+.edit-line-profit {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--muted);
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.edit-line-profit .val {
+  font-weight: 600;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+  filter: blur(4px);
+  transition: filter 150ms ease;
+}
+.edit-line-profit.revealed .val { filter: none; }
+.edit-line-profit.neg .val { color: var(--danger); }
+.edit-line-profit.pos .val { color: var(--success); }
+
+/* ---------- Price info (disclosure) ---------- */
+.price-more-toggle {
+  display: flex; align-items: center; justify-content: space-between;
+  width: 100%;
+  padding: 10px 0;
+  background: none; border: none;
+  color: var(--blue);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: right;
+  margin-bottom: 4px;
+}
+.price-more-toggle .chev {
+  font-size: 12px;
+  transition: transform 180ms ease;
+  color: var(--muted);
+}
+.price-more-toggle.open .chev { transform: rotate(180deg); }
+
+.price-more {
+  padding: 4px 0 12px;
+  border-bottom: 0.5px solid var(--divider);
+  margin-bottom: 14px;
+}
+.price-more[hidden] { display: none; }
+
+.price-row {
+  display: flex; justify-content: space-between; align-items: baseline;
+  gap: 12px;
+  padding: 6px 0;
+  font-size: 13px;
+}
+.price-row .k { color: var(--muted); }
+.price-row .v {
+  color: var(--text);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  text-align: left;
+  white-space: nowrap;
+}
+.price-row .v .date {
+  color: var(--faint);
+  font-weight: 400;
+  font-size: 11px;
+  margin-inline-start: 4px;
+}
+.price-row .v.empty {
+  color: var(--faint);
+  font-weight: 400;
 }
 
+/* ---------- Actions ---------- */
 .edit-actions {
   display: flex; gap: 10px;
 }
@@ -401,37 +507,6 @@ html, body {
   color: #FFF;
 }
 .edit-ok:active { opacity: .88; }
-
-/* ---------- Payment section (below items) ---------- */
-.pay-sec { margin: 0 16px 20px; }
-.pay-hd {
-  padding: 0 4px 8px;
-  font-size: 12px; color: var(--muted);
-  display: flex; justify-content: space-between;
-}
-.pay-hd .total { color: var(--text); font-weight: 600; }
-.pay-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0,1fr));
-  gap: 8px;
-}
-.pay-btn {
-  min-height: 58px;
-  background: var(--surface);
-  border: 0.5px solid var(--divider);
-  border-radius: 12px;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  gap: 4px;
-  font-family: inherit; font-size: 11px; font-weight: 500;
-  color: var(--text);
-  cursor: pointer;
-}
-.pay-btn svg {
-  width: 20px; height: 20px;
-  stroke: currentColor; stroke-width: 1.6;
-  fill: none; stroke-linecap: round; stroke-linejoin: round;
-}
 </style>
 </head>
 <body data-theme="light">
@@ -470,14 +545,40 @@ html, body {
 'use strict';
 
 /* =========================================================
-   Sample data (BAGHERI-realistic)
+   Sample data
    ========================================================= */
 const ITEMS = [
   { name: 'لوبیا چیتی',    qty: 5,  unit: 'کیلو',  unitPrice: 200000 },
   { name: 'نخود ابوگوشتی', qty: 3,  unit: 'کیلو',  unitPrice: 180000 },
   { name: 'کشمش پلویی',    qty: 1,  unit: 'کارتن', unitPrice: 2400000 },
 ];
-const PRODUCT_NAMES = ['لوبیا چیتی', 'نخود ابوگوشتی', 'کشمش پلویی', 'عدس', 'ماش', 'لپه', 'برنج'];
+
+/* Fake price intelligence — per product name */
+const PRODUCT_DATA = {
+  'لوبیا چیتی': {
+    fifo: 140000,
+    ref: 250000,
+    lastSale: { price: 220000, date: '۱۴۰۳/۰۹/۲۰' },
+    lastToThis: { price: 200000, date: '۱۴۰۳/۰۸/۱۵' },
+  },
+  'نخود ابوگوشتی': {
+    fifo: 125000,
+    ref: 220000,
+    lastSale: { price: 185000, date: '۱۴۰۳/۰۹/۱۸' },
+    lastToThis: null, // never sold to this customer
+  },
+  'کشمش پلویی': {
+    fifo: 1800000,
+    ref: 2500000,
+    lastSale: { price: 2400000, date: '۱۴۰۳/۰۹/۲۵' },
+    lastToThis: { price: 2400000, date: '۱۴۰۳/۰۹/۲۵' },
+  },
+  'عدس':           { fifo: 145000, ref: 230000, lastSale: { price: 210000, date: '۱۴۰۳/۰۹/۲۲' }, lastToThis: { price: 205000, date: '۱۴۰۳/۰۹/۰۵' } },
+  'ماش':           { fifo: 180000, ref: 250000, lastSale: { price: 230000, date: '۱۴۰۳/۰۹/۱۵' }, lastToThis: null },
+  'لپه':           { fifo: 165000, ref: 230000, lastSale: { price: 215000, date: '۱۴۰۳/۰۹/۱۰' }, lastToThis: null },
+  'برنج':          { fifo: 185000, ref: 240000, lastSale: { price: 230000, date: '۱۴۰۳/۰۹/۲۴' }, lastToThis: { price: 225000, date: '۱۴۰۳/۰۹/۰۳' } },
+};
+const PRODUCT_NAMES = Object.keys(PRODUCT_DATA);
 
 const FA = '۰۱۲۳۴۵۶۷۸۹';
 const fa = n => String(n).replace(/[0-9]/g, d => FA[+d]);
@@ -489,10 +590,11 @@ const faNum = n => fa(Math.round(Number(n) || 0).toLocaleString('en-US')).replac
 const state = {
   items: ITEMS.map(o => ({...o})),
   editingIdx: null,
+  priceRevealed: false,
 };
 
 /* =========================================================
-   Render — main body
+   Render main
    ========================================================= */
 function render() {
   const body = document.getElementById('body');
@@ -575,10 +677,19 @@ function bindMain() {
    ========================================================= */
 function openEdit(idx) {
   state.editingIdx = idx;
+  state.priceRevealed = false;
+
   const it = state.items[idx];
   const isOnly = state.items.length <= 1;
-  const total = it.qty * it.unitPrice;
 
+  renderEditSheet(it, idx, isOnly);
+
+  document.getElementById('editBg').classList.add('show');
+  document.getElementById('editSheet').classList.add('show');
+  bindEditSheet(it, idx, isOnly);
+}
+
+function renderEditSheet(it, idx, isOnly) {
   const optionsHtml = PRODUCT_NAMES.map(n =>
     `<option value="${n}" ${n === it.name ? 'selected' : ''}>${n}</option>`
   ).join('');
@@ -597,6 +708,7 @@ function openEdit(idx) {
           ${optionsHtml}
         </select>
       </div>
+
       <div class="edit-row-2">
         <div class="edit-field">
           <label>تعداد</label>
@@ -605,12 +717,23 @@ function openEdit(idx) {
         <div class="edit-field">
           <label>قیمت واحد (تومان)</label>
           <input type="text" inputmode="decimal" id="ePrice" value="${faNum(it.unitPrice)}">
+          <span class="edit-field-hint" id="eFifoHint"></span>
         </div>
       </div>
+
       <div class="edit-line-total">
-        <span class="lbl">جمع این قلم</span>
-        <span class="val" id="eTotal">${faNum(total)} ت</span>
+        <div class="edit-line-total-main">
+          <span class="lbl">جمع این قلم</span>
+          <span class="val" id="eTotal">${faNum(it.qty * it.unitPrice)} ت</span>
+        </div>
+        <div class="edit-line-profit" id="eProfit">
+          <span>سود تقریبی</span>
+          <span class="val" id="eProfitVal">—</span>
+        </div>
       </div>
+
+      <div id="ePriceInfoWrap"></div>
+
       <div class="edit-actions">
         <button class="edit-del" id="eDel" ${isOnly ? 'disabled' : ''}>حذف</button>
         <button class="edit-ok" id="eOk">تأیید</button>
@@ -618,57 +741,134 @@ function openEdit(idx) {
     </div>
   `;
 
-  document.getElementById('editBg').classList.add('show');
-  document.getElementById('editSheet').classList.add('show');
+  // populate dynamic bits
+  refreshFifoHint();
+  refreshProfit();
+  refreshPriceInfo();
+}
 
-  const close = () => {
+function refreshFifoHint() {
+  const it = state.items[state.editingIdx];
+  const el = document.getElementById('eFifoHint');
+  if (!el) return;
+  const data = PRODUCT_DATA[it.name];
+  if (!data) { el.innerHTML = ''; return; }
+  el.innerHTML = `خرید: <b>${faNum(data.fifo)}</b> ت`;
+}
+
+function refreshProfit() {
+  const it = state.items[state.editingIdx];
+  const el = document.getElementById('eProfit');
+  const val = document.getElementById('eProfitVal');
+  if (!el || !val) return;
+  const data = PRODUCT_DATA[it.name];
+  if (!data) {
+    val.textContent = '—';
+    el.classList.remove('pos', 'neg');
+    return;
+  }
+  const profitPerUnit = it.unitPrice - data.fifo;
+  const profitTotal = profitPerUnit * it.qty;
+  const pct = data.fifo > 0 ? Math.round((profitPerUnit / data.fifo) * 100) : 0;
+  const sign = profitTotal < 0 ? '−' : (profitTotal > 0 ? '+' : '');
+  val.textContent = `${sign}${faNum(Math.abs(profitTotal))} ت (${fa(pct)}٪)`;
+  el.classList.toggle('pos', profitTotal > 0);
+  el.classList.toggle('neg', profitTotal < 0);
+  el.classList.toggle('revealed', state.priceRevealed);
+}
+
+function refreshPriceInfo() {
+  const wrap = document.getElementById('ePriceInfoWrap');
+  if (!wrap) return;
+  const it = state.items[state.editingIdx];
+  const data = PRODUCT_DATA[it.name];
+  if (!data) { wrap.innerHTML = ''; return; }
+
+  const last = data.lastSale;
+  const lastToThis = data.lastToThis;
+
+  wrap.innerHTML = `
+    <button type="button" class="price-more-toggle" id="ePriceToggle">
+      <span>اطلاعات قیمت</span>
+      <span class="chev">⌄</span>
+    </button>
+    <div class="price-more" id="ePriceMore" hidden>
+      <div class="price-row">
+        <span class="k">قیمت مرجع</span>
+        <span class="v">${faNum(data.ref)} ت</span>
+      </div>
+      <div class="price-row">
+        <span class="k">آخرین فروش کلی</span>
+        <span class="v">${last ? `${faNum(last.price)} ت<span class="date">${last.date}</span>` : '<span class="v empty">ثبت نشده</span>'}</span>
+      </div>
+      <div class="price-row">
+        <span class="k">آخرین فروش به این مشتری</span>
+        <span class="v">${lastToThis ? `${faNum(lastToThis.price)} ت<span class="date">${lastToThis.date}</span>` : '<span class="v empty">ثبت نشده</span>'}</span>
+      </div>
+    </div>
+  `;
+
+  const toggle = document.getElementById('ePriceToggle');
+  const more = document.getElementById('ePriceMore');
+  toggle.addEventListener('click', () => {
+    const open = !more.hidden;
+    more.hidden = open;
+    toggle.classList.toggle('open', !open);
+  });
+}
+
+function bindEditSheet(it, idx, isOnly) {
+  const close = (commit) => {
     document.getElementById('editBg').classList.remove('show');
     document.getElementById('editSheet').classList.remove('show');
     state.editingIdx = null;
-    // If active row has no name, and there are other items, drop it silently
+
+    // If active row has no name and others exist, drop it silently
     setTimeout(() => {
       const row = state.items[idx];
-      if (row && !row.name && state.items.length > 1) {
+      if (!commit && row && !row.name && state.items.length > 1) {
         state.items.splice(idx, 1);
-        render();
       }
+      render();
     }, 260);
   };
 
-  document.getElementById('editClose').onclick = close;
-  document.getElementById('editBg').onclick = close;
-
-  const refresh = () => {
-    document.getElementById('eTotal').textContent = faNum(it.qty * it.unitPrice) + ' ت';
-  };
+  document.getElementById('editClose').onclick = () => close(false);
+  document.getElementById('editBg').onclick = () => close(false);
 
   document.getElementById('eName').onchange = e => {
     it.name = e.target.value;
-    refresh();
+    refreshFifoHint();
+    refreshProfit();
+    refreshPriceInfo();
   };
+
   document.getElementById('eQty').oninput = e => {
     it.qty = parseFloat(String(e.target.value).replace(/[۰-۹]/g, d => FA.indexOf(d)).replace(/[^\d.]/g, '')) || 0;
-    refresh();
+    document.getElementById('eTotal').textContent = faNum(it.qty * it.unitPrice) + ' ت';
+    refreshProfit();
   };
+
   document.getElementById('ePrice').oninput = e => {
     it.unitPrice = parseFloat(String(e.target.value).replace(/[۰-۹]/g, d => FA.indexOf(d)).replace(/[٬,]/g, '').replace(/[^\d.]/g, '')) || 0;
-    refresh();
+    document.getElementById('eTotal').textContent = faNum(it.qty * it.unitPrice) + ' ت';
+    refreshProfit();
   };
+
+  document.getElementById('eProfit').onclick = () => {
+    state.priceRevealed = !state.priceRevealed;
+    document.getElementById('eProfit').classList.toggle('revealed', state.priceRevealed);
+  };
+
   document.getElementById('eDel').onclick = () => {
-    if (state.items.length <= 1) return;
+    if (isOnly) return;
     state.items.splice(idx, 1);
-    document.getElementById('editBg').classList.remove('show');
-    document.getElementById('editSheet').classList.remove('show');
-    setTimeout(() => { state.editingIdx = null; render(); }, 260);
+    close(true);
   };
+
   document.getElementById('eOk').onclick = () => {
-    if (!it.name) {
-      // no product: don't commit
-      close();
-      return;
-    }
-    close();
-    setTimeout(render, 260);
+    if (!it.name) { close(false); return; }
+    close(true);
   };
 }
 
@@ -691,7 +891,6 @@ document.querySelectorAll('[data-w]').forEach(b => {
   });
 });
 
-/* ---------- Boot ---------- */
 render();
 </script>
 
