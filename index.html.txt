@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Invoice Geometry — Prototype</title>
+<style>
+/* === Design tokens (from visual-grammar.css, verbatim) === */
+:root{
+  --bg:#F5F7FA;
+  --surface:#FFFFFF;
+  --surface-soft:#F7F8FA;
+  --text:#1F2937;
+  --text-muted:#667085;
+  --border:rgba(31,41,55,.075);
+  --divider:rgba(31,41,55,.055);
+  --primary:#0070D2;
+  --primary-soft:#E8F2FC;
+  --success:#00A068;
+  --danger:#FA3946;
+  --danger-soft:#FFF0EC;
+  --radius-soft:14px;
+  --radius-raised:16px;
+  --radius-pill:999px;
+  --shadow-group:0 2px 10px rgba(31,41,55,.045);
+}
+@font-face{
+  font-family:'Vazirmatn';
+  src:url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/webfonts/Vazirmatn[wght].woff2') format('woff2');
+  font-weight:100 900;
+  font-display:swap;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{background:var(--bg);-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  font-family:'Vazirmatn',-apple-system,BlinkMacSystemFont,'SF Pro Text',system-ui,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  font-size:16px;
+  line-height:1.55;
+  font-variant-numeric:tabular-nums;
+  -webkit-font-smoothing:antialiased;
+  overscroll-behavior-y:contain;
+}
+input,button{font-family:inherit}
+
+/* === Prototype controls (not part of final app) === */
+.controls{
+  position:sticky;top:0;z-index:10;
+  background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(180%) blur(20px);
+  -webkit-backdrop-filter:saturate(180%) blur(20px);
+  border-bottom:1px solid var(--border);
+  padding:10px 14px calc(10px + env(safe-area-inset-top,0));
+  padding-top:calc(10px + env(safe-area-inset-top,0));
+}
+.controls-title{font-size:.75rem;color:var(--text-muted);font-weight:600;margin-bottom:6px}
+.controls-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px;align-items:center}
+.controls-label{font-size:.68rem;color:var(--text-muted);min-width:60px}
+.controls button{
+  min-height:32px;padding:4px 10px;
+  border:1px solid var(--border);
+  border-radius:var(--radius-pill);
+  background:var(--surface);
+  color:var(--text);
+  font-size:.72rem;font-weight:600;
+  cursor:pointer;
+}
+.controls button[aria-pressed="true"]{
+  background:var(--primary);color:#fff;border-color:var(--primary);
+}
+.controls-width{
+  font-size:.68rem;color:var(--text-muted);
+  margin-top:4px;padding-top:6px;border-top:1px solid var(--divider);
+}
+
+/* === Invoice shell (mirrors .inv-sheet-v2 in app) === */
+.shell{
+  max-width:520px;margin:0 auto;
+  padding:14px 14px calc(20px + env(safe-area-inset-bottom,0));
+}
+.shell-head{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:8px;margin-bottom:14px;
+}
+.shell-head-title{font-size:1rem;font-weight:700}
+.shell-head-sub{font-size:.72rem;color:var(--text-muted)}
+.shell-back{
+  min-height:36px;padding:6px 12px;border:0;
+  border-radius:var(--radius-pill);
+  background:rgba(31,41,55,.05);
+  color:var(--text-muted);
+  font-size:.82rem;font-weight:600;cursor:pointer;
+}
+
+/* === Lines surface — one grouped card === */
+.lines-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius-raised);
+  box-shadow:var(--shadow-group);
+  overflow:hidden;
+}
+
+/* === Collapsed row === */
+.line{
+  display:grid;
+  grid-template-columns:24px 1fr;
+  gap:10px;
+  padding:12px 14px;
+  border-bottom:1px solid var(--divider);
+  cursor:pointer;
+  transition:background .12s;
+}
+.line:last-child{border-bottom:0}
+.line:active{background:var(--surface-soft)}
+.line-num{
+  width:24px;height:24px;border-radius:7px;
+  background:rgba(31,41,55,.06);
+  color:var(--text-muted);
+  font-size:.72rem;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  flex:none;margin-top:1px;
+}
+.line-body{min-width:0}
+.line-top{
+  display:flex;justify-content:space-between;align-items:baseline;
+  gap:8px;margin-bottom:2px;
+}
+.line-name{
+  font-size:.95rem;font-weight:600;color:var(--text);
+  min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.line-total{
+  font-size:.95rem;font-weight:700;color:var(--text);
+  font-variant-numeric:tabular-nums;white-space:nowrap;flex:none;
+}
+.line-unit{font-size:.72rem;font-weight:500;color:var(--text-muted);margin-inline-start:2px}
+.line-bottom{
+  display:flex;justify-content:space-between;align-items:baseline;
+  gap:8px;font-size:.78rem;color:var(--text-muted);
+}
+.line-calc{
+  font-variant-numeric:tabular-nums;
+  min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.line-profit{
+  cursor:pointer;user-select:none;-webkit-user-select:none;
+  white-space:nowrap;flex:none;font-size:.74rem;
+}
+.profit-value{
+  filter:blur(4.5px);
+  transition:filter .15s;
+  display:inline-block;
+  min-width:52px;
+  text-align:left;
+}
+.line-profit[data-revealed="1"] .profit-value{filter:none}
+.line-profit[data-revealed="1"]::after{content:" ✕";opacity:.4;font-size:.7em}
+
+/* === Expanded / editing line === */
+.line-editing{
+  display:block;
+  padding:14px;
+  background:var(--surface-soft);
+  border-bottom:1px solid var(--divider);
+}
+.line-editing:last-child{border-bottom:0}
+.edit-head{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:12px;
+}
+.edit-index{font-size:.72rem;font-weight:600;color:var(--text-muted)}
+.edit-close{
+  width:28px;height:28px;border:0;border-radius:50%;
+  background:rgba(31,41,55,.06);color:var(--text-muted);
+  font-size:1rem;cursor:pointer;
+}
+.edit-field{margin-bottom:10px}
+.edit-field label{
+  display:block;font-size:.7rem;font-weight:500;
+  color:var(--text-muted);margin-bottom:5px;
+}
+.edit-field input{
+  width:100%;min-height:44px;
+  padding:10px 12px;
+  border:1px solid var(--border);
+  border-radius:var(--radius-pill);
+  background:var(--surface);
+  color:var(--text);
+  font-size:.95rem;font-weight:500;
+  outline:none;
+  transition:border-color .12s, box-shadow .12s;
+}
+.edit-field input:focus{
+  border-color:rgba(0,112,210,.45);
+  box-shadow:0 0 0 3px rgba(0,112,210,.10);
+}
+.edit-two-col{
+  display:grid;
+  grid-template-columns:1fr 1.2fr;
+  gap:8px;
+}
+.edit-two-col .edit-field{margin-bottom:12px}
+
+.edit-computed{
+  display:flex;justify-content:space-between;align-items:baseline;
+  gap:8px;
+  padding:10px 12px;
+  margin-bottom:12px;
+  background:var(--surface);
+  border-radius:var(--radius-soft);
+  border:1px solid var(--border);
+}
+.edit-computed-label{font-size:.72rem;color:var(--text-muted);font-weight:500}
+.edit-computed-value{
+  font-size:1rem;font-weight:700;color:var(--text);
+  font-variant-numeric:tabular-nums;
+}
+.edit-computed-profit{
+  font-size:.74rem;color:var(--text-muted);
+  cursor:pointer;user-select:none;
+}
+
+.edit-actions{
+  display:flex;justify-content:space-between;align-items:center;
+  gap:8px;
+}
+.edit-actions-right{display:flex;gap:8px}
+.edit-actions button{
+  min-height:44px;padding:8px 16px;
+  border-radius:var(--radius-pill);
+  font-size:.85rem;font-weight:600;
+  cursor:pointer;border:1px solid transparent;
+}
+.btn-ghost{
+  background:transparent;color:var(--text-muted);
+  border-color:var(--border);
+}
+.btn-primary{
+  background:var(--primary);color:#fff;border-color:var(--primary);
+  padding:8px 20px;font-weight:700;
+}
+.btn-primary:disabled{opacity:.4;cursor:not-allowed}
+.btn-del{
+  background:transparent;color:var(--danger);
+  border-color:transparent;
+  font-size:.8rem;font-weight:500;
+}
+
+/* === Add line === */
+.add-line{
+  display:flex;align-items:center;gap:8px;
+  width:100%;min-height:48px;
+  padding:12px 14px;
+  border:0;background:transparent;
+  color:var(--primary);
+  font-size:.88rem;font-weight:600;
+  cursor:pointer;
+  text-align:start;
+}
+.add-line:active{background:var(--surface-soft)}
+.add-line-icon{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:22px;height:22px;border-radius:50%;
+  background:var(--primary-soft);color:var(--primary);
+  font-size:.95rem;font-weight:700;
+}
+
+/* === Summary (bottom) === */
+.summary{
+  margin-top:14px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius-raised);
+  box-shadow:var(--shadow-group);
+  padding:14px;
+}
+.summary-row{
+  display:flex;justify-content:space-between;align-items:baseline;
+  gap:8px;padding:6px 0;font-size:.88rem;
+}
+.summary-row b{font-weight:600;font-variant-numeric:tabular-nums}
+.summary-row.muted{font-size:.78rem;color:var(--text-muted)}
+.summary-row.total{
+  padding-top:10px;margin-top:8px;
+  border-top:1px solid var(--border);
+  font-size:1rem;
+}
+.summary-row.total b{font-weight:700;font-size:1.05rem}
+.summary-row.remain b{color:var(--danger)}
+</style>
+</head>
+<body>
+
+<div class="controls">
+  <div class="controls-title">Prototype — Compact Row + Inline Edit (بدون اپ)</div>
+  <div class="controls-row">
+    <span class="controls-label">اقلام:</span>
+    <button data-count="1" aria-pressed="true">۱</button>
+    <button data-count="5" aria-pressed="false">۵</button>
+    <button data-count="10" aria-pressed="false">۱۰</button>
+  </div>
+  <div class="controls-row">
+    <span class="controls-label">نام:</span>
+    <button data-namelen="short" aria-pressed="true">کوتاه</button>
+    <button data-namelen="long" aria-pressed="false">بلند</button>
+  </div>
+  <div class="controls-row">
+    <span class="controls-label">قیمت:</span>
+    <button data-price="6" aria-pressed="true">۶ رقمی</button>
+    <button data-price="9" aria-pressed="false">۹ رقمی</button>
+  </div>
+  <div class="controls-row">
+    <span class="controls-label">حالت:</span>
+    <button data-mode="list" aria-pressed="true">لیست</button>
+    <button data-mode="edit1" aria-pressed="false">ویرایش قلم ۱</button>
+  </div>
+  <div class="controls-width" id="viewport-info"></div>
+</div>
+
+<div class="shell">
+  <div class="shell-head">
+    <button class="shell-back" onclick="location.reload()">لغو</button>
+    <div style="text-align:center;flex:1">
+      <div class="shell-head-title">فاکتور جدید</div>
+      <div class="shell-head-sub">پیش‌نویس</div>
+    </div>
+    <button class="shell-back" style="background:var(--primary);color:#fff">ثبت</button>
+  </div>
+
+  <div class="lines-card" id="lines"></div>
+
+  <button class="add-line" id="add-line">
+    <span class="add-line-icon">+</span>
+    <span>افزودن قلم جدید</span>
+  </button>
+
+  <div class="summary" id="summary"></div>
+</div>
+
+<script>
+(function(){
+  'use strict';
+
+  // ==== state ====
+  const state = {
+    count: 1,
+    namelen: 'short',
+    price: 6,
+    mode: 'list',
+    lines: [],
+    editingId: null,
+  };
+
+  const NAMES_SHORT = ['عدس','لوبیا','برنج','نخود','کشمش','زردچوبه','آرد','شکر','نمک','چای'];
+  const NAMES_LONG  = [
+    'عدس ریز ممتاز ایرانی درجه یک',
+    'لوبیا چیتی اعلا بدون سنگ و کاه',
+    'برنج طارم هاشمی معطر شمال',
+    'نخود نخودی درشت خشکبار باقری',
+    'کشمش پلویی سبز تیزاب',
+    'زردچوبه هندی آسیاب‌شده',
+    'آرد گندم سبوس‌دار نول',
+    'شکر سفید تصفیه‌شده',
+    'نمک دریاچه ارومیه',
+    'چای سیاه قلم شکسته',
+  ];
+
+  function faNum(n){
+    return String(Math.round(n)).replace(/[0-9]/g, d => '۰۱۲۳۴۵۶۷۸۹'[d])
+      .replace(/\B(?=(\d{3})+(?!\d))/g, '٬');
+  }
+  function faNumFromString(s){
+    return String(s).replace(/[0-9]/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
+  }
+
+  function makeLine(idx){
+    const priceBase = state.price === 9
+      ? 100000000 + Math.floor(Math.random()*900000000)
+      : 150000 + Math.floor(Math.random()*850000);
+    const qty = 1 + Math.floor(Math.random()*15);
+    const names = state.namelen === 'long' ? NAMES_LONG : NAMES_SHORT;
+    return {
+      id: 'L' + (Date.now().toString(36)) + Math.random().toString(36).slice(2,5),
+      name: names[idx % names.length],
+      qty: qty,
+      price: priceBase,
+      profit: Math.round(priceBase * qty * 0.18),
+    };
+  }
+
+  function rebuildLines(){
+    state.lines = [];
+    for (let i = 0; i < state.count; i++) state.lines.push(makeLine(i));
+    if (state.mode === 'edit1' && state.lines[0]) state.editingId = state.lines[0].id;
+    else state.editingId = null;
+  }
+
+  // ==== render ====
+  function lineCollapsed(l, idx){
+    const total = l.qty * l.price;
+    return `
+      <div class="line" data-id="${l.id}">
+        <div class="line-num">${faNumFromString(String(idx+1))}</div>
+        <div class="line-body">
+          <div class="line-top">
+            <span class="line-name">${escapeHtml(l.name)}</span>
+            <span class="line-total">${faNum(total)}<span class="line-unit">ت</span></span>
+          </div>
+          <div class="line-bottom">
+            <span class="line-calc">${faNum(l.qty)} × ${faNum(l.price)}</span>
+            <span class="line-profit" data-revealed="0" data-profit-id="${l.id}">
+              سود: <span class="profit-value">${faNum(l.profit)}</span>
+            </span>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  function lineEditing(l, idx){
+    const total = l.qty * l.price;
+    return `
+      <div class="line-editing" data-id="${l.id}">
+        <div class="edit-head">
+          <span class="edit-index">قلم ${faNumFromString(String(idx+1))}</span>
+          <button class="edit-close" data-edit-close="${l.id}" aria-label="بستن">×</button>
+        </div>
+        <div class="edit-field">
+          <label>نام کالا</label>
+          <input type="text" value="${escapeHtml(l.name)}" data-field="name" data-id="${l.id}">
+        </div>
+        <div class="edit-two-col">
+          <div class="edit-field">
+            <label>تعداد</label>
+            <input type="text" inputmode="decimal" value="${faNum(l.qty)}" data-field="qty" data-id="${l.id}">
+          </div>
+          <div class="edit-field">
+            <label>قیمت واحد</label>
+            <input type="text" inputmode="decimal" value="${faNum(l.price)}" data-field="price" data-id="${l.id}">
+          </div>
+        </div>
+        <div class="edit-computed">
+          <span class="edit-computed-label">جمع</span>
+          <span class="edit-computed-value" data-total-for="${l.id}">${faNum(total)} ت</span>
+        </div>
+        <div class="edit-computed" style="margin-bottom:14px">
+          <span class="edit-computed-label">سود این قلم</span>
+          <span class="line-profit edit-computed-profit" data-revealed="0" data-profit-id="${l.id}">
+            <span class="profit-value">${faNum(l.profit)}</span>
+          </span>
+        </div>
+        <div class="edit-actions">
+          <button class="btn-del" data-del="${l.id}">حذف</button>
+          <div class="edit-actions-right">
+            <button class="btn-ghost" data-cancel="${l.id}">انصراف</button>
+            <button class="btn-primary" data-confirm="${l.id}">✓ ثبت قلم</button>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  function render(){
+    const wrap = document.getElementById('lines');
+    wrap.innerHTML = state.lines.map(function(l, i){
+      if (state.editingId === l.id) return lineEditing(l, i);
+      return lineCollapsed(l, i);
+    }).join('');
+
+    const totals = state.lines.reduce(function(acc, l){
+      acc.sum += l.qty * l.price;
+      acc.profit += l.profit;
+      return acc;
+    }, {sum: 0, profit: 0});
+
+    const discount = Math.round(totals.sum * 0.03);
+    const prevBalance = 4500000;
+    const paid = 0;
+    const finalTotal = totals.sum - discount;
+    const newBalance = prevBalance + finalTotal - paid;
+
+    document.getElementById('summary').innerHTML = `
+      <div class="summary-row muted"><span>جمع اقلام</span><b>${faNum(totals.sum)} ت</b></div>
+      <div class="summary-row muted"><span>تخفیف</span><b>${faNum(discount)} ت</b></div>
+      <div class="summary-row total"><span>جمع فاکتور</span><b>${faNum(finalTotal)} ت</b></div>
+      <div class="summary-row muted" style="margin-top:8px"><span>مانده قبلی مشتری</span><b>${faNum(prevBalance)} ت</b></div>
+      <div class="summary-row remain"><span>مانده بعد از فاکتور</span><b>${faNum(newBalance)} ت</b></div>
+    `;
+  }
+
+  function escapeHtml(s){
+    return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // ==== interactions ====
+  document.getElementById('lines').addEventListener('click', function(e){
+    // profit reveal
+    const profit = e.target.closest('[data-profit-id]');
+    if (profit){
+      e.stopPropagation();
+      profit.setAttribute('data-revealed', profit.getAttribute('data-revealed') === '1' ? '0' : '1');
+      return;
+    }
+    // edit confirm / cancel / delete / close
+    const confirmBtn = e.target.closest('[data-confirm]');
+    if (confirmBtn){
+      state.editingId = null;
+      render();
+      return;
+    }
+    const cancelBtn = e.target.closest('[data-cancel], [data-edit-close]');
+    if (cancelBtn){
+      state.editingId = null;
+      render();
+      return;
+    }
+    const delBtn = e.target.closest('[data-del]');
+    if (delBtn){
+      const id = delBtn.getAttribute('data-del');
+      state.lines = state.lines.filter(l => l.id !== id);
+      state.editingId = null;
+      state.count = state.lines.length;
+      render();
+      return;
+    }
+    // collapse row → expand
+    const collapsed = e.target.closest('.line[data-id]');
+    if (collapsed){
+      state.editingId = collapsed.getAttribute('data-id');
+      render();
+    }
+  });
+
+  // live update totals/qty/price while typing
+  document.getElementById('lines').addEventListener('input', function(e){
+    const inp = e.target.closest('[data-field]');
+    if (!inp) return;
+    const id = inp.getAttribute('data-id');
+    const field = inp.getAttribute('data-field');
+    const line = state.lines.find(l => l.id === id);
+    if (!line) return;
+    if (field === 'name'){
+      line.name = inp.value;
+    } else if (field === 'qty' || field === 'price'){
+      const raw = String(inp.value).replace(/[۰-۹]/g, d => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d))).replace(/[^\d]/g,'');
+      line[field] = Number(raw) || 0;
+      const totalEl = document.querySelector('[data-total-for="' + id + '"]');
+      if (totalEl) totalEl.textContent = faNum(line.qty * line.price) + ' ت';
+      // profit is not live-updated on purpose (Q3 in review):
+      // it stays as-is until the line is confirmed and collapsed.
+    }
+  });
+
+  document.getElementById('add-line').addEventListener('click', function(){
+    const l = makeLine(state.lines.length);
+    l.name = '';
+    l.qty = 1;
+    l.price = 0;
+    l.profit = 0;
+    state.lines.push(l);
+    state.editingId = l.id;
+    state.count = state.lines.length;
+    render();
+    // focus first field
+    setTimeout(function(){
+      const inp = document.querySelector('[data-field="name"][data-id="' + l.id + '"]');
+      if (inp) inp.focus();
+    }, 50);
+  });
+
+  // controls
+  document.querySelectorAll('.controls-row').forEach(function(row){
+    row.addEventListener('click', function(e){
+      const btn = e.target.closest('button[data-count], button[data-namelen], button[data-price], button[data-mode]');
+      if (!btn) return;
+      row.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b === btn ? 'true' : 'false'));
+
+      if (btn.hasAttribute('data-count')){
+        state.count = Number(btn.getAttribute('data-count'));
+        state.mode = 'list';
+        document.querySelectorAll('[data-mode]').forEach(b => b.setAttribute('aria-pressed', b.getAttribute('data-mode') === 'list' ? 'true' : 'false'));
+        rebuildLines();
+      } else if (btn.hasAttribute('data-namelen')){
+        state.namelen = btn.getAttribute('data-namelen');
+        rebuildLines();
+      } else if (btn.hasAttribute('data-price')){
+        state.price = Number(btn.getAttribute('data-price'));
+        rebuildLines();
+      } else if (btn.hasAttribute('data-mode')){
+        state.mode = btn.getAttribute('data-mode');
+        if (state.mode === 'edit1') state.editingId = state.lines[0] ? state.lines[0].id : null;
+        else state.editingId = null;
+      }
+      render();
+    });
+  });
+
+  // viewport info
+  function showWidth(){
+    const w = Math.round(window.innerWidth);
+    document.getElementById('viewport-info').textContent = 'عرض viewport: ' + w + 'px — ارتفاع: ' + Math.round(window.innerHeight) + 'px';
+  }
+  window.addEventListener('resize', showWidth);
+
+  // boot
+  rebuildLines();
+  render();
+  showWidth();
+})();
+</script>
+</body>
+</html>
