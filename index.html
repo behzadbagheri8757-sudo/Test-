@@ -1,613 +1,699 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Invoice Geometry — Prototype</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+<title>BAGHERI — Invoice Items (Zoho-clean)</title>
 <style>
-/* === Design tokens (from visual-grammar.css, verbatim) === */
-:root{
-  --bg:#F5F7FA;
-  --surface:#FFFFFF;
-  --surface-soft:#F7F8FA;
-  --text:#1F2937;
-  --text-muted:#667085;
-  --border:rgba(31,41,55,.075);
-  --divider:rgba(31,41,55,.055);
-  --primary:#0070D2;
-  --primary-soft:#E8F2FC;
-  --success:#00A068;
-  --danger:#FA3946;
-  --danger-soft:#FFF0EC;
-  --radius-soft:14px;
-  --radius-raised:16px;
-  --radius-pill:999px;
-  --shadow-group:0 2px 10px rgba(31,41,55,.045);
+:root {
+  --blue: #0070D2;
+  --text: #1F2937;
+  --muted: #667085;
+  --faint: #98A2B3;
+  --divider: rgba(15,23,42,.06);
+  --surface: #FFFFFF;
+  --bg: #F5F7FA;
+  --danger: #D52B36;
 }
-@font-face{
-  font-family:'Vazirmatn';
-  src:url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/webfonts/Vazirmatn[wght].woff2') format('woff2');
-  font-weight:100 900;
-  font-display:swap;
-}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html{background:var(--bg);-webkit-text-size-adjust:100%}
-body{
-  margin:0;
-  font-family:'Vazirmatn',-apple-system,BlinkMacSystemFont,'SF Pro Text',system-ui,sans-serif;
-  background:var(--bg);
-  color:var(--text);
-  font-size:16px;
-  line-height:1.55;
-  font-variant-numeric:tabular-nums;
-  -webkit-font-smoothing:antialiased;
-  overscroll-behavior-y:contain;
-}
-input,button{font-family:inherit}
-
-/* === Prototype controls (not part of final app) === */
-.controls{
-  position:sticky;top:0;z-index:10;
-  background:rgba(255,255,255,.92);
-  backdrop-filter:saturate(180%) blur(20px);
-  -webkit-backdrop-filter:saturate(180%) blur(20px);
-  border-bottom:1px solid var(--border);
-  padding:10px 14px calc(10px + env(safe-area-inset-top,0));
-  padding-top:calc(10px + env(safe-area-inset-top,0));
-}
-.controls-title{font-size:.75rem;color:var(--text-muted);font-weight:600;margin-bottom:6px}
-.controls-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px;align-items:center}
-.controls-label{font-size:.68rem;color:var(--text-muted);min-width:60px}
-.controls button{
-  min-height:32px;padding:4px 10px;
-  border:1px solid var(--border);
-  border-radius:var(--radius-pill);
-  background:var(--surface);
-  color:var(--text);
-  font-size:.72rem;font-weight:600;
-  cursor:pointer;
-}
-.controls button[aria-pressed="true"]{
-  background:var(--primary);color:#fff;border-color:var(--primary);
-}
-.controls-width{
-  font-size:.68rem;color:var(--text-muted);
-  margin-top:4px;padding-top:6px;border-top:1px solid var(--divider);
+[data-theme="dark"] {
+  --blue: #4FA3FF;
+  --text: #F2F2F7;
+  --muted: #9AA0A6;
+  --faint: #6E7378;
+  --divider: rgba(255,255,255,.08);
+  --surface: #1C1C1E;
+  --bg: #000000;
+  --danger: #FF6B6B;
 }
 
-/* === Invoice shell (mirrors .inv-sheet-v2 in app) === */
-.shell{
-  max-width:520px;margin:0 auto;
-  padding:14px 14px calc(20px + env(safe-area-inset-bottom,0));
-}
-.shell-head{
-  display:flex;align-items:center;justify-content:space-between;
-  gap:8px;margin-bottom:14px;
-}
-.shell-head-title{font-size:1rem;font-weight:700}
-.shell-head-sub{font-size:.72rem;color:var(--text-muted)}
-.shell-back{
-  min-height:36px;padding:6px 12px;border:0;
-  border-radius:var(--radius-pill);
-  background:rgba(31,41,55,.05);
-  color:var(--text-muted);
-  font-size:.82rem;font-weight:600;cursor:pointer;
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body {
+  margin: 0; padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Vazirmatn', 'Segoe UI', Tahoma, sans-serif;
+  background: #E8EBF0; color: var(--text);
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* === Lines surface — one grouped card === */
-.lines-card{
-  background:var(--surface);
-  border:1px solid var(--border);
-  border-radius:var(--radius-raised);
-  box-shadow:var(--shadow-group);
-  overflow:hidden;
+/* ---------- Controls bar ---------- */
+.controls {
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 100;
+  background: #0F172A; color: #FFF;
+  padding: 8px 12px;
+  display: flex; gap: 10px; flex-wrap: wrap; align-items: center;
+  font-size: 12px;
+}
+.controls .lbl { color: #94A3B8; font-size: 11px; margin-inline-end: 4px; }
+.controls button {
+  background: rgba(255,255,255,.08);
+  color: #E2E8F0;
+  border: 1px solid rgba(255,255,255,.14);
+  padding: 5px 10px; border-radius: 6px;
+  font-family: inherit; font-size: 11px; cursor: pointer;
+}
+.controls button.active {
+  background: #0070D2; border-color: #0070D2;
+  color: #FFF; font-weight: 600;
+}
+.controls button.wide { padding: 5px 14px; }
+
+/* ---------- Phone frame ---------- */
+.phone-wrap {
+  padding: 56px 12px 24px;
+  display: flex; justify-content: center;
+  min-height: 100vh;
+}
+.phone {
+  width: 390px;
+  height: calc(100vh - 80px);
+  max-height: 900px;
+  background: var(--bg);
+  border-radius: 28px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 16px 48px rgba(15,23,42,.14), 0 2px 6px rgba(15,23,42,.06);
+  transition: width 180ms ease, background 180ms ease;
+}
+.phone[data-w="320"] { width: 320px; }
+.phone[data-w="375"] { width: 375px; }
+.phone[data-w="390"] { width: 390px; }
+.phone[data-w="430"] { width: 430px; }
+@media (max-width: 480px) {
+  .controls { position: sticky; top: 0; }
+  .phone-wrap { padding: 0; min-height: 0; }
+  .phone {
+    width: 100% !important;
+    height: calc(100vh - 44px);
+    max-height: none; border-radius: 0; box-shadow: none;
+  }
 }
 
-/* === Collapsed row === */
-.line{
-  display:grid;
-  grid-template-columns:24px 1fr;
-  gap:10px;
-  padding:12px 14px;
-  border-bottom:1px solid var(--divider);
-  cursor:pointer;
-  transition:background .12s;
-}
-.line:last-child{border-bottom:0}
-.line:active{background:var(--surface-soft)}
-.line-num{
-  width:24px;height:24px;border-radius:7px;
-  background:rgba(31,41,55,.06);
-  color:var(--text-muted);
-  font-size:.72rem;font-weight:700;
-  display:flex;align-items:center;justify-content:center;
-  flex:none;margin-top:1px;
-}
-.line-body{min-width:0}
-.line-top{
-  display:flex;justify-content:space-between;align-items:baseline;
-  gap:8px;margin-bottom:2px;
-}
-.line-name{
-  font-size:.95rem;font-weight:600;color:var(--text);
-  min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-}
-.line-total{
-  font-size:.95rem;font-weight:700;color:var(--text);
-  font-variant-numeric:tabular-nums;white-space:nowrap;flex:none;
-}
-.line-unit{font-size:.72rem;font-weight:500;color:var(--text-muted);margin-inline-start:2px}
-.line-bottom{
-  display:flex;justify-content:space-between;align-items:baseline;
-  gap:8px;font-size:.78rem;color:var(--text-muted);
-}
-.line-calc{
-  font-variant-numeric:tabular-nums;
-  min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-}
-.line-profit{
-  cursor:pointer;user-select:none;-webkit-user-select:none;
-  white-space:nowrap;flex:none;font-size:.74rem;
-}
-.profit-value{
-  filter:blur(4.5px);
-  transition:filter .15s;
-  display:inline-block;
-  min-width:52px;
-  text-align:left;
-}
-.line-profit[data-revealed="1"] .profit-value{filter:none}
-.line-profit[data-revealed="1"]::after{content:" ✕";opacity:.4;font-size:.7em}
-
-/* === Expanded / editing line === */
-.line-editing{
-  display:block;
-  padding:14px;
-  background:var(--surface-soft);
-  border-bottom:1px solid var(--divider);
-}
-.line-editing:last-child{border-bottom:0}
-.edit-head{
-  display:flex;align-items:center;justify-content:space-between;
-  margin-bottom:12px;
-}
-.edit-index{font-size:.72rem;font-weight:600;color:var(--text-muted)}
-.edit-close{
-  width:28px;height:28px;border:0;border-radius:50%;
-  background:rgba(31,41,55,.06);color:var(--text-muted);
-  font-size:1rem;cursor:pointer;
-}
-.edit-field{margin-bottom:10px}
-.edit-field label{
-  display:block;font-size:.7rem;font-weight:500;
-  color:var(--text-muted);margin-bottom:5px;
-}
-.edit-field input{
-  width:100%;min-height:44px;
-  padding:10px 12px;
-  border:1px solid var(--border);
-  border-radius:var(--radius-pill);
-  background:var(--surface);
-  color:var(--text);
-  font-size:.95rem;font-weight:500;
-  outline:none;
-  transition:border-color .12s, box-shadow .12s;
-}
-.edit-field input:focus{
-  border-color:rgba(0,112,210,.45);
-  box-shadow:0 0 0 3px rgba(0,112,210,.10);
-}
-.edit-two-col{
-  display:grid;
-  grid-template-columns:1fr 1.2fr;
-  gap:8px;
-}
-.edit-two-col .edit-field{margin-bottom:12px}
-
-.edit-computed{
-  display:flex;justify-content:space-between;align-items:baseline;
-  gap:8px;
-  padding:10px 12px;
-  margin-bottom:12px;
-  background:var(--surface);
-  border-radius:var(--radius-soft);
-  border:1px solid var(--border);
-}
-.edit-computed-label{font-size:.72rem;color:var(--text-muted);font-weight:500}
-.edit-computed-value{
-  font-size:1rem;font-weight:700;color:var(--text);
-  font-variant-numeric:tabular-nums;
-}
-.edit-computed-profit{
-  font-size:.74rem;color:var(--text-muted);
-  cursor:pointer;user-select:none;
+/* ---------- Sheet ---------- */
+.sheet {
+  display: flex; flex-direction: column;
+  height: 100%; background: var(--bg);
 }
 
-.edit-actions{
-  display:flex;justify-content:space-between;align-items:center;
-  gap:8px;
+/* ---------- Header ---------- */
+.hdr {
+  flex: 0 0 auto;
+  display: flex; align-items: center; gap: 8px;
+  padding: 11px 14px;
+  background: var(--surface);
+  border-bottom: 0.5px solid var(--divider);
 }
-.edit-actions-right{display:flex;gap:8px}
-.edit-actions button{
-  min-height:44px;padding:8px 16px;
-  border-radius:var(--radius-pill);
-  font-size:.85rem;font-weight:600;
-  cursor:pointer;border:1px solid transparent;
+.hdr-cancel {
+  flex: 0 0 auto;
+  background: transparent;
+  color: var(--muted);
+  border: none;
+  padding: 8px 12px;
+  font-family: inherit; font-size: 15px;
+  cursor: pointer;
 }
-.btn-ghost{
-  background:transparent;color:var(--text-muted);
-  border-color:var(--border);
+.hdr-title {
+  flex: 1; text-align: center;
+  font-size: 16px; font-weight: 600; color: var(--text);
 }
-.btn-primary{
-  background:var(--primary);color:#fff;border-color:var(--primary);
-  padding:8px 20px;font-weight:700;
-}
-.btn-primary:disabled{opacity:.4;cursor:not-allowed}
-.btn-del{
-  background:transparent;color:var(--danger);
-  border-color:transparent;
-  font-size:.8rem;font-weight:500;
-}
-
-/* === Add line === */
-.add-line{
-  display:flex;align-items:center;gap:8px;
-  width:100%;min-height:48px;
-  padding:12px 14px;
-  border:0;background:transparent;
-  color:var(--primary);
-  font-size:.88rem;font-weight:600;
-  cursor:pointer;
-  text-align:start;
-}
-.add-line:active{background:var(--surface-soft)}
-.add-line-icon{
-  display:inline-flex;align-items:center;justify-content:center;
-  width:22px;height:22px;border-radius:50%;
-  background:var(--primary-soft);color:var(--primary);
-  font-size:.95rem;font-weight:700;
+.hdr-save {
+  flex: 0 0 auto;
+  background: transparent;
+  color: var(--blue);
+  border: none;
+  padding: 8px 12px;
+  font-family: inherit; font-size: 15px; font-weight: 600;
+  cursor: pointer;
 }
 
-/* === Summary (bottom) === */
-.summary{
-  margin-top:14px;
-  background:var(--surface);
-  border:1px solid var(--border);
-  border-radius:var(--radius-raised);
-  box-shadow:var(--shadow-group);
-  padding:14px;
+/* ---------- Body ---------- */
+.body {
+  flex: 1; overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 16px 0 40px;
 }
-.summary-row{
-  display:flex;justify-content:space-between;align-items:baseline;
-  gap:8px;padding:6px 0;font-size:.88rem;
+
+/* ---------- Section label ---------- */
+.sec-lbl {
+  padding: 0 20px 8px;
+  font-size: 12px;
+  color: var(--muted);
+  text-transform: none;
 }
-.summary-row b{font-weight:600;font-variant-numeric:tabular-nums}
-.summary-row.muted{font-size:.78rem;color:var(--text-muted)}
-.summary-row.total{
-  padding-top:10px;margin-top:8px;
-  border-top:1px solid var(--border);
-  font-size:1rem;
+.sec-lbl-sub {
+  float: left;
+  color: var(--blue);
+  font-weight: 500;
 }
-.summary-row.total b{font-weight:700;font-size:1.05rem}
-.summary-row.remain b{color:var(--danger)}
+
+/* ---------- Customer / date ---------- */
+.ctx {
+  margin: 0 16px 20px;
+  padding: 14px 16px;
+  background: var(--surface);
+  border-radius: 12px;
+  display: flex; align-items: center; gap: 12px;
+}
+.ctx-av {
+  width: 40px; height: 40px; flex: 0 0 40px;
+  border-radius: 50%;
+  background: rgba(0,112,210,.1);
+  color: var(--blue);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 600; font-size: 16px;
+}
+.ctx-info { flex: 1; min-width: 0; }
+.ctx-name { font-size: 15px; font-weight: 600; color: var(--text); line-height: 1.3; }
+.ctx-meta { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+.date-line {
+  margin: 0 16px 20px;
+  padding: 12px 16px;
+  background: var(--surface);
+  border-radius: 12px;
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 14px;
+}
+.date-line .lbl { color: var(--muted); }
+.date-line .val { color: var(--text); font-weight: 500; }
+
+/* ---------- Items card (the STAR) ---------- */
+.items-card {
+  margin: 0 16px 20px;
+  background: var(--surface);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.item-row {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) auto;
+  gap: 12px;
+  align-items: center;
+  padding: 14px 16px;
+  min-height: 68px;
+  cursor: pointer;
+  border-bottom: 0.5px solid var(--divider);
+  transition: background 120ms ease;
+}
+.item-row:last-child { border-bottom: none; }
+.item-row:active { background: rgba(127,127,127,.06); }
+
+.item-name {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text);
+  line-height: 1.35;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.item-amount {
+  text-align: left;
+  min-width: 0;
+}
+.item-total {
+  display: block;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+.item-calc {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.3;
+  margin-top: 3px;
+  white-space: nowrap;
+}
+
+/* ---------- Add new line ---------- */
+.add-line {
+  display: flex; align-items: center; gap: 10px;
+  padding: 14px 16px;
+  min-height: 56px;
+  cursor: pointer;
+  border-top: 0.5px solid var(--divider);
+  color: var(--blue);
+  font-size: 15px;
+  font-weight: 500;
+  background: transparent;
+  border-left: none; border-right: none; border-bottom: none;
+  width: 100%;
+  font-family: inherit;
+}
+.add-line:active { background: rgba(0,112,210,.05); }
+.add-line-plus {
+  flex: 0 0 auto;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--blue);
+  color: #FFF;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; font-weight: 400;
+  line-height: 1;
+  padding-bottom: 1px;
+}
+
+/* ---------- Summary (in same card below add-line) ---------- */
+.summary {
+  margin: 0 16px 20px;
+  background: var(--surface);
+  border-radius: 14px;
+  padding: 0 16px;
+}
+.sum-row {
+  display: flex; justify-content: space-between; align-items: baseline;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 0.5px solid var(--divider);
+  font-size: 14px;
+}
+.sum-row:last-child { border-bottom: none; }
+.sum-row .lbl { color: var(--muted); }
+.sum-row .val { color: var(--text); font-weight: 500; font-variant-numeric: tabular-nums; }
+.sum-row.total {
+  padding: 15px 0;
+  font-size: 16px;
+}
+.sum-row.total .lbl { color: var(--text); font-weight: 600; }
+.sum-row.total .val { color: var(--text); font-weight: 700; font-size: 17px; }
+
+/* ---------- Edit sheet (opens on tap) ---------- */
+.edit-sheet-bg {
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,.35);
+  z-index: 50;
+  opacity: 0; pointer-events: none;
+  transition: opacity 220ms ease;
+}
+.edit-sheet-bg.show { opacity: 1; pointer-events: auto; }
+
+.edit-sheet {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  background: var(--surface);
+  border-radius: 18px 18px 0 0;
+  z-index: 60;
+  transform: translateY(110%);
+  transition: transform 260ms cubic-bezier(.22,1,.36,1);
+  max-height: 80%;
+  overflow-y: auto;
+  padding-bottom: 20px;
+}
+.edit-sheet.show { transform: translateY(0); }
+
+.edit-handle {
+  width: 36px; height: 4px;
+  background: var(--divider);
+  border-radius: 2px;
+  margin: 8px auto 6px;
+}
+.edit-hd {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 18px 14px;
+  border-bottom: 0.5px solid var(--divider);
+}
+.edit-hd-title { font-size: 15px; font-weight: 600; }
+.edit-hd-close {
+  background: none; border: none;
+  color: var(--blue); font-family: inherit;
+  font-size: 15px; font-weight: 600;
+  cursor: pointer; padding: 4px;
+}
+
+.edit-body { padding: 16px 18px; }
+.edit-field {
+  margin-bottom: 14px;
+}
+.edit-field label {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+.edit-field select,
+.edit-field input {
+  width: 100%;
+  min-height: 44px;
+  padding: 11px 12px;
+  border: 0.5px solid var(--divider);
+  border-radius: 10px;
+  background: var(--bg);
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text);
+  text-align: right;
+}
+.edit-field input { text-align: center; font-variant-numeric: tabular-nums; }
+.edit-field select:focus,
+.edit-field input:focus {
+  outline: none;
+  border-color: rgba(0,112,210,.45);
+  box-shadow: 0 0 0 3px rgba(0,112,210,.08);
+}
+.edit-row-2 {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) minmax(0,1.4fr);
+  gap: 10px;
+}
+
+.edit-line-total {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: 12px 0;
+  border-top: 0.5px solid var(--divider);
+  border-bottom: 0.5px solid var(--divider);
+  margin: 6px 0 14px;
+}
+.edit-line-total .lbl { color: var(--muted); font-size: 13px; }
+.edit-line-total .val {
+  font-size: 17px; font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.edit-actions {
+  display: flex; gap: 10px;
+}
+.edit-actions button {
+  flex: 1;
+  min-height: 46px;
+  border: none;
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.edit-del {
+  background: transparent;
+  color: var(--danger);
+  border: 0.5px solid var(--divider) !important;
+}
+.edit-del:disabled { color: var(--faint); cursor: not-allowed; }
+.edit-ok {
+  background: var(--blue);
+  color: #FFF;
+}
+.edit-ok:active { opacity: .88; }
+
+/* ---------- Payment section (below items) ---------- */
+.pay-sec { margin: 0 16px 20px; }
+.pay-hd {
+  padding: 0 4px 8px;
+  font-size: 12px; color: var(--muted);
+  display: flex; justify-content: space-between;
+}
+.pay-hd .total { color: var(--text); font-weight: 600; }
+.pay-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0,1fr));
+  gap: 8px;
+}
+.pay-btn {
+  min-height: 58px;
+  background: var(--surface);
+  border: 0.5px solid var(--divider);
+  border-radius: 12px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 4px;
+  font-family: inherit; font-size: 11px; font-weight: 500;
+  color: var(--text);
+  cursor: pointer;
+}
+.pay-btn svg {
+  width: 20px; height: 20px;
+  stroke: currentColor; stroke-width: 1.6;
+  fill: none; stroke-linecap: round; stroke-linejoin: round;
+}
 </style>
 </head>
-<body>
+<body data-theme="light">
 
 <div class="controls">
-  <div class="controls-title">Prototype — Compact Row + Inline Edit (بدون اپ)</div>
-  <div class="controls-row">
-    <span class="controls-label">اقلام:</span>
-    <button data-count="1" aria-pressed="true">۱</button>
-    <button data-count="5" aria-pressed="false">۵</button>
-    <button data-count="10" aria-pressed="false">۱۰</button>
+  <div>
+    <span class="lbl">Theme:</span>
+    <button data-theme-btn="light" class="active">روشن</button>
+    <button data-theme-btn="dark">تاریک</button>
   </div>
-  <div class="controls-row">
-    <span class="controls-label">نام:</span>
-    <button data-namelen="short" aria-pressed="true">کوتاه</button>
-    <button data-namelen="long" aria-pressed="false">بلند</button>
+  <div>
+    <span class="lbl">Width:</span>
+    <button data-w="320">320</button>
+    <button data-w="375">375</button>
+    <button data-w="390" class="active">390</button>
+    <button data-w="430">430</button>
   </div>
-  <div class="controls-row">
-    <span class="controls-label">قیمت:</span>
-    <button data-price="6" aria-pressed="true">۶ رقمی</button>
-    <button data-price="9" aria-pressed="false">۹ رقمی</button>
-  </div>
-  <div class="controls-row">
-    <span class="controls-label">حالت:</span>
-    <button data-mode="list" aria-pressed="true">لیست</button>
-    <button data-mode="edit1" aria-pressed="false">ویرایش قلم ۱</button>
-  </div>
-  <div class="controls-width" id="viewport-info"></div>
 </div>
 
-<div class="shell">
-  <div class="shell-head">
-    <button class="shell-back" onclick="location.reload()">لغو</button>
-    <div style="text-align:center;flex:1">
-      <div class="shell-head-title">فاکتور جدید</div>
-      <div class="shell-head-sub">پیش‌نویس</div>
+<div class="phone-wrap">
+  <div class="phone" id="phone" data-w="390">
+    <div class="sheet">
+      <div class="hdr">
+        <button class="hdr-cancel">لغو</button>
+        <div class="hdr-title">فاکتور جدید</div>
+        <button class="hdr-save">ثبت</button>
+      </div>
+      <div class="body" id="body"></div>
     </div>
-    <button class="shell-back" style="background:var(--primary);color:#fff">ثبت</button>
+    <div class="edit-sheet-bg" id="editBg"></div>
+    <div class="edit-sheet" id="editSheet"></div>
   </div>
-
-  <div class="lines-card" id="lines"></div>
-
-  <button class="add-line" id="add-line">
-    <span class="add-line-icon">+</span>
-    <span>افزودن قلم جدید</span>
-  </button>
-
-  <div class="summary" id="summary"></div>
 </div>
 
 <script>
-(function(){
-  'use strict';
+'use strict';
 
-  // ==== state ====
-  const state = {
-    count: 1,
-    namelen: 'short',
-    price: 6,
-    mode: 'list',
-    lines: [],
-    editingId: null,
-  };
+/* =========================================================
+   Sample data (BAGHERI-realistic)
+   ========================================================= */
+const ITEMS = [
+  { name: 'لوبیا چیتی',    qty: 5,  unit: 'کیلو',  unitPrice: 200000 },
+  { name: 'نخود ابوگوشتی', qty: 3,  unit: 'کیلو',  unitPrice: 180000 },
+  { name: 'کشمش پلویی',    qty: 1,  unit: 'کارتن', unitPrice: 2400000 },
+];
+const PRODUCT_NAMES = ['لوبیا چیتی', 'نخود ابوگوشتی', 'کشمش پلویی', 'عدس', 'ماش', 'لپه', 'برنج'];
 
-  const NAMES_SHORT = ['عدس','لوبیا','برنج','نخود','کشمش','زردچوبه','آرد','شکر','نمک','چای'];
-  const NAMES_LONG  = [
-    'عدس ریز ممتاز ایرانی درجه یک',
-    'لوبیا چیتی اعلا بدون سنگ و کاه',
-    'برنج طارم هاشمی معطر شمال',
-    'نخود نخودی درشت خشکبار باقری',
-    'کشمش پلویی سبز تیزاب',
-    'زردچوبه هندی آسیاب‌شده',
-    'آرد گندم سبوس‌دار نول',
-    'شکر سفید تصفیه‌شده',
-    'نمک دریاچه ارومیه',
-    'چای سیاه قلم شکسته',
-  ];
+const FA = '۰۱۲۳۴۵۶۷۸۹';
+const fa = n => String(n).replace(/[0-9]/g, d => FA[+d]);
+const faNum = n => fa(Math.round(Number(n) || 0).toLocaleString('en-US')).replace(/,/g, '٬');
 
-  function faNum(n){
-    return String(Math.round(n)).replace(/[0-9]/g, d => '۰۱۲۳۴۵۶۷۸۹'[d])
-      .replace(/\B(?=(\d{3})+(?!\d))/g, '٬');
-  }
-  function faNumFromString(s){
-    return String(s).replace(/[0-9]/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
-  }
+/* =========================================================
+   State
+   ========================================================= */
+const state = {
+  items: ITEMS.map(o => ({...o})),
+  editingIdx: null,
+};
 
-  function makeLine(idx){
-    const priceBase = state.price === 9
-      ? 100000000 + Math.floor(Math.random()*900000000)
-      : 150000 + Math.floor(Math.random()*850000);
-    const qty = 1 + Math.floor(Math.random()*15);
-    const names = state.namelen === 'long' ? NAMES_LONG : NAMES_SHORT;
-    return {
-      id: 'L' + (Date.now().toString(36)) + Math.random().toString(36).slice(2,5),
-      name: names[idx % names.length],
-      qty: qty,
-      price: priceBase,
-      profit: Math.round(priceBase * qty * 0.18),
-    };
-  }
+/* =========================================================
+   Render — main body
+   ========================================================= */
+function render() {
+  const body = document.getElementById('body');
+  const subtotal = state.items.reduce((s, it) => s + it.qty * it.unitPrice, 0);
 
-  function rebuildLines(){
-    state.lines = [];
-    for (let i = 0; i < state.count; i++) state.lines.push(makeLine(i));
-    if (state.mode === 'edit1' && state.lines[0]) state.editingId = state.lines[0].id;
-    else state.editingId = null;
-  }
+  body.innerHTML = `
+    <div class="ctx">
+      <div class="ctx-av">م</div>
+      <div class="ctx-info">
+        <div class="ctx-name">مغازهٔ حبوبات مرکزی</div>
+        <div class="ctx-meta">۰۹۱۱۲۳۴۵۶۷۸</div>
+      </div>
+    </div>
 
-  // ==== render ====
-  function lineCollapsed(l, idx){
-    const total = l.qty * l.price;
-    return `
-      <div class="line" data-id="${l.id}">
-        <div class="line-num">${faNumFromString(String(idx+1))}</div>
-        <div class="line-body">
-          <div class="line-top">
-            <span class="line-name">${escapeHtml(l.name)}</span>
-            <span class="line-total">${faNum(total)}<span class="line-unit">ت</span></span>
-          </div>
-          <div class="line-bottom">
-            <span class="line-calc">${faNum(l.qty)} × ${faNum(l.price)}</span>
-            <span class="line-profit" data-revealed="0" data-profit-id="${l.id}">
-              سود: <span class="profit-value">${faNum(l.profit)}</span>
-            </span>
-          </div>
-        </div>
-      </div>`;
-  }
+    <div class="date-line">
+      <span class="lbl">تاریخ فاکتور</span>
+      <span class="val">۱۴۰۳/۰۹/۲۷</span>
+    </div>
 
-  function lineEditing(l, idx){
-    const total = l.qty * l.price;
-    return `
-      <div class="line-editing" data-id="${l.id}">
-        <div class="edit-head">
-          <span class="edit-index">قلم ${faNumFromString(String(idx+1))}</span>
-          <button class="edit-close" data-edit-close="${l.id}" aria-label="بستن">×</button>
+    <div class="sec-lbl">اقلام فاکتور</div>
+
+    <div class="items-card">
+      ${state.items.map((it, i) => renderItem(it, i)).join('')}
+      <button class="add-line" id="addLine">
+        <span class="add-line-plus">+</span>
+        افزودن قلم جدید
+      </button>
+    </div>
+
+    <div class="summary">
+      <div class="sum-row"><span class="lbl">جمع اقلام</span><span class="val">${faNum(subtotal)} ت</span></div>
+      <div class="sum-row"><span class="lbl">تخفیف</span><span class="val">۰ ت</span></div>
+      <div class="sum-row total"><span class="lbl">جمع فاکتور</span><span class="val">${faNum(subtotal)} ت</span></div>
+      <div class="sum-row"><span class="lbl">پرداخت شده</span><span class="val">۰ ت</span></div>
+      <div class="sum-row total"><span class="lbl">مانده</span><span class="val">${faNum(subtotal)} ت</span></div>
+    </div>
+
+    <div class="pay-sec">
+      <div class="pay-hd">
+        <span>دریافتی همراه فاکتور (اختیاری)</span>
+        <span class="total">۰ ت</span>
+      </div>
+      <div class="pay-grid">
+        <button class="pay-btn"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/></svg>نقد</button>
+        <button class="pay-btn"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/></svg>کارت</button>
+        <button class="pay-btn"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 15h4M7 12h10"/></svg>چک</button>
+        <button class="pay-btn"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 10h8M8 14h5"/></svg>اعتبار</button>
+      </div>
+    </div>
+  `;
+
+  bindMain();
+}
+
+function renderItem(it, idx) {
+  const total = it.qty * it.unitPrice;
+  const calc = `${fa(it.qty)} × ${faNum(it.unitPrice)}`;
+  return `<div class="item-row" data-idx="${idx}">
+    <span class="item-name">${it.name}</span>
+    <span class="item-amount">
+      <span class="item-total">${faNum(total)}</span>
+      <span class="item-calc">${calc}</span>
+    </span>
+  </div>`;
+}
+
+function bindMain() {
+  document.querySelectorAll('.item-row').forEach(row => {
+    row.addEventListener('click', () => openEdit(+row.dataset.idx));
+  });
+  const add = document.getElementById('addLine');
+  if (add) add.addEventListener('click', () => {
+    state.items.push({ name: '', qty: 1, unit: 'کیلو', unitPrice: 0 });
+    openEdit(state.items.length - 1);
+  });
+}
+
+/* =========================================================
+   Edit sheet
+   ========================================================= */
+function openEdit(idx) {
+  state.editingIdx = idx;
+  const it = state.items[idx];
+  const isOnly = state.items.length <= 1;
+  const total = it.qty * it.unitPrice;
+
+  const optionsHtml = PRODUCT_NAMES.map(n =>
+    `<option value="${n}" ${n === it.name ? 'selected' : ''}>${n}</option>`
+  ).join('');
+
+  document.getElementById('editSheet').innerHTML = `
+    <div class="edit-handle"></div>
+    <div class="edit-hd">
+      <span class="edit-hd-title">ویرایش قلم ${fa(idx + 1)}</span>
+      <button class="edit-hd-close" id="editClose">بستن</button>
+    </div>
+    <div class="edit-body">
+      <div class="edit-field">
+        <label>نام کالا</label>
+        <select id="eName">
+          <option value="" ${it.name ? '' : 'selected'}>انتخاب کالا...</option>
+          ${optionsHtml}
+        </select>
+      </div>
+      <div class="edit-row-2">
+        <div class="edit-field">
+          <label>تعداد</label>
+          <input type="text" inputmode="decimal" id="eQty" value="${fa(it.qty)}">
         </div>
         <div class="edit-field">
-          <label>نام کالا</label>
-          <input type="text" value="${escapeHtml(l.name)}" data-field="name" data-id="${l.id}">
+          <label>قیمت واحد (تومان)</label>
+          <input type="text" inputmode="decimal" id="ePrice" value="${faNum(it.unitPrice)}">
         </div>
-        <div class="edit-two-col">
-          <div class="edit-field">
-            <label>تعداد</label>
-            <input type="text" inputmode="decimal" value="${faNum(l.qty)}" data-field="qty" data-id="${l.id}">
-          </div>
-          <div class="edit-field">
-            <label>قیمت واحد</label>
-            <input type="text" inputmode="decimal" value="${faNum(l.price)}" data-field="price" data-id="${l.id}">
-          </div>
-        </div>
-        <div class="edit-computed">
-          <span class="edit-computed-label">جمع</span>
-          <span class="edit-computed-value" data-total-for="${l.id}">${faNum(total)} ت</span>
-        </div>
-        <div class="edit-computed" style="margin-bottom:14px">
-          <span class="edit-computed-label">سود این قلم</span>
-          <span class="line-profit edit-computed-profit" data-revealed="0" data-profit-id="${l.id}">
-            <span class="profit-value">${faNum(l.profit)}</span>
-          </span>
-        </div>
-        <div class="edit-actions">
-          <button class="btn-del" data-del="${l.id}">حذف</button>
-          <div class="edit-actions-right">
-            <button class="btn-ghost" data-cancel="${l.id}">انصراف</button>
-            <button class="btn-primary" data-confirm="${l.id}">✓ ثبت قلم</button>
-          </div>
-        </div>
-      </div>`;
-  }
+      </div>
+      <div class="edit-line-total">
+        <span class="lbl">جمع این قلم</span>
+        <span class="val" id="eTotal">${faNum(total)} ت</span>
+      </div>
+      <div class="edit-actions">
+        <button class="edit-del" id="eDel" ${isOnly ? 'disabled' : ''}>حذف</button>
+        <button class="edit-ok" id="eOk">تأیید</button>
+      </div>
+    </div>
+  `;
 
-  function render(){
-    const wrap = document.getElementById('lines');
-    wrap.innerHTML = state.lines.map(function(l, i){
-      if (state.editingId === l.id) return lineEditing(l, i);
-      return lineCollapsed(l, i);
-    }).join('');
+  document.getElementById('editBg').classList.add('show');
+  document.getElementById('editSheet').classList.add('show');
 
-    const totals = state.lines.reduce(function(acc, l){
-      acc.sum += l.qty * l.price;
-      acc.profit += l.profit;
-      return acc;
-    }, {sum: 0, profit: 0});
-
-    const discount = Math.round(totals.sum * 0.03);
-    const prevBalance = 4500000;
-    const paid = 0;
-    const finalTotal = totals.sum - discount;
-    const newBalance = prevBalance + finalTotal - paid;
-
-    document.getElementById('summary').innerHTML = `
-      <div class="summary-row muted"><span>جمع اقلام</span><b>${faNum(totals.sum)} ت</b></div>
-      <div class="summary-row muted"><span>تخفیف</span><b>${faNum(discount)} ت</b></div>
-      <div class="summary-row total"><span>جمع فاکتور</span><b>${faNum(finalTotal)} ت</b></div>
-      <div class="summary-row muted" style="margin-top:8px"><span>مانده قبلی مشتری</span><b>${faNum(prevBalance)} ت</b></div>
-      <div class="summary-row remain"><span>مانده بعد از فاکتور</span><b>${faNum(newBalance)} ت</b></div>
-    `;
-  }
-
-  function escapeHtml(s){
-    return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  }
-
-  // ==== interactions ====
-  document.getElementById('lines').addEventListener('click', function(e){
-    // profit reveal
-    const profit = e.target.closest('[data-profit-id]');
-    if (profit){
-      e.stopPropagation();
-      profit.setAttribute('data-revealed', profit.getAttribute('data-revealed') === '1' ? '0' : '1');
-      return;
-    }
-    // edit confirm / cancel / delete / close
-    const confirmBtn = e.target.closest('[data-confirm]');
-    if (confirmBtn){
-      state.editingId = null;
-      render();
-      return;
-    }
-    const cancelBtn = e.target.closest('[data-cancel], [data-edit-close]');
-    if (cancelBtn){
-      state.editingId = null;
-      render();
-      return;
-    }
-    const delBtn = e.target.closest('[data-del]');
-    if (delBtn){
-      const id = delBtn.getAttribute('data-del');
-      state.lines = state.lines.filter(l => l.id !== id);
-      state.editingId = null;
-      state.count = state.lines.length;
-      render();
-      return;
-    }
-    // collapse row → expand
-    const collapsed = e.target.closest('.line[data-id]');
-    if (collapsed){
-      state.editingId = collapsed.getAttribute('data-id');
-      render();
-    }
-  });
-
-  // live update totals/qty/price while typing
-  document.getElementById('lines').addEventListener('input', function(e){
-    const inp = e.target.closest('[data-field]');
-    if (!inp) return;
-    const id = inp.getAttribute('data-id');
-    const field = inp.getAttribute('data-field');
-    const line = state.lines.find(l => l.id === id);
-    if (!line) return;
-    if (field === 'name'){
-      line.name = inp.value;
-    } else if (field === 'qty' || field === 'price'){
-      const raw = String(inp.value).replace(/[۰-۹]/g, d => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d))).replace(/[^\d]/g,'');
-      line[field] = Number(raw) || 0;
-      const totalEl = document.querySelector('[data-total-for="' + id + '"]');
-      if (totalEl) totalEl.textContent = faNum(line.qty * line.price) + ' ت';
-      // profit is not live-updated on purpose (Q3 in review):
-      // it stays as-is until the line is confirmed and collapsed.
-    }
-  });
-
-  document.getElementById('add-line').addEventListener('click', function(){
-    const l = makeLine(state.lines.length);
-    l.name = '';
-    l.qty = 1;
-    l.price = 0;
-    l.profit = 0;
-    state.lines.push(l);
-    state.editingId = l.id;
-    state.count = state.lines.length;
-    render();
-    // focus first field
-    setTimeout(function(){
-      const inp = document.querySelector('[data-field="name"][data-id="' + l.id + '"]');
-      if (inp) inp.focus();
-    }, 50);
-  });
-
-  // controls
-  document.querySelectorAll('.controls-row').forEach(function(row){
-    row.addEventListener('click', function(e){
-      const btn = e.target.closest('button[data-count], button[data-namelen], button[data-price], button[data-mode]');
-      if (!btn) return;
-      row.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b === btn ? 'true' : 'false'));
-
-      if (btn.hasAttribute('data-count')){
-        state.count = Number(btn.getAttribute('data-count'));
-        state.mode = 'list';
-        document.querySelectorAll('[data-mode]').forEach(b => b.setAttribute('aria-pressed', b.getAttribute('data-mode') === 'list' ? 'true' : 'false'));
-        rebuildLines();
-      } else if (btn.hasAttribute('data-namelen')){
-        state.namelen = btn.getAttribute('data-namelen');
-        rebuildLines();
-      } else if (btn.hasAttribute('data-price')){
-        state.price = Number(btn.getAttribute('data-price'));
-        rebuildLines();
-      } else if (btn.hasAttribute('data-mode')){
-        state.mode = btn.getAttribute('data-mode');
-        if (state.mode === 'edit1') state.editingId = state.lines[0] ? state.lines[0].id : null;
-        else state.editingId = null;
+  const close = () => {
+    document.getElementById('editBg').classList.remove('show');
+    document.getElementById('editSheet').classList.remove('show');
+    state.editingIdx = null;
+    // If active row has no name, and there are other items, drop it silently
+    setTimeout(() => {
+      const row = state.items[idx];
+      if (row && !row.name && state.items.length > 1) {
+        state.items.splice(idx, 1);
+        render();
       }
-      render();
-    });
+    }, 260);
+  };
+
+  document.getElementById('editClose').onclick = close;
+  document.getElementById('editBg').onclick = close;
+
+  const refresh = () => {
+    document.getElementById('eTotal').textContent = faNum(it.qty * it.unitPrice) + ' ت';
+  };
+
+  document.getElementById('eName').onchange = e => {
+    it.name = e.target.value;
+    refresh();
+  };
+  document.getElementById('eQty').oninput = e => {
+    it.qty = parseFloat(String(e.target.value).replace(/[۰-۹]/g, d => FA.indexOf(d)).replace(/[^\d.]/g, '')) || 0;
+    refresh();
+  };
+  document.getElementById('ePrice').oninput = e => {
+    it.unitPrice = parseFloat(String(e.target.value).replace(/[۰-۹]/g, d => FA.indexOf(d)).replace(/[٬,]/g, '').replace(/[^\d.]/g, '')) || 0;
+    refresh();
+  };
+  document.getElementById('eDel').onclick = () => {
+    if (state.items.length <= 1) return;
+    state.items.splice(idx, 1);
+    document.getElementById('editBg').classList.remove('show');
+    document.getElementById('editSheet').classList.remove('show');
+    setTimeout(() => { state.editingIdx = null; render(); }, 260);
+  };
+  document.getElementById('eOk').onclick = () => {
+    if (!it.name) {
+      // no product: don't commit
+      close();
+      return;
+    }
+    close();
+    setTimeout(render, 260);
+  };
+}
+
+/* =========================================================
+   Controls
+   ========================================================= */
+document.querySelectorAll('[data-theme-btn]').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('[data-theme-btn]').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    document.body.dataset.theme = b.dataset.themeBtn;
   });
+});
 
-  // viewport info
-  function showWidth(){
-    const w = Math.round(window.innerWidth);
-    document.getElementById('viewport-info').textContent = 'عرض viewport: ' + w + 'px — ارتفاع: ' + Math.round(window.innerHeight) + 'px';
-  }
-  window.addEventListener('resize', showWidth);
+document.querySelectorAll('[data-w]').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('[data-w]').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    document.getElementById('phone').dataset.w = b.dataset.w;
+  });
+});
 
-  // boot
-  rebuildLines();
-  render();
-  showWidth();
-})();
+/* ---------- Boot ---------- */
+render();
 </script>
+
 </body>
 </html>
