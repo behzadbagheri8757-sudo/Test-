@@ -2,542 +2,704 @@
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
-<title>BAGHERI — Invoice Items (Zoho-clean + price info)</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>BAGHERI — Invoice 6 — Focus Flow</title>
 <style>
-:root {
-  --blue: #0070D2;
-  --text: #1F2937;
-  --muted: #667085;
-  --faint: #98A2B3;
-  --divider: rgba(15,23,42,.06);
-  --surface: #FFFFFF;
-  --bg: #F5F7FA;
-  --danger: #D52B36;
-  --success: #0F7A4A;
-}
-[data-theme="dark"] {
-  --blue: #4FA3FF;
-  --text: #F2F2F7;
-  --muted: #9AA0A6;
-  --faint: #6E7378;
-  --divider: rgba(255,255,255,.08);
-  --surface: #1C1C1E;
-  --bg: #000000;
-  --danger: #FF6B6B;
-  --success: #4ADE80;
-}
+/* =========================================================
+   THEME TOKENS
+   ========================================================= */
+:root{
+  --brand-blue:#0070D2;
+  --brand-orange:#FF5C35;
 
-* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-html, body {
-  margin: 0; padding: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Vazirmatn', 'Segoe UI', Tahoma, sans-serif;
-  background: #E8EBF0; color: var(--text);
-  font-size: 15px;
-  font-variant-numeric: tabular-nums;
-  -webkit-font-smoothing: antialiased;
+  --bg:#F5F7FA;
+  --surface:#FFFFFF;
+  --surface-2:#F8FAFC;
+  --surface-3:#F2F4F7;
+  --text:#1F2937;
+  --text-2:#667085;
+  --text-3:#98A2B3;
+  --divider:rgba(15,23,42,.08);
+  --divider-soft:rgba(15,23,42,.05);
+  --danger:#D52B36;
+  --success:#0F7A4A;
+  --tap:rgba(15,23,42,.04);
+  --shade:rgba(15,23,42,.06);
 }
-
-/* ---------- Controls bar ---------- */
-.controls {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-  background: #0F172A; color: #FFF;
-  padding: 8px 12px;
-  display: flex; gap: 10px; flex-wrap: wrap; align-items: center;
-  font-size: 12px;
-}
-.controls .lbl { color: #94A3B8; font-size: 11px; margin-inline-end: 4px; }
-.controls button {
-  background: rgba(255,255,255,.08); color: #E2E8F0;
-  border: 1px solid rgba(255,255,255,.14);
-  padding: 5px 10px; border-radius: 6px;
-  font-family: inherit; font-size: 11px; cursor: pointer;
-}
-.controls button.active {
-  background: #0070D2; border-color: #0070D2;
-  color: #FFF; font-weight: 600;
-}
-
-/* ---------- Phone ---------- */
-.phone-wrap {
-  padding: 56px 12px 24px;
-  display: flex; justify-content: center;
-  min-height: 100vh;
-}
-.phone {
-  width: 390px;
-  height: calc(100vh - 80px);
-  max-height: 900px;
-  background: var(--bg);
-  border-radius: 28px;
-  overflow: hidden;
-  position: relative;
-  box-shadow: 0 16px 48px rgba(15,23,42,.14), 0 2px 6px rgba(15,23,42,.06);
-  transition: width 180ms ease, background 180ms ease;
-}
-.phone[data-w="320"] { width: 320px; }
-.phone[data-w="375"] { width: 375px; }
-.phone[data-w="390"] { width: 390px; }
-.phone[data-w="430"] { width: 430px; }
-@media (max-width: 480px) {
-  .controls { position: sticky; top: 0; }
-  .phone-wrap { padding: 0; min-height: 0; }
-  .phone {
-    width: 100% !important;
-    height: calc(100vh - 44px);
-    max-height: none; border-radius: 0; box-shadow: none;
-  }
-}
-
-/* ---------- Sheet ---------- */
-.sheet {
-  display: flex; flex-direction: column;
-  height: 100%; background: var(--bg);
-}
-
-/* ---------- Header ---------- */
-.hdr {
-  flex: 0 0 auto;
-  display: flex; align-items: center; gap: 8px;
-  padding: 11px 14px;
-  background: var(--surface);
-  border-bottom: 0.5px solid var(--divider);
-}
-.hdr-cancel {
-  flex: 0 0 auto; background: transparent;
-  color: var(--muted); border: none;
-  padding: 8px 12px; font-family: inherit; font-size: 15px;
-  cursor: pointer;
-}
-.hdr-title {
-  flex: 1; text-align: center;
-  font-size: 16px; font-weight: 600; color: var(--text);
-}
-.hdr-save {
-  flex: 0 0 auto; background: transparent;
-  color: var(--blue); border: none;
-  padding: 8px 12px; font-family: inherit;
-  font-size: 15px; font-weight: 600;
-  cursor: pointer;
-}
-
-/* ---------- Body ---------- */
-.body {
-  flex: 1; overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  padding: 16px 0 40px;
-}
-
-/* ---------- Section label ---------- */
-.sec-lbl {
-  padding: 0 20px 8px;
-  font-size: 12px;
-  color: var(--muted);
-}
-
-/* ---------- Customer / date ---------- */
-.ctx {
-  margin: 0 16px 20px;
-  padding: 14px 16px;
-  background: var(--surface);
-  border-radius: 12px;
-  display: flex; align-items: center; gap: 12px;
-}
-.ctx-av {
-  width: 40px; height: 40px; flex: 0 0 40px;
-  border-radius: 50%;
-  background: rgba(0,112,210,.1);
-  color: var(--blue);
-  display: flex; align-items: center; justify-content: center;
-  font-weight: 600; font-size: 16px;
-}
-.ctx-info { flex: 1; min-width: 0; }
-.ctx-name { font-size: 15px; font-weight: 600; color: var(--text); line-height: 1.3; }
-.ctx-meta { font-size: 12px; color: var(--muted); margin-top: 2px; }
-
-.date-line {
-  margin: 0 16px 20px;
-  padding: 12px 16px;
-  background: var(--surface);
-  border-radius: 12px;
-  display: flex; justify-content: space-between; align-items: center;
-  font-size: 14px;
-}
-.date-line .lbl { color: var(--muted); }
-.date-line .val { color: var(--text); font-weight: 500; }
-
-/* ---------- Items card ---------- */
-.items-card {
-  margin: 0 16px 20px;
-  background: var(--surface);
-  border-radius: 14px;
-  overflow: hidden;
-}
-
-.item-row {
-  display: grid;
-  grid-template-columns: minmax(0,1fr) auto;
-  gap: 12px;
-  align-items: center;
-  padding: 14px 16px;
-  min-height: 68px;
-  cursor: pointer;
-  border-bottom: 0.5px solid var(--divider);
-  transition: background 120ms ease;
-}
-.item-row:last-child { border-bottom: none; }
-.item-row:active { background: rgba(127,127,127,.06); }
-
-.item-name {
-  font-size: 15px; font-weight: 500; color: var(--text);
-  line-height: 1.35;
-  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-}
-.item-amount { text-align: left; min-width: 0; }
-.item-total {
-  display: block;
-  font-size: 16px; font-weight: 600; color: var(--text);
-  font-variant-numeric: tabular-nums;
-  line-height: 1.2;
-  white-space: nowrap;
-}
-.item-calc {
-  display: block;
-  font-size: 12px; color: var(--muted);
-  font-variant-numeric: tabular-nums;
-  line-height: 1.3;
-  margin-top: 3px;
-  white-space: nowrap;
-}
-
-/* ---------- Add new line ---------- */
-.add-line {
-  display: flex; align-items: center; gap: 10px;
-  padding: 14px 16px;
-  min-height: 56px;
-  cursor: pointer;
-  border-top: 0.5px solid var(--divider);
-  color: var(--blue);
-  font-size: 15px; font-weight: 500;
-  background: transparent;
-  border-left: none; border-right: none; border-bottom: none;
-  width: 100%; font-family: inherit;
-}
-.add-line:active { background: rgba(0,112,210,.05); }
-.add-line-plus {
-  flex: 0 0 auto;
-  width: 22px; height: 22px;
-  border-radius: 50%;
-  background: var(--blue);
-  color: #FFF;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 15px; font-weight: 400;
-  line-height: 1;
-  padding-bottom: 1px;
-}
-
-/* ---------- Summary ---------- */
-.summary {
-  margin: 0 16px 20px;
-  background: var(--surface);
-  border-radius: 14px;
-  padding: 0 16px;
-}
-.sum-row {
-  display: flex; justify-content: space-between; align-items: baseline;
-  gap: 12px;
-  padding: 12px 0;
-  border-bottom: 0.5px solid var(--divider);
-  font-size: 14px;
-}
-.sum-row:last-child { border-bottom: none; }
-.sum-row .lbl { color: var(--muted); }
-.sum-row .val { color: var(--text); font-weight: 500; font-variant-numeric: tabular-nums; }
-.sum-row.total { padding: 15px 0; font-size: 16px; }
-.sum-row.total .lbl { color: var(--text); font-weight: 600; }
-.sum-row.total .val { color: var(--text); font-weight: 700; font-size: 17px; }
-
-/* ---------- Payment ---------- */
-.pay-sec { margin: 0 16px 20px; }
-.pay-hd {
-  padding: 0 4px 8px;
-  font-size: 12px; color: var(--muted);
-  display: flex; justify-content: space-between;
-}
-.pay-hd .total { color: var(--text); font-weight: 600; }
-.pay-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0,1fr));
-  gap: 8px;
-}
-.pay-btn {
-  min-height: 58px;
-  background: var(--surface);
-  border: 0.5px solid var(--divider);
-  border-radius: 12px;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  gap: 4px;
-  font-family: inherit; font-size: 11px; font-weight: 500;
-  color: var(--text); cursor: pointer;
-}
-.pay-btn svg {
-  width: 20px; height: 20px;
-  stroke: currentColor; stroke-width: 1.6;
-  fill: none; stroke-linecap: round; stroke-linejoin: round;
+[data-theme="dark"]{
+  --bg:#000000;
+  --surface:#1C1C1E;
+  --surface-2:#2C2C2E;
+  --surface-3:#3A3A3C;
+  --text:#F2F2F7;
+  --text-2:#9AA0A6;
+  --text-3:#6E7378;
+  --divider:rgba(255,255,255,.10);
+  --divider-soft:rgba(255,255,255,.06);
+  --danger:#FF6B6B;
+  --success:#4ADE80;
+  --tap:rgba(255,255,255,.05);
+  --shade:rgba(0,0,0,.4);
+  --brand-blue:#4FA3FF;
 }
 
 /* =========================================================
-   EDIT SHEET (bottom sheet)
+   RESET / BASE
    ========================================================= */
-.edit-sheet-bg {
-  position: absolute; inset: 0;
-  background: rgba(0,0,0,.35);
-  z-index: 50;
-  opacity: 0; pointer-events: none;
-  transition: opacity 220ms ease;
+*,*::before,*::after{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html{ -webkit-text-size-adjust:100%; }
+html,body{margin:0;padding:0;}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Vazirmatn','Segoe UI',Tahoma,sans-serif;
+  font-size:15px;
+  line-height:1.4;
+  color:var(--text);
+  background:#E8EBF0;
+  font-variant-numeric:tabular-nums;
+  -webkit-font-smoothing:antialiased;
 }
-.edit-sheet-bg.show { opacity: 1; pointer-events: auto; }
-
-.edit-sheet {
-  position: absolute;
-  left: 0; right: 0; bottom: 0;
-  background: var(--surface);
-  border-radius: 18px 18px 0 0;
-  z-index: 60;
-  transform: translateY(110%);
-  transition: transform 260ms cubic-bezier(.22,1,.36,1);
-  max-height: 88%;
-  overflow-y: auto;
-  padding-bottom: 20px;
-}
-.edit-sheet.show { transform: translateY(0); }
-
-.edit-handle {
-  width: 36px; height: 4px;
-  background: var(--divider);
-  border-radius: 2px;
-  margin: 8px auto 6px;
-}
-.edit-hd {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 8px 18px 14px;
-  border-bottom: 0.5px solid var(--divider);
-}
-.edit-hd-title { font-size: 15px; font-weight: 600; }
-.edit-hd-close {
-  background: none; border: none;
-  color: var(--blue); font-family: inherit;
-  font-size: 15px; font-weight: 600;
-  cursor: pointer; padding: 4px;
+[data-theme="dark"] body{ background:#111; }
+button{font-family:inherit;}
+input,select,button{font-family:inherit;}
+.sr-only{
+  position:absolute;width:1px;height:1px;padding:0;margin:-1px;
+  overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;
 }
 
-.edit-body { padding: 16px 18px; }
-.edit-field { margin-bottom: 14px; }
-.edit-field label {
-  display: block;
-  font-size: 12px;
-  color: var(--muted);
-  margin-bottom: 6px;
+/* =========================================================
+   DEV BAR (outside phone)
+   ========================================================= */
+.dev-bar{
+  position:fixed;top:0;left:0;right:0;z-index:1000;
+  background:#0F172A;color:#FFF;
+  padding:8px 12px;
+  display:flex;flex-wrap:wrap;gap:14px;align-items:center;
+  font-size:12px;
 }
-.edit-field select,
-.edit-field input {
-  width: 100%;
-  min-height: 44px;
-  padding: 11px 12px;
-  border: 0.5px solid var(--divider);
-  border-radius: 10px;
-  background: var(--bg);
-  font-family: inherit;
-  font-size: 15px;
-  font-weight: 500;
-  color: var(--text);
-  text-align: right;
+.dev-bar .grp{display:flex;gap:4px;align-items:center;}
+.dev-bar .lbl{color:#94A3B8;font-size:11px;margin-inline-end:4px;}
+.dev-bar button{
+  background:rgba(255,255,255,.08);color:#E2E8F0;
+  border:1px solid rgba(255,255,255,.14);
+  padding:5px 10px;border-radius:6px;
+  font-size:11px;cursor:pointer;
+  transition:background-color 140ms ease,color 140ms ease,border-color 140ms ease;
 }
-.edit-field input {
-  text-align: center;
-  font-variant-numeric: tabular-nums;
-}
-.edit-field select:focus,
-.edit-field input:focus {
-  outline: none;
-  border-color: rgba(0,112,210,.45);
-  box-shadow: 0 0 0 3px rgba(0,112,210,.08);
-}
-.edit-field-hint {
-  display: block;
-  font-size: 11px;
-  color: var(--muted);
-  margin-top: 5px;
-  text-align: center;
-  font-variant-numeric: tabular-nums;
-}
-.edit-field-hint b {
-  color: var(--text);
-  font-weight: 600;
+.dev-bar button.active{
+  background:var(--brand-blue);border-color:var(--brand-blue);color:#FFF;font-weight:600;
 }
 
-.edit-row-2 {
-  display: grid;
-  grid-template-columns: minmax(0,1fr) minmax(0,1.4fr);
-  gap: 10px;
+/* =========================================================
+   PHONE FRAME
+   ========================================================= */
+.phone-wrap{
+  padding:60px 12px 24px;
+  display:flex;justify-content:center;
+  min-height:100vh;
+}
+.phone{
+  width:390px;
+  height:calc(100vh - 84px);
+  max-height:880px;
+  background:var(--bg);
+  border-radius:28px;
+  overflow:hidden;
+  position:relative;
+  box-shadow:0 16px 48px rgba(15,23,42,.14),0 2px 6px rgba(15,23,42,.06);
+  transition:width 200ms ease,background-color 200ms ease;
+  display:flex;flex-direction:column;
+}
+.phone[data-w="320"]{width:320px;}
+.phone[data-w="375"]{width:375px;}
+.phone[data-w="390"]{width:390px;}
+.phone[data-w="430"]{width:430px;}
+@media (max-width:520px){
+  .dev-bar{position:sticky;}
+  .phone-wrap{padding:0;min-height:0;}
+  .phone{
+    width:100% !important;
+    height:calc(100vh - 42px);
+    max-height:none;
+    border-radius:0;
+    box-shadow:none;
+  }
 }
 
-/* ---------- Line total + profit ---------- */
-.edit-line-total {
-  padding: 14px 0;
-  border-top: 0.5px solid var(--divider);
-  border-bottom: 0.5px solid var(--divider);
-  margin: 4px 0 14px;
-}
-.edit-line-total-main {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 12px;
-}
-.edit-line-total-main .lbl {
-  font-size: 13px;
-  color: var(--muted);
-}
-.edit-line-total-main .val {
-  font-size: 18px;
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-  color: var(--text);
-}
-.edit-line-profit {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 12px;
-  margin-top: 6px;
-  font-size: 12px;
-  color: var(--muted);
-  cursor: pointer;
-  user-select: none;
-  -webkit-user-select: none;
-}
-.edit-line-profit .val {
-  font-weight: 600;
-  color: var(--text);
-  font-variant-numeric: tabular-nums;
-  filter: blur(4px);
-  transition: filter 150ms ease;
-}
-.edit-line-profit.revealed .val { filter: none; }
-.edit-line-profit.neg .val { color: var(--danger); }
-.edit-line-profit.pos .val { color: var(--success); }
-
-/* ---------- Price info (disclosure) ---------- */
-.price-more-toggle {
-  display: flex; align-items: center; justify-content: space-between;
-  width: 100%;
-  padding: 10px 0;
-  background: none; border: none;
-  color: var(--blue);
-  font-family: inherit;
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  text-align: right;
-  margin-bottom: 4px;
-}
-.price-more-toggle .chev {
-  font-size: 12px;
-  transition: transform 180ms ease;
-  color: var(--muted);
-}
-.price-more-toggle.open .chev { transform: rotate(180deg); }
-
-.price-more {
-  padding: 4px 0 12px;
-  border-bottom: 0.5px solid var(--divider);
-  margin-bottom: 14px;
-}
-.price-more[hidden] { display: none; }
-
-.price-row {
-  display: flex; justify-content: space-between; align-items: baseline;
-  gap: 12px;
-  padding: 6px 0;
-  font-size: 13px;
-}
-.price-row .k { color: var(--muted); }
-.price-row .v {
-  color: var(--text);
-  font-weight: 500;
-  font-variant-numeric: tabular-nums;
-  text-align: left;
-  white-space: nowrap;
-}
-.price-row .v .date {
-  color: var(--faint);
-  font-weight: 400;
-  font-size: 11px;
-  margin-inline-start: 4px;
-}
-.price-row .v.empty {
-  color: var(--faint);
-  font-weight: 400;
+/* =========================================================
+   INVOICE LAYOUT
+   ========================================================= */
+.invoice{
+  display:flex;flex-direction:column;
+  height:100%;
+  background:var(--bg);
 }
 
-/* ---------- Actions ---------- */
-.edit-actions {
-  display: flex; gap: 10px;
+/* ---------- Header ---------- */
+.inv-hd{
+  flex:0 0 auto;
+  display:flex;align-items:center;
+  gap:8px;
+  padding:10px 12px;
+  padding-top:calc(10px + env(safe-area-inset-top,0px));
+  background:var(--surface);
+  border-bottom:0.5px solid var(--divider);
+  position:relative;
+  z-index:10;
 }
-.edit-actions button {
-  flex: 1;
-  min-height: 46px;
-  border: none;
-  border-radius: 10px;
-  font-family: inherit;
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
+.inv-hd-btn{
+  flex:0 0 auto;
+  background:transparent;border:none;
+  padding:8px 10px;
+  min-height:36px;
+  border-radius:10px;
+  color:var(--text-2);
+  font-size:15px;
+  cursor:pointer;
+  transition:background-color 140ms ease;
 }
-.edit-del {
-  background: transparent;
-  color: var(--danger);
-  border: 0.5px solid var(--divider) !important;
+.inv-hd-btn:active{background:var(--tap);}
+.inv-hd-btn.primary{
+  color:var(--brand-blue);
+  font-weight:600;
 }
-.edit-del:disabled { color: var(--faint); cursor: not-allowed; }
-.edit-ok {
-  background: var(--blue);
-  color: #FFF;
+.inv-hd-btn.primary:active{
+  background:rgba(0,112,210,.08);
 }
-.edit-ok:active { opacity: .88; }
+.inv-hd-center{
+  flex:1;min-width:0;
+  display:flex;flex-direction:column;align-items:center;
+  gap:1px;
+}
+.inv-hd-title{
+  font-size:15px;font-weight:600;
+  color:var(--text);
+  line-height:1.2;
+}
+.inv-hd-meter{
+  font-size:11px;
+  color:var(--text-2);
+  line-height:1.3;
+  white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis;
+  max-width:100%;
+  font-variant-numeric:tabular-nums;
+}
+
+/* ---------- Body ---------- */
+.inv-body{
+  flex:1;min-height:0;
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+  overscroll-behavior:contain;
+  padding:16px 14px calc(32px + env(safe-area-inset-bottom,0px));
+}
+
+/* ---------- Customer ---------- */
+.cust{
+  display:flex;align-items:center;gap:10px;
+  padding:0 4px 14px;
+}
+.cust-av{
+  flex:0 0 36px;width:36px;height:36px;
+  border-radius:50%;
+  background:rgba(0,112,210,.10);
+  color:var(--brand-blue);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:600;font-size:15px;
+}
+.cust-info{flex:1;min-width:0;}
+.cust-name{
+  font-size:15px;font-weight:600;
+  color:var(--text);line-height:1.3;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.cust-status{
+  font-size:12px;color:var(--success);
+  margin-top:1px;
+}
+
+/* ---------- Date row ---------- */
+.date-row{
+  display:flex;justify-content:space-between;align-items:center;
+  gap:10px;
+  padding:10px 14px;
+  margin-bottom:18px;
+  background:var(--surface);
+  border-radius:10px;
+  font-size:13px;
+}
+.date-row .lbl{color:var(--text-2);}
+.date-row .val{color:var(--text);font-weight:500;}
+
+/* ---------- Section label ---------- */
+.sec-lbl{
+  padding:0 4px 8px;
+  font-size:12px;
+  color:var(--text-2);
+  font-weight:500;
+  display:flex;justify-content:space-between;align-items:baseline;
+}
+.sec-lbl .count{color:var(--text-3);font-weight:400;}
+
+/* =========================================================
+   ITEMS CARD
+   ========================================================= */
+.items-card{
+  background:var(--surface);
+  border-radius:14px;
+  overflow:hidden;
+  margin-bottom:18px;
+}
+
+/* ---------- Collapsed row ---------- */
+.inv-row{
+  position:relative;
+  border-bottom:0.5px solid var(--divider-soft);
+}
+.inv-row:last-child{border-bottom:none;}
+
+.inv-row-compact{
+  display:grid;
+  grid-template-columns:22px minmax(0,1fr) auto;
+  gap:10px;
+  align-items:center;
+  padding:11px 14px;
+  min-height:58px;
+  cursor:pointer;
+  background:var(--surface);
+  transition:background-color 140ms ease;
+}
+.inv-row-compact:active{background:var(--tap);}
+
+.inv-num{
+  font-size:12px;
+  color:var(--text-3);
+  font-weight:500;
+  text-align:center;
+  line-height:1;
+}
+.inv-name{
+  display:block;
+  font-size:15px;
+  font-weight:500;
+  color:var(--text);
+  line-height:1.3;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.inv-calc{
+  display:block;
+  font-size:12px;
+  color:var(--text-2);
+  line-height:1.35;
+  margin-top:2px;
+  font-variant-numeric:tabular-nums;
+}
+.inv-total{
+  font-size:15px;
+  font-weight:600;
+  color:var(--text);
+  font-variant-numeric:tabular-nums;
+  white-space:nowrap;
+  text-align:left;
+}
+
+/* ---------- Active row ---------- */
+.inv-row.is-active{background:var(--surface);}
+.inv-row.is-active::before{
+  content:'';
+  position:absolute;
+  inset-inline-start:0;
+  top:8px;bottom:8px;
+  width:2.5px;
+  border-radius:2px;
+  background:var(--brand-blue);
+  z-index:1;
+}
+.inv-row.is-active .inv-row-compact{
+  cursor:default;
+  background:transparent;
+  padding-bottom:6px;
+  min-height:auto;
+}
+.inv-row.is-active .inv-row-compact:active{background:transparent;}
+
+.inv-hd-close{
+  background:transparent;
+  border:none;
+  color:var(--text-2);
+  font-size:22px;
+  line-height:1;
+  width:36px;height:36px;
+  border-radius:50%;
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:background-color 140ms ease;
+}
+.inv-hd-close:active{background:var(--tap);}
+
+/* ---------- Active body ---------- */
+.inv-row-body{
+  padding:2px 14px 14px;
+  animation:rowExpand 220ms cubic-bezier(.22,1,.36,1);
+}
+@keyframes rowExpand{
+  from{opacity:.5;transform:translateY(-3px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+/* Product rail */
+.act-label{
+  font-size:11px;
+  color:var(--text-2);
+  margin:10px 0 6px;
+  display:block;
+}
+.prod-rail{
+  display:flex;
+  gap:6px;
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+  padding-bottom:2px;
+  margin:0 -14px 0 -14px;
+  padding-inline:14px;
+}
+.prod-rail::-webkit-scrollbar{display:none;}
+.prod-chip{
+  flex:0 0 auto;
+  background:var(--surface-2);
+  border:0.5px solid var(--divider);
+  color:var(--text);
+  padding:7px 12px;
+  min-height:36px;
+  border-radius:999px;
+  font-size:13px;
+  font-weight:500;
+  white-space:nowrap;
+  cursor:pointer;
+  transition:background-color 140ms ease,color 140ms ease,border-color 140ms ease;
+}
+.prod-chip:active{background:var(--surface-3);}
+.prod-chip.selected{
+  background:var(--brand-blue);
+  border-color:var(--brand-blue);
+  color:#FFF;
+  font-weight:600;
+}
+
+/* Qty / Price */
+.act-grid{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(0,1.5fr);
+  gap:10px;
+  margin-top:14px;
+}
+.act-field{display:flex;flex-direction:column;gap:5px;min-width:0;}
+.act-field label{
+  font-size:11px;color:var(--text-2);
+}
+.act-field input{
+  width:100%;
+  min-height:44px;
+  padding:10px 12px;
+  border:0.5px solid var(--divider);
+  border-radius:10px;
+  background:var(--surface-2);
+  color:var(--text);
+  font-size:15px;
+  font-weight:500;
+  text-align:center;
+  font-variant-numeric:tabular-nums;
+  transition:border-color 140ms ease,box-shadow 140ms ease;
+}
+.act-field input:focus{
+  outline:none;
+  border-color:rgba(0,112,210,.5);
+  box-shadow:0 0 0 3px rgba(0,112,210,.10);
+}
+
+/* Hint */
+.act-hint{
+  font-size:11px;
+  color:var(--text-2);
+  text-align:center;
+  margin-top:8px;
+  font-variant-numeric:tabular-nums;
+}
+.act-hint b{color:var(--text);font-weight:600;}
+
+/* Line total preview */
+.act-line-total{
+  display:flex;justify-content:space-between;align-items:baseline;
+  gap:12px;
+  padding:12px 0 0;
+  margin-top:10px;
+  border-top:0.5px solid var(--divider-soft);
+  font-size:13px;
+}
+.act-line-total .lbl{color:var(--text-2);}
+.act-line-total .val{
+  font-size:16px;font-weight:700;
+  color:var(--text);
+  font-variant-numeric:tabular-nums;
+}
+
+/* Price info disclosure */
+.act-price-info{
+  margin-top:10px;
+  border-top:0.5px solid var(--divider-soft);
+}
+.act-price-info summary{
+  list-style:none;
+  cursor:pointer;
+  padding:10px 0;
+  font-size:13px;
+  font-weight:500;
+  color:var(--brand-blue);
+  display:flex;justify-content:space-between;align-items:center;
+  user-select:none;
+  -webkit-user-select:none;
+}
+.act-price-info summary::-webkit-details-marker{display:none;}
+.act-price-info summary::after{
+  content:'⌄';
+  font-size:12px;
+  color:var(--text-2);
+  transition:transform 180ms ease;
+}
+.act-price-info[open] summary::after{transform:rotate(180deg);}
+.pi-body{padding:2px 0 10px;}
+.pi-row{
+  display:flex;justify-content:space-between;align-items:baseline;
+  gap:12px;
+  padding:5px 0;
+  font-size:13px;
+}
+.pi-row .k{color:var(--text-2);}
+.pi-row .v{
+  color:var(--text);
+  font-weight:500;
+  font-variant-numeric:tabular-nums;
+  white-space:nowrap;
+}
+.pi-row .v .date{
+  color:var(--text-3);
+  font-weight:400;
+  font-size:11px;
+  margin-inline-start:4px;
+}
+.pi-row .v.empty{color:var(--text-3);font-weight:400;}
+.pi-row .v.pos{color:var(--success);}
+.pi-row .v.neg{color:var(--danger);}
+
+/* Actions */
+.act-actions{
+  display:flex;gap:8px;margin-top:12px;
+}
+.act-actions button{
+  flex:1;
+  min-height:44px;
+  padding:10px 14px;
+  border-radius:10px;
+  font-size:14px;
+  font-weight:600;
+  cursor:pointer;
+  border:none;
+  transition:opacity 140ms ease,background-color 140ms ease;
+}
+.act-del{
+  flex:0 0 40% !important;
+  background:transparent;
+  color:var(--danger);
+  border:0.5px solid var(--divider) !important;
+  font-weight:500;
+}
+.act-del:active{background:var(--tap);}
+.act-save{
+  background:var(--brand-blue);
+  color:#FFF;
+}
+.act-save:active{opacity:.85;}
+
+/* =========================================================
+   ADD NEW LINE
+   ========================================================= */
+.add-line{
+  width:100%;
+  display:flex;align-items:center;gap:10px;
+  padding:14px 16px;
+  min-height:54px;
+  background:transparent;
+  border:none;
+  border-top:0.5px solid var(--divider-soft);
+  color:var(--brand-blue);
+  font-size:15px;font-weight:500;
+  cursor:pointer;
+  text-align:right;
+  transition:background-color 140ms ease;
+}
+.add-line:active{background:rgba(0,112,210,.05);}
+.add-line-plus{
+  flex:0 0 auto;
+  width:22px;height:22px;
+  border-radius:50%;
+  background:var(--brand-blue);
+  color:#FFF;
+  display:flex;align-items:center;justify-content:center;
+  font-size:15px;font-weight:400;line-height:1;
+  padding-bottom:1px;
+}
+
+/* =========================================================
+   SUMMARY
+   ========================================================= */
+.summary{
+  background:var(--surface);
+  border-radius:14px;
+  padding:2px 14px;
+  margin-bottom:18px;
+}
+.sum-row{
+  display:flex;justify-content:space-between;align-items:baseline;
+  gap:12px;
+  padding:11px 0;
+  font-size:14px;
+  border-bottom:0.5px solid var(--divider-soft);
+}
+.sum-row:last-child{border-bottom:none;}
+.sum-row .lbl{color:var(--text-2);}
+.sum-row .val{
+  color:var(--text);
+  font-weight:500;
+  font-variant-numeric:tabular-nums;
+  white-space:nowrap;
+}
+.sum-row.grand{
+  padding:13px 0;
+  font-size:16px;
+}
+.sum-row.grand .lbl{color:var(--text);font-weight:600;}
+.sum-row.grand .val{font-weight:700;font-size:17px;}
+
+/* =========================================================
+   PAYMENT (2x2)
+   ========================================================= */
+.pay-sec{
+  margin-bottom:14px;
+}
+.pay-sec-lbl{
+  font-size:12px;color:var(--text-2);
+  margin:0 4px 8px;
+}
+.pay-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+}
+.pay-btn{
+  display:flex;align-items:center;gap:10px;
+  padding:12px 14px;
+  min-height:56px;
+  background:var(--surface);
+  border:0.5px solid var(--divider);
+  border-radius:12px;
+  color:var(--text);
+  font-size:14px;font-weight:500;
+  cursor:pointer;
+  text-align:right;
+  transition:border-color 140ms ease,background-color 140ms ease,color 140ms ease;
+}
+.pay-btn:active{background:var(--tap);}
+.pay-btn.selected{
+  border-color:var(--brand-blue);
+  color:var(--brand-blue);
+  background:rgba(0,112,210,.05);
+}
+.pay-btn.selected .pay-ico{
+  background:var(--brand-blue);
+  color:#FFF;
+}
+.pay-ico{
+  flex:0 0 26px;
+  width:26px;height:26px;
+  border-radius:50%;
+  background:var(--surface-2);
+  color:var(--text-2);
+  display:flex;align-items:center;justify-content:center;
+  transition:background-color 140ms ease,color 140ms ease;
+}
+.pay-ico svg{width:15px;height:15px;stroke:currentColor;stroke-width:1.7;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+
+/* =========================================================
+   TOAST
+   ========================================================= */
+.toast{
+  position:absolute;
+  left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));
+  transform:translateX(-50%) translateY(12px);
+  background:rgba(15,23,42,.92);
+  color:#FFF;
+  padding:10px 18px;
+  border-radius:22px;
+  font-size:13px;
+  font-weight:500;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity 220ms ease,transform 220ms ease;
+  z-index:100;
+  white-space:nowrap;
+  max-width:calc(100% - 24px);
+  overflow:hidden;text-overflow:ellipsis;
+}
+[data-theme="dark"] .toast{background:rgba(242,242,247,.94);color:#1C1C1E;}
+.toast.show{
+  opacity:1;
+  transform:translateX(-50%) translateY(0);
+}
 </style>
 </head>
 <body data-theme="light">
 
-<div class="controls">
-  <div>
-    <span class="lbl">Theme:</span>
-    <button data-theme-btn="light" class="active">روشن</button>
-    <button data-theme-btn="dark">تاریک</button>
-  </div>
-  <div>
-    <span class="lbl">Width:</span>
+<!-- ============================================================
+     DEV BAR
+     ============================================================ -->
+<div class="dev-bar" role="toolbar" aria-label="Developer preview controls">
+  <div class="grp">
+    <span class="lbl">عرض:</span>
     <button data-w="320">320</button>
     <button data-w="375">375</button>
     <button data-w="390" class="active">390</button>
     <button data-w="430">430</button>
   </div>
+  <div class="grp">
+    <span class="lbl">تم:</span>
+    <button data-theme-btn="light" class="active">روشن</button>
+    <button data-theme-btn="dark">تیره</button>
+  </div>
 </div>
 
+<!-- ============================================================
+     PHONE
+     ============================================================ -->
 <div class="phone-wrap">
   <div class="phone" id="phone" data-w="390">
-    <div class="sheet">
-      <div class="hdr">
-        <button class="hdr-cancel">لغو</button>
-        <div class="hdr-title">فاکتور جدید</div>
-        <button class="hdr-save">ثبت</button>
+    <div class="invoice">
+
+      <header class="inv-hd">
+        <button class="inv-hd-btn" id="hd-cancel">لغو</button>
+        <div class="inv-hd-center">
+          <div class="inv-hd-title">فاکتور جدید</div>
+          <div class="inv-hd-meter" id="hd-meter">—</div>
+        </div>
+        <button class="inv-hd-btn primary" id="hd-save">ثبت</button>
+      </header>
+
+      <div class="inv-body" id="inv-body">
+        <!-- rendered by JS -->
       </div>
-      <div class="body" id="body"></div>
+
     </div>
-    <div class="edit-sheet-bg" id="editBg"></div>
-    <div class="edit-sheet" id="editSheet"></div>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
   </div>
 </div>
 
@@ -545,354 +707,552 @@ html, body {
 'use strict';
 
 /* =========================================================
-   Sample data
+   1. DATA
    ========================================================= */
-const ITEMS = [
-  { name: 'لوبیا چیتی',    qty: 5,  unit: 'کیلو',  unitPrice: 200000 },
-  { name: 'نخود ابوگوشتی', qty: 3,  unit: 'کیلو',  unitPrice: 180000 },
-  { name: 'کشمش پلویی',    qty: 1,  unit: 'کارتن', unitPrice: 2400000 },
-];
-
-/* Fake price intelligence — per product name */
-const PRODUCT_DATA = {
-  'لوبیا چیتی': {
-    fifo: 140000,
-    ref: 250000,
-    lastSale: { price: 220000, date: '۱۴۰۳/۰۹/۲۰' },
-    lastToThis: { price: 200000, date: '۱۴۰۳/۰۸/۱۵' },
-  },
-  'نخود ابوگوشتی': {
-    fifo: 125000,
-    ref: 220000,
-    lastSale: { price: 185000, date: '۱۴۰۳/۰۹/۱۸' },
-    lastToThis: null, // never sold to this customer
-  },
-  'کشمش پلویی': {
-    fifo: 1800000,
-    ref: 2500000,
-    lastSale: { price: 2400000, date: '۱۴۰۳/۰۹/۲۵' },
-    lastToThis: { price: 2400000, date: '۱۴۰۳/۰۹/۲۵' },
-  },
-  'عدس':           { fifo: 145000, ref: 230000, lastSale: { price: 210000, date: '۱۴۰۳/۰۹/۲۲' }, lastToThis: { price: 205000, date: '۱۴۰۳/۰۹/۰۵' } },
-  'ماش':           { fifo: 180000, ref: 250000, lastSale: { price: 230000, date: '۱۴۰۳/۰۹/۱۵' }, lastToThis: null },
-  'لپه':           { fifo: 165000, ref: 230000, lastSale: { price: 215000, date: '۱۴۰۳/۰۹/۱۰' }, lastToThis: null },
-  'برنج':          { fifo: 185000, ref: 240000, lastSale: { price: 230000, date: '۱۴۰۳/۰۹/۲۴' }, lastToThis: { price: 225000, date: '۱۴۰۳/۰۹/۰۳' } },
-};
-const PRODUCT_NAMES = Object.keys(PRODUCT_DATA);
-
-const FA = '۰۱۲۳۴۵۶۷۸۹';
-const fa = n => String(n).replace(/[0-9]/g, d => FA[+d]);
-const faNum = n => fa(Math.round(Number(n) || 0).toLocaleString('en-US')).replace(/,/g, '٬');
-
-/* =========================================================
-   State
-   ========================================================= */
-const state = {
-  items: ITEMS.map(o => ({...o})),
-  editingIdx: null,
-  priceRevealed: false,
+const CUSTOMER = {
+  name: 'فروشگاه مرکزی چالوس',
+  status: 'مشتری فعال',
+  initial: 'م',
 };
 
-/* =========================================================
-   Render main
-   ========================================================= */
-function render() {
-  const body = document.getElementById('body');
-  const subtotal = state.items.reduce((s, it) => s + it.qty * it.unitPrice, 0);
+const DATE_LABEL = '۲۶ شهریور ۱۴۰۵';
 
-  body.innerHTML = `
-    <div class="ctx">
-      <div class="ctx-av">م</div>
-      <div class="ctx-info">
-        <div class="ctx-name">مغازهٔ حبوبات مرکزی</div>
-        <div class="ctx-meta">۰۹۱۱۲۳۴۵۶۷۸</div>
+const PRODUCTS = {
+  'لوبیا چیتی':   { sale:200000,  fifo:175000,  lastSale:{price:220000,date:'۲۰ شهریور'},  lastToThis:{price:200000,date:'۱۵ مرداد'} },
+  'نخود ابوگوشتی':{ sale:180000,  fifo:158000,  lastSale:{price:185000,date:'۱۸ شهریور'}, lastToThis:null },
+  'کشمش پلویی':   { sale:2400000, fifo:2150000, lastSale:{price:2450000,date:'۲۵ شهریور'},lastToThis:{price:2400000,date:'۲۵ شهریور'} },
+  'عدس':          { sale:210000,  fifo:145000,  lastSale:{price:215000,date:'۲۲ شهریور'}, lastToThis:{price:205000,date:'۵ شهریور'} },
+  'لوبیا قرمز':   { sale:195000,  fifo:165000,  lastSale:{price:200000,date:'۲۰ شهریور'}, lastToThis:null },
+  'نخود دو آتیشه':{ sale:220000,  fifo:190000,  lastSale:{price:225000,date:'۲۳ شهریور'}, lastToThis:null },
+};
+const PRODUCT_KEYS = Object.keys(PRODUCTS);
+
+/* =========================================================
+   2. STATE
+   ========================================================= */
+let state = {
+  items: [
+    { id:'i1', name:'لوبیا چیتی',    qty:5, price:200000 },
+    { id:'i2', name:'نخود ابوگوشتی', qty:3, price:180000 },
+    { id:'i3', name:'کشمش پلویی',    qty:1, price:2400000 },
+  ],
+  editing: null,
+  // editing = { id, isNew, draft: { id, name, qty, price } }
+  payment: 'credit', // credit | cash | card | check
+  width: 390,
+  theme: 'light',
+};
+
+let uidCounter = 100;
+function uid(){ return 'u' + (++uidCounter); }
+
+/* =========================================================
+   3. FORMAT / CALC
+   ========================================================= */
+const FA_DIGITS = '۰۱۲۳۴۵۶۷۸۹';
+function toFa(s){
+  return String(s).replace(/[0-9]/g, d => FA_DIGITS[+d]);
+}
+function toEnDigits(s){
+  return String(s).replace(/[۰-۹]/g, d => FA_DIGITS.indexOf(d));
+}
+function fmt(n){
+  const s = Math.round(Number(n) || 0).toLocaleString('en-US');
+  return toFa(s).replace(/,/g, '٬');
+}
+function fmtPlain(n){
+  return toFa(Math.round(Number(n) || 0));
+}
+function parseNum(s){
+  return parseFloat(
+    toEnDigits(String(s))
+      .replace(/[٬,]/g, '')
+      .replace(/[^\d.\-]/g, '')
+  ) || 0;
+}
+
+function computeTotals(){
+  const editingId = state.editing ? state.editing.id : null;
+  const live = [];
+  state.items.forEach(it => {
+    if (editingId && it.id === editingId) return; // draft supersedes
+    live.push(it);
+  });
+  if (state.editing && state.editing.draft.name){
+    live.push(state.editing.draft);
+  }
+  const subtotal = live.reduce((s, it) => s + it.qty * it.price, 0);
+  return { count: live.length, subtotal };
+}
+
+/* =========================================================
+   4. UI HELPERS
+   ========================================================= */
+function escapeHtml(s){
+  return String(s == null ? '' : s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+let toastTimer = null;
+function showToast(msg){
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 1800);
+}
+
+/* =========================================================
+   5. RENDER
+   ========================================================= */
+function render(){
+  renderHeaderMeter();
+  renderBody();
+  bindHeader();
+}
+
+function renderHeaderMeter(){
+  const t = computeTotals();
+  const el = document.getElementById('hd-meter');
+  if (!t.count){
+    el.textContent = 'بدون قلم';
+    return;
+  }
+  el.textContent = `${fmtPlain(t.count)} قلم · ${fmt(t.subtotal)} ت`;
+}
+
+function renderBody(){
+  const root = document.getElementById('inv-body');
+  const itemsHtml = state.items.map((it, idx) => {
+    if (state.editing && state.editing.id === it.id){
+      return renderActiveRow(state.editing.draft, idx, false);
+    }
+    return renderCollapsedRow(it, idx);
+  }).join('');
+
+  const activeNew = state.editing && state.editing.isNew
+    ? renderActiveRow(state.editing.draft, state.items.length, true)
+    : '';
+
+  const addBtnHtml = state.editing && state.editing.isNew
+    ? ''
+    : `<button type="button" class="add-line" id="add-line">
+         <span class="add-line-plus" aria-hidden="true">+</span>
+         افزودن قلم جدید
+       </button>`;
+
+  const { subtotal } = computeTotals();
+  const discount = 0;
+  const shipping = 0;
+  const grand = Math.max(0, subtotal - discount + shipping);
+
+  root.innerHTML = `
+    <div class="cust">
+      <div class="cust-av" aria-hidden="true">${escapeHtml(CUSTOMER.initial)}</div>
+      <div class="cust-info">
+        <div class="cust-name">${escapeHtml(CUSTOMER.name)}</div>
+        <div class="cust-status">${escapeHtml(CUSTOMER.status)}</div>
       </div>
     </div>
 
-    <div class="date-line">
+    <div class="date-row">
       <span class="lbl">تاریخ فاکتور</span>
-      <span class="val">۱۴۰۳/۰۹/۲۷</span>
+      <span class="val">${escapeHtml(DATE_LABEL)}</span>
     </div>
 
-    <div class="sec-lbl">اقلام فاکتور</div>
+    <div class="sec-lbl">
+      <span>اقلام فاکتور</span>
+      <span class="count">${fmtPlain(state.items.length)} قلم</span>
+    </div>
 
     <div class="items-card">
-      ${state.items.map((it, i) => renderItem(it, i)).join('')}
-      <button class="add-line" id="addLine">
-        <span class="add-line-plus">+</span>
-        افزودن قلم جدید
-      </button>
+      ${itemsHtml}
+      ${activeNew}
+      ${addBtnHtml}
     </div>
 
     <div class="summary">
-      <div class="sum-row"><span class="lbl">جمع اقلام</span><span class="val">${faNum(subtotal)} ت</span></div>
-      <div class="sum-row"><span class="lbl">تخفیف</span><span class="val">۰ ت</span></div>
-      <div class="sum-row total"><span class="lbl">جمع فاکتور</span><span class="val">${faNum(subtotal)} ت</span></div>
-      <div class="sum-row"><span class="lbl">پرداخت شده</span><span class="val">۰ ت</span></div>
-      <div class="sum-row total"><span class="lbl">مانده</span><span class="val">${faNum(subtotal)} ت</span></div>
+      <div class="sum-row"><span class="lbl">جمع اقلام</span><span class="val">${fmt(subtotal)} ت</span></div>
+      <div class="sum-row"><span class="lbl">تخفیف</span><span class="val">${fmt(discount)} ت</span></div>
+      <div class="sum-row"><span class="lbl">هزینه ارسال</span><span class="val">${fmt(shipping)} ت</span></div>
+      <div class="sum-row grand"><span class="lbl">مبلغ نهایی</span><span class="val">${fmt(grand)} ت</span></div>
     </div>
 
     <div class="pay-sec">
-      <div class="pay-hd">
-        <span>دریافتی همراه فاکتور (اختیاری)</span>
-        <span class="total">۰ ت</span>
-      </div>
-      <div class="pay-grid">
-        <button class="pay-btn"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/></svg>نقد</button>
-        <button class="pay-btn"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/></svg>کارت</button>
-        <button class="pay-btn"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 15h4M7 12h10"/></svg>چک</button>
-        <button class="pay-btn"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 10h8M8 14h5"/></svg>اعتبار</button>
+      <div class="pay-sec-lbl">روش پرداخت</div>
+      <div class="pay-grid" id="pay-grid">
+        ${renderPayBtn('credit','اعتباری','<path d="M12 3v18M5 8h14M5 16h14"/>')}
+        ${renderPayBtn('cash','نقدی','<rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/>')}
+        ${renderPayBtn('card','کارت / انتقال','<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/>')}
+        ${renderPayBtn('check','چک','<rect x="4" y="5" width="16" height="14" rx="2"/><path d="M8 15h4M8 12h8"/>')}
       </div>
     </div>
   `;
 
-  bindMain();
+  bindBody();
 }
 
-function renderItem(it, idx) {
-  const total = it.qty * it.unitPrice;
-  const calc = `${fa(it.qty)} × ${faNum(it.unitPrice)}`;
-  return `<div class="item-row" data-idx="${idx}">
-    <span class="item-name">${it.name}</span>
-    <span class="item-amount">
-      <span class="item-total">${faNum(total)}</span>
-      <span class="item-calc">${calc}</span>
-    </span>
+function renderPayBtn(key, label, svg){
+  const cls = state.payment === key ? ' selected' : '';
+  return `<button type="button" class="pay-btn${cls}" data-pay="${key}">
+    <span class="pay-ico" aria-hidden="true"><svg viewBox="0 0 24 24">${svg}</svg></span>
+    <span>${escapeHtml(label)}</span>
+  </button>`;
+}
+
+function renderCollapsedRow(it, idx){
+  const total = it.qty * it.price;
+  return `<div class="inv-row" data-id="${escapeHtml(it.id)}">
+    <div class="inv-row-compact" data-action="edit">
+      <span class="inv-num">${fmtPlain(idx + 1)}</span>
+      <span class="inv-info">
+        <span class="inv-name">${escapeHtml(it.name)}</span>
+        <span class="inv-calc">${fmtPlain(it.qty)} × ${fmt(it.price)}</span>
+      </span>
+      <span class="inv-total">${fmt(total)}</span>
+    </div>
   </div>`;
 }
 
-function bindMain() {
-  document.querySelectorAll('.item-row').forEach(row => {
-    row.addEventListener('click', () => openEdit(+row.dataset.idx));
-  });
-  const add = document.getElementById('addLine');
-  if (add) add.addEventListener('click', () => {
-    state.items.push({ name: '', qty: 1, unit: 'کیلو', unitPrice: 0 });
-    openEdit(state.items.length - 1);
-  });
+function renderActiveRow(draft, idx, isNew){
+  const it = draft;
+  const productsData = it.name ? PRODUCTS[it.name] : null;
+
+  const rail = PRODUCT_KEYS.map(k => {
+    const sel = (k === it.name) ? ' selected' : '';
+    return `<button type="button" class="prod-chip${sel}" data-prod="${escapeHtml(k)}">${escapeHtml(k)}</button>`;
+  }).join('');
+
+  const selectOptions = ['<option value="">— انتخاب کالا —</option>']
+    .concat(PRODUCT_KEYS.map(k => {
+      const sel = (k === it.name) ? ' selected' : '';
+      return `<option value="${escapeHtml(k)}"${sel}>${escapeHtml(k)}</option>`;
+    })).join('');
+
+  const total = it.qty * it.price;
+
+  const fifoHint = productsData
+    ? `قیمت خرید FIFO: <b>${fmt(productsData.fifo)}</b> ت`
+    : '';
+
+  let priceInfoHtml = '';
+  if (productsData){
+    const last = productsData.lastSale;
+    const lastThis = productsData.lastToThis;
+    const profitPerUnit = it.price - productsData.fifo;
+    const profitTotal = profitPerUnit * it.qty;
+    const profitSign = profitTotal < 0 ? '−' : (profitTotal > 0 ? '+' : '');
+    const profitCls = profitTotal < 0 ? 'neg' : (profitTotal > 0 ? 'pos' : '');
+
+    priceInfoHtml = `
+      <details class="act-price-info">
+        <summary>اطلاعات قیمت و سود</summary>
+        <div class="pi-body">
+          <div class="pi-row"><span class="k">قیمت مرجع</span><span class="v">${fmt(productsData.sale)} ت</span></div>
+          <div class="pi-row"><span class="k">قیمت خرید FIFO</span><span class="v">${fmt(productsData.fifo)} ت</span></div>
+          <div class="pi-row"><span class="k">آخرین فروش</span><span class="v">${last ? `${fmt(last.price)} ت<span class="date">${escapeHtml(last.date)}</span>` : '<span class="v empty">ثبت نشده</span>'}</span></div>
+          <div class="pi-row"><span class="k">آخرین فروش به این مشتری</span><span class="v">${lastThis ? `${fmt(lastThis.price)} ت<span class="date">${escapeHtml(lastThis.date)}</span>` : '<span class="v empty">ثبت نشده</span>'}</span></div>
+          <div class="pi-row"><span class="k">سود این قلم</span><span class="v ${profitCls}">${profitSign}${fmt(Math.abs(profitTotal))} ت</span></div>
+        </div>
+      </details>
+    `;
+  }
+
+  return `<div class="inv-row is-active" data-id="${escapeHtml(it.id)}" data-new="${isNew ? '1' : '0'}">
+    <div class="inv-row-compact">
+      <span class="inv-num">${fmtPlain(idx + 1)}</span>
+      <span class="inv-info">
+        <span class="inv-name">${it.name ? escapeHtml(it.name) : 'قلم جدید'}</span>
+        <span class="inv-calc">${it.qty ? fmtPlain(it.qty) + ' × ' + fmt(it.price) : 'تکمیل کنید'}</span>
+      </span>
+      <button type="button" class="inv-hd-close" data-action="cancel" aria-label="بستن">×</button>
+    </div>
+
+    <div class="inv-row-body">
+      <label class="act-label" for="sel-prod-${escapeHtml(it.id)}">کالا</label>
+      <select id="sel-prod-${escapeHtml(it.id)}" class="sr-only" data-action="select-product">
+        ${selectOptions}
+      </select>
+
+      <div class="prod-rail" role="listbox" aria-label="انتخاب کالا">
+        ${rail}
+      </div>
+
+      <div class="act-grid">
+        <div class="act-field">
+          <label for="in-qty-${escapeHtml(it.id)}">تعداد / وزن</label>
+          <input id="in-qty-${escapeHtml(it.id)}" type="text" inputmode="decimal"
+                 value="${fmtPlain(it.qty)}" data-action="qty" autocomplete="off">
+        </div>
+        <div class="act-field">
+          <label for="in-price-${escapeHtml(it.id)}">قیمت واحد (تومان)</label>
+          <input id="in-price-${escapeHtml(it.id)}" type="text" inputmode="decimal"
+                 value="${fmt(it.price)}" data-action="price" autocomplete="off">
+        </div>
+      </div>
+
+      ${fifoHint ? `<div class="act-hint">${fifoHint}</div>` : ''}
+
+      <div class="act-line-total">
+        <span class="lbl">جمع این قلم</span>
+        <span class="val" data-line-total>${fmt(total)} ت</span>
+      </div>
+
+      ${priceInfoHtml}
+
+      <div class="act-actions">
+        ${isNew
+          ? `<button type="button" class="act-del" data-action="cancel">انصراف</button>`
+          : `<button type="button" class="act-del" data-action="delete">حذف</button>`}
+        <button type="button" class="act-save" data-action="save">ذخیره تغییرات</button>
+      </div>
+    </div>
+  </div>`;
 }
 
 /* =========================================================
-   Edit sheet
+   6. INTERACTION
    ========================================================= */
-function openEdit(idx) {
-  state.editingIdx = idx;
-  state.priceRevealed = false;
 
-  const it = state.items[idx];
-  const isOnly = state.items.length <= 1;
-
-  renderEditSheet(it, idx, isOnly);
-
-  document.getElementById('editBg').classList.add('show');
-  document.getElementById('editSheet').classList.add('show');
-  bindEditSheet(it, idx, isOnly);
+function bindHeader(){
+  const btnCancel = document.getElementById('hd-cancel');
+  const btnSave = document.getElementById('hd-save');
+  btnCancel.onclick = onInvoiceCancel;
+  btnSave.onclick = onInvoiceSave;
 }
 
-function renderEditSheet(it, idx, isOnly) {
-  const optionsHtml = PRODUCT_NAMES.map(n =>
-    `<option value="${n}" ${n === it.name ? 'selected' : ''}>${n}</option>`
-  ).join('');
+function bindBody(){
+  const root = document.getElementById('inv-body');
 
-  document.getElementById('editSheet').innerHTML = `
-    <div class="edit-handle"></div>
-    <div class="edit-hd">
-      <span class="edit-hd-title">ویرایش قلم ${fa(idx + 1)}</span>
-      <button class="edit-hd-close" id="editClose">بستن</button>
-    </div>
-    <div class="edit-body">
-      <div class="edit-field">
-        <label>نام کالا</label>
-        <select id="eName">
-          <option value="" ${it.name ? '' : 'selected'}>انتخاب کالا...</option>
-          ${optionsHtml}
-        </select>
-      </div>
+  // Delegated click for the whole body
+  root.onclick = (e) => {
+    const row = e.target.closest('.inv-row');
+    const btn = e.target.closest('[data-action]');
+    const prodChip = e.target.closest('[data-prod]');
+    const payBtn = e.target.closest('[data-pay]');
+    const addBtn = e.target.closest('#add-line');
 
-      <div class="edit-row-2">
-        <div class="edit-field">
-          <label>تعداد</label>
-          <input type="text" inputmode="decimal" id="eQty" value="${fa(it.qty)}">
-        </div>
-        <div class="edit-field">
-          <label>قیمت واحد (تومان)</label>
-          <input type="text" inputmode="decimal" id="ePrice" value="${faNum(it.unitPrice)}">
-          <span class="edit-field-hint" id="eFifoHint"></span>
-        </div>
-      </div>
+    // Payment button
+    if (payBtn){
+      state.payment = payBtn.getAttribute('data-pay');
+      renderBody();
+      return;
+    }
 
-      <div class="edit-line-total">
-        <div class="edit-line-total-main">
-          <span class="lbl">جمع این قلم</span>
-          <span class="val" id="eTotal">${faNum(it.qty * it.unitPrice)} ت</span>
-        </div>
-        <div class="edit-line-profit" id="eProfit">
-          <span>سود تقریبی</span>
-          <span class="val" id="eProfitVal">—</span>
-        </div>
-      </div>
+    // Add new line
+    if (addBtn){
+      onAddNew();
+      return;
+    }
 
-      <div id="ePriceInfoWrap"></div>
+    // Product chip inside active row
+    if (prodChip && row && row.classList.contains('is-active')){
+      const name = prodChip.getAttribute('data-prod');
+      onSelectProduct(name);
+      return;
+    }
 
-      <div class="edit-actions">
-        <button class="edit-del" id="eDel" ${isOnly ? 'disabled' : ''}>حذف</button>
-        <button class="edit-ok" id="eOk">تأیید</button>
-      </div>
-    </div>
-  `;
+    // Action button inside active row
+    if (btn && row && row.classList.contains('is-active')){
+      const action = btn.getAttribute('data-action');
+      if (action === 'cancel') { onCancelActive(); return; }
+      if (action === 'delete') { onDeleteActive(); return; }
+      if (action === 'save')   { onSaveActive();    return; }
+      return;
+    }
 
-  // populate dynamic bits
-  refreshFifoHint();
-  refreshProfit();
-  refreshPriceInfo();
+    // Tap on collapsed row → open for edit
+    if (row && !row.classList.contains('is-active')){
+      const id = row.getAttribute('data-id');
+      onOpenEdit(id);
+      return;
+    }
+  };
+
+  // Input listeners inside the active row
+  const activeRow = root.querySelector('.inv-row.is-active');
+  if (activeRow){
+    const qtyInput   = activeRow.querySelector('[data-action="qty"]');
+    const priceInput = activeRow.querySelector('[data-action="price"]');
+    const selectEl   = activeRow.querySelector('[data-action="select-product"]');
+
+    if (qtyInput)   qtyInput.addEventListener('input', onQtyInput);
+    if (priceInput) priceInput.addEventListener('input', onPriceInput);
+    if (selectEl)   selectEl.addEventListener('change', (e) => onSelectProduct(e.target.value));
+  }
 }
 
-function refreshFifoHint() {
-  const it = state.items[state.editingIdx];
-  const el = document.getElementById('eFifoHint');
-  if (!el) return;
-  const data = PRODUCT_DATA[it.name];
-  if (!data) { el.innerHTML = ''; return; }
-  el.innerHTML = `خرید: <b>${faNum(data.fifo)}</b> ت`;
+/* ---------- Item lifecycle ---------- */
+
+function onOpenEdit(id){
+  if (state.editing && state.editing.id === id) return;
+  // If there's a pending draft, resolve it first
+  if (state.editing) state.editing = null;
+
+  const it = state.items.find(x => x.id === id);
+  if (!it) return;
+  state.editing = {
+    id: it.id,
+    isNew: false,
+    draft: { ...it },
+  };
+  render();
 }
 
-function refreshProfit() {
-  const it = state.items[state.editingIdx];
-  const el = document.getElementById('eProfit');
-  const val = document.getElementById('eProfitVal');
-  if (!el || !val) return;
-  const data = PRODUCT_DATA[it.name];
-  if (!data) {
-    val.textContent = '—';
-    el.classList.remove('pos', 'neg');
+function onAddNew(){
+  if (state.editing) return; // ignore; there's already an active row
+  const newId = uid();
+  state.editing = {
+    id: newId,
+    isNew: true,
+    draft: { id: newId, name: '', qty: 1, price: 0 },
+  };
+  render();
+  // Focus qty field
+  requestAnimationFrame(() => {
+    const el = document.querySelector(`#in-qty-${CSS.escape(newId)}`);
+    if (el) el.focus();
+  });
+}
+
+function onCancelActive(){
+  state.editing = null;
+  render();
+}
+
+function onDeleteActive(){
+  if (!state.editing) return;
+  if (state.editing.isNew){
+    state.editing = null;
+    render();
     return;
   }
-  const profitPerUnit = it.unitPrice - data.fifo;
-  const profitTotal = profitPerUnit * it.qty;
-  const pct = data.fifo > 0 ? Math.round((profitPerUnit / data.fifo) * 100) : 0;
-  const sign = profitTotal < 0 ? '−' : (profitTotal > 0 ? '+' : '');
-  val.textContent = `${sign}${faNum(Math.abs(profitTotal))} ت (${fa(pct)}٪)`;
-  el.classList.toggle('pos', profitTotal > 0);
-  el.classList.toggle('neg', profitTotal < 0);
-  el.classList.toggle('revealed', state.priceRevealed);
+  const it = state.items.find(x => x.id === state.editing.id);
+  const label = it ? it.name : 'این قلم';
+  if (!window.confirm(`«${label}» از فاکتور حذف شود؟`)) return;
+  state.items = state.items.filter(x => x.id !== state.editing.id);
+  state.editing = null;
+  render();
+  showToast('قلم حذف شد');
 }
 
-function refreshPriceInfo() {
-  const wrap = document.getElementById('ePriceInfoWrap');
-  if (!wrap) return;
-  const it = state.items[state.editingIdx];
-  const data = PRODUCT_DATA[it.name];
-  if (!data) { wrap.innerHTML = ''; return; }
+function onSaveActive(){
+  if (!state.editing) return;
+  const draft = state.editing.draft;
+  if (!draft.name){
+    showToast('ابتدا کالا را انتخاب کنید');
+    return;
+  }
+  if (!(draft.qty > 0)){
+    showToast('تعداد باید بیشتر از صفر باشد');
+    return;
+  }
 
-  const last = data.lastSale;
-  const lastToThis = data.lastToThis;
+  if (state.editing.isNew){
+    state.items.push({ ...draft });
+  } else {
+    const i = state.items.findIndex(x => x.id === state.editing.id);
+    if (i >= 0) state.items[i] = { ...draft };
+  }
+  state.editing = null;
+  render();
+  showToast('ذخیره شد');
+}
 
-  wrap.innerHTML = `
-    <button type="button" class="price-more-toggle" id="ePriceToggle">
-      <span>اطلاعات قیمت</span>
-      <span class="chev">⌄</span>
-    </button>
-    <div class="price-more" id="ePriceMore" hidden>
-      <div class="price-row">
-        <span class="k">قیمت مرجع</span>
-        <span class="v">${faNum(data.ref)} ت</span>
-      </div>
-      <div class="price-row">
-        <span class="k">آخرین فروش کلی</span>
-        <span class="v">${last ? `${faNum(last.price)} ت<span class="date">${last.date}</span>` : '<span class="v empty">ثبت نشده</span>'}</span>
-      </div>
-      <div class="price-row">
-        <span class="k">آخرین فروش به این مشتری</span>
-        <span class="v">${lastToThis ? `${faNum(lastToThis.price)} ت<span class="date">${lastToThis.date}</span>` : '<span class="v empty">ثبت نشده</span>'}</span>
-      </div>
-    </div>
-  `;
-
-  const toggle = document.getElementById('ePriceToggle');
-  const more = document.getElementById('ePriceMore');
-  toggle.addEventListener('click', () => {
-    const open = !more.hidden;
-    more.hidden = open;
-    toggle.classList.toggle('open', !open);
+function onSelectProduct(name){
+  if (!state.editing) return;
+  if (!name) return;
+  const data = PRODUCTS[name];
+  if (!data) return;
+  state.editing.draft.name = name;
+  state.editing.draft.price = data.sale;
+  // Preserve qty; if 0, default to 1
+  if (!(state.editing.draft.qty > 0)) state.editing.draft.qty = 1;
+  render();
+  // Refocus qty after re-render
+  requestAnimationFrame(() => {
+    const el = document.querySelector(`#in-qty-${CSS.escape(state.editing.id)}`);
+    if (el) el.focus();
   });
 }
 
-function bindEditSheet(it, idx, isOnly) {
-  const close = (commit) => {
-    document.getElementById('editBg').classList.remove('show');
-    document.getElementById('editSheet').classList.remove('show');
-    state.editingIdx = null;
+function onQtyInput(e){
+  if (!state.editing) return;
+  const v = parseNum(e.target.value);
+  state.editing.draft.qty = v;
+  // Update line total inline without full re-render (preserves focus)
+  const activeRow = e.target.closest('.inv-row.is-active');
+  if (activeRow){
+    const lt = activeRow.querySelector('[data-line-total]');
+    if (lt) lt.textContent = fmt(v * state.editing.draft.price) + ' ت';
+  }
+  renderHeaderMeter();
+}
 
-    // If active row has no name and others exist, drop it silently
-    setTimeout(() => {
-      const row = state.items[idx];
-      if (!commit && row && !row.name && state.items.length > 1) {
-        state.items.splice(idx, 1);
-      }
-      render();
-    }, 260);
-  };
+function onPriceInput(e){
+  if (!state.editing) return;
+  const v = parseNum(e.target.value);
+  state.editing.draft.price = v;
+  const activeRow = e.target.closest('.inv-row.is-active');
+  if (activeRow){
+    const lt = activeRow.querySelector('[data-line-total]');
+    if (lt) lt.textContent = fmt(state.editing.draft.qty * v) + ' ت';
+  }
+  renderHeaderMeter();
+}
 
-  document.getElementById('editClose').onclick = () => close(false);
-  document.getElementById('editBg').onclick = () => close(false);
+/* ---------- Invoice-level ---------- */
 
-  document.getElementById('eName').onchange = e => {
-    it.name = e.target.value;
-    refreshFifoHint();
-    refreshProfit();
-    refreshPriceInfo();
-  };
+function onInvoiceCancel(){
+  const t = computeTotals();
+  if (t.count === 0 && !state.editing){
+    showToast('لغو شد');
+    return;
+  }
+  if (!window.confirm('فاکتور لغو شود؟ تغییرات ذخیره نمی‌شود.')) return;
+  showToast('لغو شد');
+}
 
-  document.getElementById('eQty').oninput = e => {
-    it.qty = parseFloat(String(e.target.value).replace(/[۰-۹]/g, d => FA.indexOf(d)).replace(/[^\d.]/g, '')) || 0;
-    document.getElementById('eTotal').textContent = faNum(it.qty * it.unitPrice) + ' ت';
-    refreshProfit();
-  };
-
-  document.getElementById('ePrice').oninput = e => {
-    it.unitPrice = parseFloat(String(e.target.value).replace(/[۰-۹]/g, d => FA.indexOf(d)).replace(/[٬,]/g, '').replace(/[^\d.]/g, '')) || 0;
-    document.getElementById('eTotal').textContent = faNum(it.qty * it.unitPrice) + ' ت';
-    refreshProfit();
-  };
-
-  document.getElementById('eProfit').onclick = () => {
-    state.priceRevealed = !state.priceRevealed;
-    document.getElementById('eProfit').classList.toggle('revealed', state.priceRevealed);
-  };
-
-  document.getElementById('eDel').onclick = () => {
-    if (isOnly) return;
-    state.items.splice(idx, 1);
-    close(true);
-  };
-
-  document.getElementById('eOk').onclick = () => {
-    if (!it.name) { close(false); return; }
-    close(true);
-  };
+function onInvoiceSave(){
+  const t = computeTotals();
+  if (t.count === 0){
+    showToast('فاکتور بدون قلم است');
+    return;
+  }
+  if (state.editing){
+    showToast('ابتدا قلم در حال ویرایش را ذخیره یا لغو کنید');
+    return;
+  }
+  showToast(`فاکتور ثبت شد · ${fmt(t.subtotal)} ت`);
 }
 
 /* =========================================================
-   Controls
+   7. DEV CONTROLS
    ========================================================= */
-document.querySelectorAll('[data-theme-btn]').forEach(b => {
-  b.addEventListener('click', () => {
-    document.querySelectorAll('[data-theme-btn]').forEach(x => x.classList.remove('active'));
-    b.classList.add('active');
-    document.body.dataset.theme = b.dataset.themeBtn;
-  });
-});
-
-document.querySelectorAll('[data-w]').forEach(b => {
-  b.addEventListener('click', () => {
+document.querySelectorAll('[data-w]').forEach(btn => {
+  btn.addEventListener('click', () => {
     document.querySelectorAll('[data-w]').forEach(x => x.classList.remove('active'));
-    b.classList.add('active');
-    document.getElementById('phone').dataset.w = b.dataset.w;
+    btn.classList.add('active');
+    state.width = +btn.dataset.w;
+    document.getElementById('phone').setAttribute('data-w', String(state.width));
   });
 });
 
-render();
-</script>
+document.querySelectorAll('[data-theme-btn]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('[data-theme-btn]').forEach(x => x.classList.remove('active'));
+    btn.classList.add('active');
+    state.theme = btn.dataset.themeBtn;
+    document.body.setAttribute('data-theme', state.theme);
+  });
+});
 
+/* =========================================================
+   8. BOOT
+   ========================================================= */
+render();
+
+</script>
 </body>
 </html>
