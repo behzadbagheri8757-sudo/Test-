@@ -5,23 +5,17 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>BAGHERI — Invoice Prototype V2</title>
 <style>
-/* =========================================================
-   TOKENS
-   ========================================================= */
 :root{
   --blue:#0070D2;
   --orange:#FF5C35;
   --danger:#D52B36;
   --success:#0F7A4A;
-
   --text:#1F2937;
   --text-2:#667085;
   --text-3:#98A2B3;
-
   --bg:#F5F7FA;
   --surface:#FFFFFF;
   --surface-2:#F8FAFC;
-
   --divider:rgba(15,23,42,.08);
   --divider-soft:rgba(15,23,42,.05);
   --tap:rgba(15,23,42,.04);
@@ -30,31 +24,23 @@
   --blue:#4FA3FF;
   --danger:#FF6B6B;
   --success:#4ADE80;
-
   --text:#F2F2F7;
   --text-2:#9AA0A6;
   --text-3:#6E7378;
-
   --bg:#000000;
   --surface:#1C1C1E;
   --surface-2:#2C2C2E;
-
   --divider:rgba(255,255,255,.10);
   --divider-soft:rgba(255,255,255,.06);
   --tap:rgba(255,255,255,.05);
 }
-
-/* =========================================================
-   RESET / BASE
-   ========================================================= */
 *,*::before,*::after{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-html{-webkit-text-size-adjust:100%;}
 html,body{margin:0;padding:0;}
+html{-webkit-text-size-adjust:100%;}
 body{
   font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Vazirmatn','Segoe UI',Tahoma,sans-serif;
   font-size:15px;line-height:1.4;color:var(--text);
-  background:#E8EBF0;
-  font-variant-numeric:tabular-nums;
+  background:#E8EBF0;font-variant-numeric:tabular-nums;
   -webkit-font-smoothing:antialiased;
 }
 [data-theme="dark"] body{background:#0a0a0a;}
@@ -62,43 +48,24 @@ button{font-family:inherit;color:inherit;}
 input,select{font-family:inherit;}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
 
-/* =========================================================
-   DEV BAR (prototype-only)
-   ========================================================= */
 .dev-bar{
   position:fixed;top:0;left:0;right:0;z-index:1000;
-  background:#0F172A;color:#FFF;
-  padding:8px 12px;
-  display:flex;flex-wrap:wrap;gap:14px;align-items:center;
-  font-size:12px;
+  background:#0F172A;color:#FFF;padding:8px 12px;
+  display:flex;flex-wrap:wrap;gap:14px;align-items:center;font-size:12px;
 }
 .dev-bar .grp{display:flex;gap:4px;align-items:center;}
 .dev-bar .lbl{color:#94A3B8;font-size:11px;margin-inline-end:4px;}
 .dev-bar button{
   background:rgba(255,255,255,.08);color:#E2E8F0;
   border:1px solid rgba(255,255,255,.14);
-  padding:5px 10px;border-radius:6px;
-  font-size:11px;cursor:pointer;
-  transition:background-color 140ms ease;
+  padding:5px 10px;border-radius:6px;font-size:11px;cursor:pointer;
 }
-.dev-bar button.active{
-  background:var(--blue);border-color:var(--blue);color:#FFF;font-weight:600;
-}
+.dev-bar button.active{background:var(--blue);border-color:var(--blue);color:#FFF;font-weight:600;}
 
-/* =========================================================
-   PHONE FRAME
-   ========================================================= */
-.phone-wrap{
-  padding:56px 12px 24px;
-  display:flex;justify-content:center;
-  min-height:100vh;
-}
+.phone-wrap{padding:56px 12px 24px;display:flex;justify-content:center;min-height:100vh;}
 .phone{
-  width:390px;
-  height:min(calc(100vh - 100px), 880px);
-  background:var(--bg);
-  border-radius:28px;
-  overflow:hidden;
+  width:390px;height:min(calc(100vh - 100px),880px);
+  background:var(--bg);border-radius:28px;overflow:hidden;
   position:relative;
   box-shadow:0 16px 48px rgba(15,23,42,.14),0 2px 6px rgba(15,23,42,.06);
   transition:width 200ms ease,background-color 200ms ease;
@@ -114,18 +81,10 @@ input,select{font-family:inherit;}
   .phone{width:100% !important;height:calc(100vh - 42px);max-height:none;border-radius:0;box-shadow:none;}
 }
 
-/* =========================================================
-   INVOICE LAYOUT
-   ========================================================= */
-.invoice{
-  display:flex;flex-direction:column;
-  height:100%;background:var(--bg);
-}
+.invoice{display:flex;flex-direction:column;height:100%;background:var(--bg);}
 
-/* ---------- Header ---------- */
 .hdr{
-  flex:0 0 auto;
-  display:flex;align-items:center;gap:8px;
+  flex:0 0 auto;display:flex;align-items:center;gap:8px;
   padding:10px 12px;
   padding-top:calc(10px + env(safe-area-inset-top,0px));
   background:var(--surface);
@@ -133,24 +92,19 @@ input,select{font-family:inherit;}
   position:relative;z-index:10;
 }
 .hdr-btn{
-  flex:0 0 auto;
-  background:transparent;border:none;
-  padding:8px 10px;min-height:36px;
-  border-radius:8px;
-  color:var(--text-2);font-size:15px;
-  cursor:pointer;
+  flex:0 0 auto;background:transparent;border:none;
+  padding:8px 10px;min-height:36px;border-radius:8px;
+  color:var(--text-2);font-size:15px;cursor:pointer;
   transition:background-color 140ms ease;
 }
 .hdr-btn:active{background:var(--tap);}
 .hdr-btn.primary{color:var(--blue);font-weight:600;}
 .hdr-title{
   flex:1;min-width:0;text-align:center;
-  font-size:15px;font-weight:600;
-  color:var(--text);
+  font-size:15px;font-weight:600;color:var(--text);
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
 
-/* ---------- Body ---------- */
 .body{
   flex:1;min-height:0;
   overflow-y:auto;-webkit-overflow-scrolling:touch;
@@ -158,20 +112,15 @@ input,select{font-family:inherit;}
   padding:14px 14px calc(28px + env(safe-area-inset-bottom,0px));
 }
 
-/* ---------- Customer ---------- */
 .customer{padding:2px 4px 14px;}
 .cust-label{font-size:12px;color:var(--text-2);margin-bottom:2px;}
 .cust-value{font-size:15px;color:var(--text);font-weight:500;}
 
-/* ---------- Date row ---------- */
 .date-row{
   display:flex;align-items:center;gap:10px;
-  width:100%;
-  padding:12px 14px;
-  background:var(--surface);
-  border:none;border-radius:10px;
-  margin-bottom:18px;
-  font-family:inherit;font-size:14px;
+  width:100%;padding:12px 14px;
+  background:var(--surface);border:none;border-radius:10px;
+  margin-bottom:18px;font-family:inherit;font-size:14px;
   cursor:pointer;text-align:right;
   transition:background-color 140ms ease;
 }
@@ -180,25 +129,20 @@ input,select{font-family:inherit;}
 .date-val{color:var(--text);font-weight:500;margin-inline-start:auto;}
 .date-chev{color:var(--text-3);font-size:18px;line-height:1;}
 
-/* ---------- Section label ---------- */
 .section-label{
   font-size:12px;color:var(--text-2);font-weight:500;
   margin:0 4px 8px;
 }
 
-/* ---------- Items card ---------- */
 .items-card{
-  background:var(--surface);
-  border-radius:14px;
-  margin-bottom:18px;
-  position:relative;
+  background:var(--surface);border-radius:14px;
+  margin-bottom:18px;position:relative;
 }
 .item-row{
   display:grid;
   grid-template-columns:22px minmax(0,1fr) auto;
   gap:10px;align-items:center;
-  padding:12px 14px;
-  min-height:60px;
+  padding:12px 14px;min-height:60px;
   cursor:pointer;
   border-bottom:0.5px solid var(--divider-soft);
   transition:background-color 140ms ease;
@@ -210,64 +154,46 @@ input,select{font-family:inherit;}
 .item-row:last-child{border-bottom-left-radius:14px;border-bottom-right-radius:14px;}
 
 .row-num{
-  font-size:12px;color:var(--text-3);
-  font-weight:500;text-align:center;
-  font-variant-numeric:tabular-nums;
+  font-size:12px;color:var(--text-3);font-weight:500;
+  text-align:center;font-variant-numeric:tabular-nums;
 }
 .row-info{min-width:0;}
 .row-name{
-  display:block;
-  font-size:15px;font-weight:500;
+  display:block;font-size:15px;font-weight:500;
   color:var(--text);line-height:1.3;
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
 }
 .row-calc{
-  display:block;
-  font-size:12px;color:var(--text-2);
+  display:block;font-size:12px;color:var(--text-2);
   line-height:1.35;margin-top:2px;
   font-variant-numeric:tabular-nums;
 }
 .row-total{
-  font-size:15px;font-weight:600;
-  color:var(--text);
+  font-size:15px;font-weight:600;color:var(--text);
   font-variant-numeric:tabular-nums;
   white-space:nowrap;text-align:left;
 }
 
-/* ---------- Edit (active) row ---------- */
 .item-row.is-active{
-  display:block;
-  padding:12px 14px 14px;
-  background:var(--surface-2);
-  cursor:default;
-  border-radius:0;
+  display:block;padding:12px 14px 14px;
+  background:var(--surface-2);cursor:default;border-radius:0;
 }
 .item-row.is-active:first-child{border-top-left-radius:14px;border-top-right-radius:14px;}
 .item-row.is-active:last-child{border-bottom-left-radius:14px;border-bottom-right-radius:14px;}
 .item-row.is-active::before{
   content:'';position:absolute;
-  top:10px;bottom:10px;
-  inset-inline-start:0;width:2.5px;
+  top:10px;bottom:10px;inset-inline-start:0;width:2.5px;
   background:var(--blue);border-radius:2px;
 }
-.item-row.is-active:active{background:var(--surface-2);}
 
-.row-head{
-  display:flex;align-items:center;gap:10px;
-  margin-bottom:12px;
-}
+.row-head{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
 .row-product-wrap{flex:1;min-width:0;position:relative;}
 .row-product{
-  width:100%;
-  display:flex;align-items:center;justify-content:space-between;
-  gap:8px;
-  padding:10px 12px;min-height:42px;
-  background:var(--surface);
-  border:0.5px solid var(--divider);
-  border-radius:10px;
-  color:var(--text);font-family:inherit;
-  font-size:14px;cursor:pointer;text-align:right;
-  transition:border-color 140ms ease;
+  width:100%;display:flex;align-items:center;justify-content:space-between;
+  gap:8px;padding:10px 12px;min-height:42px;
+  background:var(--surface);border:0.5px solid var(--divider);
+  border-radius:10px;color:var(--text);
+  font-family:inherit;font-size:14px;cursor:pointer;text-align:right;
 }
 .row-product:active{border-color:rgba(0,112,210,.35);}
 .rp-text{
@@ -285,184 +211,120 @@ input,select{font-family:inherit;}
 .row-field{display:flex;flex-direction:column;gap:5px;min-width:0;}
 .row-field label{font-size:11px;color:var(--text-2);}
 .row-field input{
-  width:100%;min-height:44px;
-  padding:10px 12px;
-  border:0.5px solid var(--divider);
-  border-radius:10px;
-  background:var(--surface);
-  color:var(--text);
+  width:100%;min-height:44px;padding:10px 12px;
+  border:0.5px solid var(--divider);border-radius:10px;
+  background:var(--surface);color:var(--text);
   font-family:inherit;font-size:15px;font-weight:500;
-  text-align:center;
-  font-variant-numeric:tabular-nums;
+  text-align:center;font-variant-numeric:tabular-nums;
   transition:border-color 140ms ease,box-shadow 140ms ease;
 }
 .row-field input:focus{
-  outline:none;
-  border-color:rgba(0,112,210,.5);
+  outline:none;border-color:rgba(0,112,210,.5);
   box-shadow:0 0 0 3px rgba(0,112,210,.10);
 }
 
 .row-line-total{
   display:flex;justify-content:space-between;align-items:baseline;
-  gap:12px;
-  padding:12px 0;
-  border-top:0.5px solid var(--divider-soft);
-  font-size:13px;
+  gap:12px;padding:12px 0;
+  border-top:0.5px solid var(--divider-soft);font-size:13px;
 }
 .row-line-total .lbl{color:var(--text-2);}
 .row-line-total .val{
-  font-size:16px;font-weight:700;
-  color:var(--text);
+  font-size:16px;font-weight:700;color:var(--text);
   font-variant-numeric:tabular-nums;
 }
 
-.row-actions{
-  display:flex;gap:10px;margin-top:4px;
-}
+.row-actions{display:flex;gap:10px;margin-top:4px;}
 .row-actions button{
-  flex:1;min-height:44px;
-  border-radius:10px;
+  flex:1;min-height:44px;border-radius:10px;
   font-family:inherit;font-size:14px;font-weight:600;
   cursor:pointer;
   transition:opacity 140ms ease,background-color 140ms ease;
 }
 .btn-del{
-  background:transparent;
-  color:var(--danger);
-  border:0.5px solid var(--divider);
-  font-weight:500;
+  background:transparent;color:var(--danger);
+  border:0.5px solid var(--divider);font-weight:500;
 }
 .btn-del:active{background:var(--tap);}
 .btn-save{background:var(--blue);color:#FFF;border:none;}
 .btn-save:active{opacity:.85;}
 
-/* ---------- Product dropdown ---------- */
 .pd-dropdown{
-  position:absolute;
-  top:calc(100% + 6px);
-  inset-inline:0;
+  position:absolute;top:calc(100% + 6px);inset-inline:0;
   background:var(--surface);
-  border:0.5px solid var(--divider);
-  border-radius:12px;
+  border:0.5px solid var(--divider);border-radius:12px;
   box-shadow:0 12px 32px rgba(15,23,42,.14);
-  z-index:20;
-  overflow:hidden;
-  display:flex;flex-direction:column;
-  max-height:360px;
-  animation:ddIn 180ms cubic-bezier(.22,1,.36,1);
+  z-index:20;overflow:hidden;
+  display:flex;flex-direction:column;max-height:360px;
 }
-@keyframes ddIn{
-  from{opacity:.4;transform:translateY(-3px);}
-  to{opacity:1;transform:translateY(0);}
-}
-.pd-popular{
-  padding:9px 12px 7px;
-  border-bottom:0.5px solid var(--divider-soft);
-}
+.pd-popular{padding:9px 12px 7px;border-bottom:0.5px solid var(--divider-soft);}
 .pd-popular-lbl{
-  font-size:10px;color:var(--text-3);
-  font-weight:500;letter-spacing:.04em;
-  margin-bottom:6px;
+  font-size:10px;color:var(--text-3);font-weight:500;
+  letter-spacing:.04em;margin-bottom:6px;
 }
 .pd-chips{
-  display:flex;gap:5px;overflow-x:auto;
-  scrollbar-width:none;
+  display:flex;gap:5px;overflow-x:auto;scrollbar-width:none;
   margin:0 -12px;padding:0 12px;
 }
 .pd-chips::-webkit-scrollbar{display:none;}
 .pd-chip{
-  flex:0 0 auto;
-  padding:5px 10px;
-  background:var(--surface-2);
-  border:0.5px solid var(--divider);
-  border-radius:999px;
-  font-family:inherit;font-size:12px;
-  color:var(--text);cursor:pointer;
-  white-space:nowrap;
+  flex:0 0 auto;padding:5px 10px;
+  background:var(--surface-2);border:0.5px solid var(--divider);
+  border-radius:999px;font-family:inherit;font-size:12px;
+  color:var(--text);cursor:pointer;white-space:nowrap;
 }
 .pd-chip:active{background:var(--divider);}
-.pd-search{
-  padding:8px 10px;
-  border-bottom:0.5px solid var(--divider-soft);
-}
+.pd-search{padding:8px 10px;border-bottom:0.5px solid var(--divider-soft);}
 .pd-search input{
-  width:100%;padding:8px 10px;
-  background:var(--surface-2);
-  border:0.5px solid var(--divider);
-  border-radius:8px;
-  font-family:inherit;font-size:13px;
-  color:var(--text);
-  min-height:36px;
+  width:100%;padding:8px 10px;background:var(--surface-2);
+  border:0.5px solid var(--divider);border-radius:8px;
+  font-family:inherit;font-size:13px;color:var(--text);min-height:36px;
 }
-.pd-search input:focus{
-  outline:none;
-  border-color:rgba(0,112,210,.5);
-}
-.pd-list{
-  flex:1;overflow-y:auto;
-  -webkit-overflow-scrolling:touch;
-  max-height:220px;
-}
+.pd-search input:focus{outline:none;border-color:rgba(0,112,210,.5);}
+.pd-list{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;max-height:220px;}
 .pd-item{
-  width:100%;
-  display:flex;justify-content:space-between;align-items:center;
-  gap:12px;
-  padding:10px 12px;min-height:42px;
+  width:100%;display:flex;justify-content:space-between;align-items:center;
+  gap:12px;padding:10px 12px;min-height:42px;
   background:none;border:none;
   border-bottom:0.5px solid var(--divider-soft);
-  font-family:inherit;font-size:13px;
-  color:var(--text);cursor:pointer;
-  text-align:right;
+  font-family:inherit;font-size:13px;color:var(--text);
+  cursor:pointer;text-align:right;
   transition:background-color 140ms ease;
 }
 .pd-item:last-child{border-bottom:none;}
 .pd-item:active{background:var(--tap);}
 .pd-item.selected{color:var(--blue);font-weight:600;}
 .pd-item-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.pd-item-price{
-  color:var(--text-2);font-size:12px;
-  font-variant-numeric:tabular-nums;
-  white-space:nowrap;
-}
-.pd-empty{
-  padding:20px 12px;text-align:center;
-  font-size:12px;color:var(--text-3);
-}
+.pd-item-price{color:var(--text-2);font-size:12px;font-variant-numeric:tabular-nums;white-space:nowrap;}
+.pd-empty{padding:20px 12px;text-align:center;font-size:12px;color:var(--text-3);}
 
-/* ---------- Add item ---------- */
 .add-item{
-  width:100%;
-  display:flex;align-items:center;gap:10px;
+  width:100%;display:flex;align-items:center;gap:10px;
   padding:14px 16px;min-height:54px;
   background:none;border:none;
   border-top:0.5px solid var(--divider-soft);
-  color:var(--blue);
-  font-family:inherit;font-size:15px;font-weight:500;
+  color:var(--blue);font-family:inherit;font-size:15px;font-weight:500;
   cursor:pointer;text-align:right;
   border-bottom-left-radius:14px;border-bottom-right-radius:14px;
   transition:background-color 140ms ease;
 }
 .add-item:active{background:rgba(0,112,210,.05);}
 .add-plus{
-  width:22px;height:22px;flex:0 0 22px;
-  border-radius:50%;
+  width:22px;height:22px;flex:0 0 22px;border-radius:50%;
   background:var(--blue);color:#FFF;
   display:flex;align-items:center;justify-content:center;
-  font-size:15px;line-height:1;font-weight:400;
-  padding-bottom:1px;
+  font-size:15px;line-height:1;font-weight:400;padding-bottom:1px;
 }
 
-/* ---------- Summary ---------- */
+.items-empty{padding:28px 16px;text-align:center;font-size:13px;color:var(--text-3);}
+
 .summary{
-  background:var(--surface);
-  border-radius:14px;
-  padding:4px 14px;
-  margin-bottom:12px;
+  background:var(--surface);border-radius:14px;
+  padding:4px 14px;margin-bottom:12px;
 }
 .sum-row{
   display:flex;justify-content:space-between;align-items:baseline;
-  gap:12px;padding:11px 0;
-  font-size:14px;
+  gap:12px;padding:11px 0;font-size:14px;
   border-bottom:0.5px solid var(--divider-soft);
 }
 .sum-row:last-child{border-bottom:none;}
@@ -475,46 +337,34 @@ input,select{font-family:inherit;}
 .sum-row.grand .lbl{color:var(--text);font-weight:600;}
 .sum-row.grand .val{font-weight:700;font-size:17px;}
 
-/* ---------- Profit (secondary) ---------- */
 .profit-block{
-  background:var(--surface-2);
-  border-radius:10px;
-  padding:8px 14px;
-  margin-bottom:18px;
+  background:var(--surface-2);border-radius:10px;
+  padding:8px 14px;margin-bottom:18px;
 }
 .profit-row{
   display:flex;justify-content:space-between;align-items:baseline;
-  gap:12px;padding:3px 0;
-  font-size:12px;color:var(--text-2);
+  gap:12px;padding:3px 0;font-size:12px;color:var(--text-2);
 }
 .profit-row .val{
   color:var(--text);font-weight:500;
   font-variant-numeric:tabular-nums;white-space:nowrap;
 }
 
-/* ---------- Payment ---------- */
-.pay-grid{
-  display:flex;gap:6px;
-  margin-bottom:14px;
-}
+.pay-grid{display:flex;gap:6px;margin-bottom:14px;}
 .pay-btn{
   flex:1 1 0;min-width:0;
-  display:flex;align-items:center;justify-content:center;
-  gap:5px;
+  display:flex;align-items:center;justify-content:center;gap:5px;
   padding:10px 4px;min-height:44px;
   background:var(--surface);
-  border:0.5px solid var(--divider);
-  border-radius:10px;
-  color:var(--text);
-  font-family:inherit;font-size:12px;font-weight:500;
+  border:0.5px solid var(--divider);border-radius:10px;
+  color:var(--text);font-family:inherit;font-size:12px;font-weight:500;
   cursor:pointer;
   transition:background-color 140ms ease,border-color 140ms ease,color 140ms ease;
 }
 .pay-btn:active{background:var(--tap);}
 .pay-btn.selected{
   background:rgba(0,112,210,.08);
-  border-color:var(--blue);
-  color:var(--blue);
+  border-color:var(--blue);color:var(--blue);
 }
 .pay-btn .pay-ico{
   width:16px;height:16px;
@@ -526,76 +376,40 @@ input,select{font-family:inherit;}
   fill:none;stroke-linecap:round;stroke-linejoin:round;
 }
 
-/* Payment conditional details */
 .pay-details{
-  background:var(--surface);
-  border-radius:10px;
-  padding:12px 14px;
-  margin-bottom:18px;
+  background:var(--surface);border-radius:10px;
+  padding:12px 14px;margin-bottom:18px;
   display:flex;flex-direction:column;gap:10px;
-  animation:slideDown 200ms cubic-bezier(.22,1,.36,1);
-}
-@keyframes slideDown{
-  from{opacity:0;transform:translateY(-4px);}
-  to{opacity:1;transform:translateY(0);}
 }
 .pay-field{display:flex;flex-direction:column;gap:5px;}
 .pay-field label{font-size:11px;color:var(--text-2);}
 .pay-field input,
 .pay-field .date-btn{
-  width:100%;min-height:40px;
-  padding:10px 12px;
+  width:100%;min-height:40px;padding:10px 12px;
   background:var(--surface-2);
-  border:0.5px solid var(--divider);
-  border-radius:8px;
-  font-family:inherit;font-size:14px;
-  color:var(--text);text-align:right;
+  border:0.5px solid var(--divider);border-radius:8px;
+  font-family:inherit;font-size:14px;color:var(--text);text-align:right;
 }
-.pay-field input:focus{
-  outline:none;
-  border-color:rgba(0,112,210,.5);
-}
+.pay-field input:focus{outline:none;border-color:rgba(0,112,210,.5);}
 .date-btn{
-  display:flex;justify-content:space-between;align-items:center;
-  cursor:pointer;
+  display:flex;justify-content:space-between;align-items:center;cursor:pointer;
 }
-.date-btn .date-chev{
-  color:var(--text-3);font-size:16px;line-height:1;
-}
+.date-btn .date-chev{color:var(--text-3);font-size:16px;line-height:1;}
 
-/* ---------- Save button ---------- */
 .save-btn{
-  width:100%;min-height:48px;
-  padding:12px;
+  width:100%;min-height:48px;padding:12px;
   background:var(--blue);color:#FFF;
   border:none;border-radius:12px;
   font-family:inherit;font-size:15px;font-weight:600;
-  cursor:pointer;
-  margin-top:4px;
+  cursor:pointer;margin-top:4px;
   transition:opacity 140ms ease;
 }
 .save-btn:active{opacity:.9;}
 
-/* ---------- Empty state ---------- */
-.items-empty{
-  padding:28px 16px;
-  text-align:center;
-  font-size:13px;
-  color:var(--text-3);
-}
-
-/* =========================================================
-   CALENDAR
-   ========================================================= */
-.cal-sheet{
-  position:absolute;inset:0;
-  z-index:50;
-  pointer-events:none;
-}
+.cal-sheet{position:absolute;inset:0;z-index:50;pointer-events:none;}
 .cal-sheet.open{pointer-events:auto;}
 .cal-scrim{
-  position:absolute;inset:0;
-  background:rgba(0,0,0,0);
+  position:absolute;inset:0;background:rgba(0,0,0,0);
   transition:background-color 220ms ease;
 }
 .cal-sheet.open .cal-scrim{background:rgba(0,0,0,.35);}
@@ -606,29 +420,22 @@ input,select{font-family:inherit;}
   padding-bottom:calc(12px + env(safe-area-inset-bottom,0px));
   transform:translateY(100%);
   transition:transform 280ms cubic-bezier(.22,1,.36,1);
-  max-height:90%;
-  overflow-y:auto;
+  max-height:90%;overflow-y:auto;
 }
 .cal-sheet.open .cal-panel{transform:translateY(0);}
 .cal-handle{
-  width:36px;height:4px;
-  background:var(--divider);
-  border-radius:2px;
-  margin:8px auto 0;
+  width:36px;height:4px;background:var(--divider);
+  border-radius:2px;margin:8px auto 0;
 }
 .cal-hd{
   display:flex;align-items:center;justify-content:space-between;
   gap:8px;padding:8px 14px 12px;
   border-bottom:0.5px solid var(--divider-soft);
 }
-.cal-hd-title{
-  font-size:15px;font-weight:600;color:var(--text);
-}
+.cal-hd-title{font-size:15px;font-weight:600;color:var(--text);}
 .cal-hd-btn{
-  background:none;border:none;
-  padding:8px 10px;min-height:36px;
-  font-family:inherit;font-size:14px;
-  color:var(--text-2);cursor:pointer;
+  background:none;border:none;padding:8px 10px;min-height:36px;
+  font-family:inherit;font-size:14px;color:var(--text-2);cursor:pointer;
 }
 .cal-hd-btn.primary{color:var(--blue);font-weight:600;}
 
@@ -636,38 +443,27 @@ input,select{font-family:inherit;}
   display:flex;align-items:center;justify-content:space-between;
   padding:14px 14px 8px;
 }
-.cal-nav-title{
-  font-size:15px;font-weight:600;color:var(--text);
-}
+.cal-nav-title{font-size:15px;font-weight:600;color:var(--text);}
 .cal-nav-btn{
-  width:36px;height:36px;
-  border-radius:50%;
-  background:var(--surface-2);
-  border:none;color:var(--text-2);
-  font-size:20px;line-height:1;
-  cursor:pointer;
+  width:36px;height:36px;border-radius:50%;
+  background:var(--surface-2);border:none;color:var(--text-2);
+  font-size:20px;line-height:1;cursor:pointer;
   display:flex;align-items:center;justify-content:center;
 }
 .cal-weekdays{
   display:grid;grid-template-columns:repeat(7,1fr);
-  padding:4px 14px 6px;
-  text-align:center;
+  padding:4px 14px 6px;text-align:center;
   font-size:11px;color:var(--text-3);
 }
 .cal-grid{
   display:grid;grid-template-columns:repeat(7,1fr);
-  padding:0 14px 14px;
-  gap:2px;
+  padding:0 14px 14px;gap:2px;
 }
 .cal-cell{
-  aspect-ratio:1;
-  display:flex;align-items:center;justify-content:center;
-  border-radius:50%;
-  background:none;border:none;
-  font-family:inherit;font-size:14px;
-  color:var(--text);cursor:pointer;
-  font-variant-numeric:tabular-nums;
-  transition:background-color 120ms ease;
+  aspect-ratio:1;display:flex;align-items:center;justify-content:center;
+  border-radius:50%;background:none;border:none;
+  font-family:inherit;font-size:14px;color:var(--text);
+  cursor:pointer;font-variant-numeric:tabular-nums;
   min-height:40px;
 }
 .cal-cell:active{background:var(--tap);}
@@ -675,21 +471,15 @@ input,select{font-family:inherit;}
 .cal-cell.today{color:var(--blue);font-weight:700;}
 .cal-cell.selected{background:var(--blue);color:#FFF;font-weight:700;}
 
-/* =========================================================
-   TOAST
-   ========================================================= */
 .toast{
-  position:absolute;
-  left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));
+  position:absolute;left:50%;
+  bottom:calc(24px + env(safe-area-inset-bottom,0px));
   transform:translateX(-50%) translateY(12px);
   background:rgba(15,23,42,.92);color:#FFF;
-  padding:10px 18px;
-  border-radius:22px;
-  font-size:13px;
+  padding:10px 18px;border-radius:22px;font-size:13px;
   opacity:0;pointer-events:none;
   transition:opacity 220ms ease,transform 220ms ease;
-  z-index:100;
-  white-space:nowrap;
+  z-index:100;white-space:nowrap;
   max-width:calc(100% - 24px);
   overflow:hidden;text-overflow:ellipsis;
 }
@@ -724,7 +514,6 @@ input,select{font-family:inherit;}
       </header>
       <main class="body" id="body"></main>
     </div>
-
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
     <div class="cal-sheet" id="cal-sheet" aria-hidden="true"></div>
   </div>
@@ -734,7 +523,7 @@ input,select{font-family:inherit;}
 'use strict';
 
 /* =========================================================
-   DATA (mock, no external access)
+   DATA
    ========================================================= */
 const CATALOG = [
   { id:'p1',  name:'لوبیا چیتی',    unit:'کیلو',  price:200000,  fifo:175000  },
@@ -749,28 +538,27 @@ const CATALOG = [
   { id:'p10', name:'ماش',           unit:'کیلو',  price:250000,  fifo:210000  },
 ];
 
-/* Popular placeholder (ids only) */
 const POPULAR_IDS = ['p1', 'p2', 'p4'];
 
-/* =========================================================
-   STATE
-   ========================================================= */
 const INITIAL_ITEMS = [
   { id:'i1', productId:'p1', name:'لوبیا چیتی',    unit:'کیلو',  qty:5, price:200000  },
   { id:'i2', productId:'p2', name:'نخود ابوگوشتی', unit:'کیلو',  qty:3, price:180000  },
   { id:'i3', productId:'p3', name:'کشمش پلویی',    unit:'',      qty:1, price:2400000 },
 ];
 
+/* =========================================================
+   STATE
+   ========================================================= */
 let state = {
-  date:      { jy: 1405, jm: 6, jd: 27 },
-  items:     JSON.parse(JSON.stringify(INITIAL_ITEMS)),
-  editing:   null,           // { id, isNew, draft, dropdownOpen, search }
-  payment:   'cash',         // cash | card | check | credit
-  check:     { number:'', due:{ jy:1405, jm:7, jd:5 } },
-  credit:    { due:{ jy:1405, jm:7, jd:5 } },
-  calendar:  { open:false, jy:1405, jm:6, target:null, pending:null },
-  theme:     'light',
-  width:     390,
+  date:     { jy: 1405, jm: 6, jd: 27 },
+  items:    JSON.parse(JSON.stringify(INITIAL_ITEMS)),
+  editing:  null,
+  payment:  'cash',
+  check:    { number:'', due:{ jy:1405, jm:7, jd:5 } },
+  credit:   { due:{ jy:1405, jm:7, jd:5 } },
+  calendar: { open:false, jy:1405, jm:6, target:null, pending:null },
+  theme:    'light',
+  width:    390,
 };
 
 let uidCounter = 100;
@@ -809,12 +597,9 @@ function showToast(msg){
 }
 
 /* =========================================================
-   JALALI DATE
+   JALALI
    ========================================================= */
-const JALALI_MONTHS = [
-  'فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور',
-  'مهر','آبان','آذر','دی','بهمن','اسفند'
-];
+const JALALI_MONTHS = ['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'];
 
 function jalaliToGregorian(jy, jm, jd){
   jy = +jy; jm = +jm; jd = +jd;
@@ -851,7 +636,6 @@ function jalaliMonthLength(jy, jm){
   return [1,5,9,13,17,22,26,30].indexOf(r) !== -1 ? 30 : 29;
 }
 
-/* 0 = شنبه, 6 = جمعه */
 function jalaliWeekday(jy, jm, jd){
   const [gy, gm, gd] = jalaliToGregorian(jy, jm, jd);
   const d = new Date(gy, gm-1, gd);
@@ -861,35 +645,27 @@ function jalaliWeekday(jy, jm, jd){
 function formatDateJalali(d){
   return toFa(`${d.jy}/${String(d.jm).padStart(2,'0')}/${String(d.jd).padStart(2,'0')}`);
 }
-function formatDateLong(d){
-  return `${toFa(d.jd)} ${JALALI_MONTHS[d.jm-1]} ${toFa(d.jy)}`;
-}
 
 /* =========================================================
    CALCULATIONS
    ========================================================= */
 function getLiveItems(){
   if (!state.editing) return state.items.slice();
-  const editingId = state.editing.id;
-  return state.items.filter(x => x.id !== editingId);
+  return state.items.filter(x => x.id !== state.editing.id);
 }
-
 function getLineTotal(item){
   return (Number(item.qty) || 0) * (Number(item.price) || 0);
 }
-
 function getSubtotal(){
   const live = getLiveItems();
-  const itemsTotal = live.reduce((s, x) => s + getLineTotal(x), 0);
-  // include draft only if it has a product selected
+  let total = live.reduce((s, x) => s + getLineTotal(x), 0);
   if (state.editing && state.editing.draft.name){
-    itemsTotal += getLineTotal(state.editing.draft);
+    total += getLineTotal(state.editing.draft);
   }
-  return itemsTotal;
+  return total;
 }
 function getDiscount(){ return 0; }
 function getGrandTotal(){ return Math.max(0, getSubtotal() - getDiscount()); }
-
 function getProfit(){
   const live = getLiveItems();
   let profit = live.reduce((s, it) => {
@@ -910,7 +686,7 @@ function getMargin(){
 }
 
 /* =========================================================
-   RENDER — MAIN
+   RENDER
    ========================================================= */
 function render(){
   renderBody();
@@ -933,7 +709,7 @@ function renderBody(){
 
   const addBtnHtml = (state.editing && state.editing.isNew)
     ? ''
-    : `<button type="button" class="add-item" data-action="add">
+    : `<button type="button" class="add-item" id="btn-add-item">
          <span class="add-plus" aria-hidden="true">+</span>
          افزودن قلم جدید
        </button>`;
@@ -952,7 +728,7 @@ function renderBody(){
       <div class="cust-value">فروشگاه نمونه</div>
     </div>
 
-    <button type="button" class="date-row" data-action="open-calendar" data-target="invoice">
+    <button type="button" class="date-row" id="btn-open-invoice-cal">
       <span class="date-lbl">تاریخ فاکتور</span>
       <span class="date-val">${escapeHtml(formatDateJalali(state.date))}</span>
       <span class="date-chev" aria-hidden="true">›</span>
@@ -960,7 +736,7 @@ function renderBody(){
 
     <div class="section-label">اقلام فاکتور</div>
 
-    <div class="items-card">
+    <div class="items-card" id="items-card">
       ${itemsEmpty ? '<div class="items-empty">هنوز قلمی اضافه نشده</div>' : ''}
       ${itemsHtml}
       ${activeNewHtml}
@@ -968,27 +744,27 @@ function renderBody(){
     </div>
 
     <div class="summary">
-      <div class="sum-row"><span class="lbl">جمع کالاها</span><span class="val">${fmt(subtotal)}</span></div>
-      <div class="sum-row"><span class="lbl">تخفیف</span><span class="val">${fmt(discount)}</span></div>
-      <div class="sum-row grand"><span class="lbl">مبلغ نهایی</span><span class="val">${fmt(grand)}</span></div>
+      <div class="sum-row"><span class="lbl">جمع کالاها</span><span class="val" id="val-subtotal">${fmt(subtotal)}</span></div>
+      <div class="sum-row"><span class="lbl">تخفیف</span><span class="val" id="val-discount">${fmt(discount)}</span></div>
+      <div class="sum-row grand"><span class="lbl">مبلغ نهایی</span><span class="val" id="val-grand">${fmt(grand)}</span></div>
     </div>
 
     <div class="profit-block">
-      <div class="profit-row"><span>سود فاکتور</span><span class="val">${fmt(profit)} ت</span></div>
-      <div class="profit-row"><span>حاشیه سود</span><span class="val">${fmt(Math.round(margin * 1000) / 10)}٪</span></div>
+      <div class="profit-row"><span>سود فاکتور</span><span class="val" id="val-profit">${fmt(profit)} ت</span></div>
+      <div class="profit-row"><span>حاشیه سود</span><span class="val" id="val-margin">${fmt(Math.round(margin * 1000) / 10)}٪</span></div>
     </div>
 
     <div class="section-label">پرداخت</div>
-    <div class="pay-grid">
-      ${renderPayBtn('cash',   'نقدی',           '<rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/>')}
-      ${renderPayBtn('card',   'کارت',           '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/>')}
-      ${renderPayBtn('check',  'چک',             '<rect x="4" y="5" width="16" height="14" rx="2"/><path d="M8 15h4M8 12h8"/>')}
-      ${renderPayBtn('credit', 'نسیه',           '<rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 10h8M8 14h5"/>')}
+    <div class="pay-grid" id="pay-grid">
+      ${renderPayBtn('cash',   'نقدی',  '<rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/>')}
+      ${renderPayBtn('card',   'کارت',  '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/>')}
+      ${renderPayBtn('check',  'چک',    '<rect x="4" y="5" width="16" height="14" rx="2"/><path d="M8 15h4M8 12h8"/>')}
+      ${renderPayBtn('credit', 'نسیه',  '<rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 10h8M8 14h5"/>')}
     </div>
 
     ${renderPayDetails()}
 
-    <button type="button" class="save-btn" data-action="save-invoice">ثبت فاکتور</button>
+    <button type="button" class="save-btn" id="btn-save-invoice">ثبت فاکتور</button>
   `;
 
   bindBody();
@@ -1010,11 +786,11 @@ function renderPayDetails(){
           <label for="chk-num">شماره چک</label>
           <input id="chk-num" type="text" inputmode="numeric"
                  value="${escapeHtml(state.check.number)}"
-                 placeholder="اختیاری" data-pay-input="check-number">
+                 placeholder="اختیاری">
         </div>
         <div class="pay-field">
           <label>تاریخ سررسید</label>
-          <button type="button" class="date-btn" data-action="open-calendar" data-target="check">
+          <button type="button" class="date-btn" id="btn-open-check-cal">
             <span>${escapeHtml(formatDateJalali(state.check.due))}</span>
             <span class="date-chev" aria-hidden="true">›</span>
           </button>
@@ -1027,7 +803,7 @@ function renderPayDetails(){
       <div class="pay-details">
         <div class="pay-field">
           <label>تاریخ سررسید</label>
-          <button type="button" class="date-btn" data-action="open-calendar" data-target="credit">
+          <button type="button" class="date-btn" id="btn-open-credit-cal">
             <span>${escapeHtml(formatDateJalali(state.credit.due))}</span>
             <span class="date-chev" aria-hidden="true">›</span>
           </button>
@@ -1038,9 +814,6 @@ function renderPayDetails(){
   return '';
 }
 
-/* =========================================================
-   RENDER — ITEM ROWS
-   ========================================================= */
 function renderCollapsedRow(it, idx){
   const lineTotal = getLineTotal(it);
   const qtyLabel = it.unit
@@ -1066,8 +839,7 @@ function renderEditRow(draft, idx, isNew){
     <div class="row-head">
       <span class="row-num">${fmtPlain(idx + 1)}</span>
       <div class="row-product-wrap">
-        <button type="button" class="row-product"
-                data-action="toggle-dropdown"
+        <button type="button" class="row-product" id="btn-toggle-dropdown"
                 aria-haspopup="listbox"
                 aria-expanded="${state.editing.dropdownOpen ? 'true' : 'false'}">
           <span class="rp-text${placeholder}">${hasProduct ? escapeHtml(draft.name) : 'انتخاب کالا'}</span>
@@ -1082,24 +854,24 @@ function renderEditRow(draft, idx, isNew){
         <label for="q-${escapeHtml(draft.id)}">تعداد / وزن</label>
         <input id="q-${escapeHtml(draft.id)}" type="text" inputmode="decimal"
                value="${hasProduct ? fmtPlain(draft.qty) : ''}"
-               data-action="qty" autocomplete="off">
+               data-field="qty" autocomplete="off">
       </div>
       <div class="row-field">
         <label for="pr-${escapeHtml(draft.id)}">قیمت واحد</label>
         <input id="pr-${escapeHtml(draft.id)}" type="text" inputmode="decimal"
                value="${hasProduct ? fmt(draft.price) : ''}"
-               data-action="price" autocomplete="off">
+               data-field="price" autocomplete="off">
       </div>
     </div>
 
     <div class="row-line-total">
       <span class="lbl">جمع این قلم</span>
-      <span class="val" data-line-total>${fmt(lineTotal)} ت</span>
+      <span class="val" id="line-total-val">${fmt(lineTotal)} ت</span>
     </div>
 
     <div class="row-actions">
-      <button type="button" class="btn-save" data-action="save">ذخیره</button>
-      <button type="button" class="btn-del"  data-action="${isNew ? 'cancel' : 'delete'}">
+      <button type="button" class="btn-save" id="btn-save-row">ذخیره</button>
+      <button type="button" class="btn-del" id="btn-del-row">
         ${isNew ? 'انصراف' : 'حذف'}
       </button>
     </div>
@@ -1120,7 +892,7 @@ function renderDropdown(){
            ${POPULAR_IDS.map(pid => {
              const p = CATALOG.find(c => c.id === pid);
              if (!p) return '';
-             return `<button type="button" class="pd-chip" data-action="pick" data-pid="${escapeHtml(p.id)}">${escapeHtml(p.name)}</button>`;
+             return `<button type="button" class="pd-chip" data-pick="${escapeHtml(p.id)}">${escapeHtml(p.name)}</button>`;
            }).join('')}
          </div>
        </div>`;
@@ -1128,7 +900,7 @@ function renderDropdown(){
   const list = filtered.length
     ? filtered.map(p => {
         const selected = p.id === state.editing.draft.productId ? ' selected' : '';
-        return `<button type="button" class="pd-item${selected}" data-action="pick" data-pid="${escapeHtml(p.id)}">
+        return `<button type="button" class="pd-item${selected}" data-pick="${escapeHtml(p.id)}">
           <span class="pd-item-name">${escapeHtml(p.name)}</span>
           <span class="pd-item-price">${fmt(p.price)}</span>
         </button>`;
@@ -1138,21 +910,20 @@ function renderDropdown(){
   return `<div class="pd-dropdown" role="listbox">
     ${popular}
     <div class="pd-search">
-      <input type="text" placeholder="جستجوی کالا..." value="${escapeHtml(state.editing.search || '')}" data-action="search" autocomplete="off">
+      <input type="text" id="pd-search-input" placeholder="جستجوی کالا..." value="${escapeHtml(state.editing.search || '')}" autocomplete="off">
     </div>
     <div class="pd-list">${list}</div>
   </div>`;
 }
 
 /* =========================================================
-   RENDER — CALENDAR
+   CALENDAR RENDER
    ========================================================= */
 function renderCalendarHost(){
   const host = document.getElementById('cal-sheet');
   if (!state.calendar.open){
     host.classList.remove('open');
     host.setAttribute('aria-hidden', 'true');
-    // clear after transition
     if (host._clearTimer) clearTimeout(host._clearTimer);
     host._clearTimer = setTimeout(() => {
       if (!state.calendar.open) host.innerHTML = '';
@@ -1162,9 +933,7 @@ function renderCalendarHost(){
   host.classList.add('open');
   host.setAttribute('aria-hidden', 'false');
   host.innerHTML = renderCalendar();
-
-  // reveal animation on next frame
-  requestAnimationFrame(() => host.classList.add('open'));
+  bindCalendar();
 }
 
 function renderCalendar(){
@@ -1175,11 +944,10 @@ function renderCalendar(){
   const prevJy = jm === 1 ? jy - 1 : jy;
   const prevJm = jm === 1 ? 12 : jm - 1;
   const prevLen = jalaliMonthLength(prevJy, prevJm);
-
   const nextJy = jm === 12 ? jy + 1 : jy;
   const nextJm = jm === 12 ? 1 : jm + 1;
 
-  const today = { jy: 1405, jm: 6, jd: 27 }; // "today" for prototype
+  const today = { jy: 1405, jm: 6, jd: 27 };
   const sel = state.calendar.pending;
 
   const cells = [];
@@ -1208,18 +976,18 @@ function renderCalendar(){
   }).join('');
 
   return `
-    <div class="cal-scrim" data-action="cal-cancel"></div>
+    <div class="cal-scrim" id="cal-scrim"></div>
     <div class="cal-panel" role="dialog" aria-modal="true" aria-label="انتخاب تاریخ">
       <div class="cal-handle"></div>
       <div class="cal-hd">
-        <button type="button" class="cal-hd-btn" data-action="cal-cancel">لغو</button>
+        <button type="button" class="cal-hd-btn" id="cal-cancel">لغو</button>
         <span class="cal-hd-title">انتخاب تاریخ</span>
-        <button type="button" class="cal-hd-btn primary" data-action="cal-confirm">تأیید</button>
+        <button type="button" class="cal-hd-btn primary" id="cal-confirm">تأیید</button>
       </div>
       <div class="cal-nav">
-        <button type="button" class="cal-nav-btn" data-action="cal-prev" aria-label="ماه قبل">‹</button>
+        <button type="button" class="cal-nav-btn" id="cal-prev" aria-label="ماه قبل">‹</button>
         <span class="cal-nav-title">${escapeHtml(JALALI_MONTHS[jm-1])} ${toFa(jy)}</span>
-        <button type="button" class="cal-nav-btn" data-action="cal-next" aria-label="ماه بعد">›</button>
+        <button type="button" class="cal-nav-btn" id="cal-next" aria-label="ماه بعد">›</button>
       </div>
       <div class="cal-weekdays" aria-hidden="true">
         <span>ش</span><span>ی</span><span>د</span><span>س</span><span>چ</span><span>پ</span><span>ج</span>
@@ -1230,11 +998,13 @@ function renderCalendar(){
 }
 
 /* =========================================================
-   INTERACTION — HEADER
+   HEADER
    ========================================================= */
 function bindHeader(){
-  document.getElementById('hd-cancel').onclick = onInvoiceCancel;
-  document.getElementById('hd-save').onclick   = onInvoiceSave;
+  const btnCancel = document.getElementById('hd-cancel');
+  const btnSave = document.getElementById('hd-save');
+  if (btnCancel) btnCancel.onclick = onInvoiceCancel;
+  if (btnSave)   btnSave.onclick   = onInvoiceSave;
 }
 
 function onInvoiceCancel(){
@@ -1259,119 +1029,102 @@ function onInvoiceSave(){
     showToast('فاکتور بدون قلم است');
     return;
   }
-  const grand = getGrandTotal();
-  showToast(`فاکتور ثبت شد · ${fmt(grand)} ت`);
+  showToast(`فاکتور ثبت شد · ${fmt(getGrandTotal())} ت`);
 }
 
 /* =========================================================
-   INTERACTION — BODY
+   BODY BINDING — explicit listeners (no delegation)
    ========================================================= */
 function bindBody(){
   const root = document.getElementById('body');
 
-  // Delegated click handler
-  root.onclick = (e) => {
-    const actionEl = e.target.closest('[data-action]');
-    const payEl    = e.target.closest('[data-pay]');
-    const rowEl    = e.target.closest('.item-row');
+  // --- Collapsed rows: attach directly ---
+  root.querySelectorAll('.item-row:not(.is-active)').forEach(row => {
+    row.addEventListener('click', () => {
+      onOpenEdit(row.getAttribute('data-id'));
+    });
+  });
 
-    // Payment method
-    if (payEl){
-      state.payment = payEl.getAttribute('data-pay');
-      renderBody();
-      return;
-    }
-
-    // Action buttons (need data-action)
-    if (actionEl){
-      const action = actionEl.getAttribute('data-action');
-
-      // Calendar triggers
-      if (action === 'open-calendar'){
-        openCalendar(actionEl.getAttribute('data-target'));
-        return;
-      }
-
-      // Add new item
-      if (action === 'add'){
-        if (state.editing) return;
-        onAddNew();
-        return;
-      }
-
-      // Product pick
-      if (action === 'pick'){
-        const pid = actionEl.getAttribute('data-pid');
-        onPickProduct(pid);
-        return;
-      }
-
-      // Toggle dropdown
-      if (action === 'toggle-dropdown'){
-        if (!state.editing) return;
-        state.editing.dropdownOpen = !state.editing.dropdownOpen;
-        if (state.editing.dropdownOpen) state.editing.search = '';
-        renderBody();
-        if (state.editing.dropdownOpen){
-          requestAnimationFrame(() => {
-            const inp = document.querySelector('[data-action="search"]');
-            if (inp) inp.focus();
-          });
-        }
-        return;
-      }
-
-      // Row actions inside active row
-      if (rowEl && rowEl.classList.contains('is-active')){
-        if (action === 'cancel') { onCancelActive(); return; }
-        if (action === 'delete') { onDeleteActive(); return; }
-        if (action === 'save')   { onSaveActive();    return; }
-      }
-
-      // Open edit row from collapsed
-      if (action === 'edit'){
-        const id = rowEl.getAttribute('data-id');
-        onOpenEdit(id);
-        return;
-      }
-
-      // Save whole invoice
-      if (action === 'save-invoice'){
-        onInvoiceSave();
-        return;
-      }
-    }
-  };
-
-  // Input handlers inside active row
+  // --- Active row: bind each control ---
   const activeRow = root.querySelector('.item-row.is-active');
   if (activeRow){
-    const qtyIn   = activeRow.querySelector('[data-action="qty"]');
-    const priceIn = activeRow.querySelector('[data-action="price"]');
-    if (qtyIn)   qtyIn.addEventListener('input', onQtyInput);
-    if (priceIn) priceIn.addEventListener('input', onPriceInput);
-  }
+    const btnToggle = activeRow.querySelector('#btn-toggle-dropdown');
+    if (btnToggle) btnToggle.addEventListener('click', toggleDropdown);
 
-  // Search input inside dropdown
-  const searchIn = root.querySelector('[data-action="search"]');
-  if (searchIn){
-    searchIn.addEventListener('input', onSearchInput);
-  }
+    const btnSave = activeRow.querySelector('#btn-save-row');
+    if (btnSave) btnSave.addEventListener('click', onSaveActive);
 
-  // Payment check number input
-  const checkNumIn = root.querySelector('[data-pay-input="check-number"]');
-  if (checkNumIn){
-    checkNumIn.addEventListener('input', (e) => {
-      state.check.number = e.target.value;
+    const btnDel = activeRow.querySelector('#btn-del-row');
+    if (btnDel) btnDel.addEventListener('click', () => {
+      if (state.editing && state.editing.isNew){
+        onCancelActive();
+      } else {
+        onDeleteActive();
+      }
     });
+
+    const qtyIn = activeRow.querySelector('[data-field="qty"]');
+    if (qtyIn) qtyIn.addEventListener('input', onQtyInput);
+
+    const priceIn = activeRow.querySelector('[data-field="price"]');
+    if (priceIn) priceIn.addEventListener('input', onPriceInput);
+
+    // Dropdown items
+    activeRow.querySelectorAll('[data-pick]').forEach(item => {
+      item.addEventListener('click', (e) => {
+        e.stopPropagation();
+        onPickProduct(item.getAttribute('data-pick'));
+      });
+    });
+
+    const searchIn = activeRow.querySelector('#pd-search-input');
+    if (searchIn){
+      searchIn.addEventListener('input', onSearchInput);
+      // autofocus when dropdown is open
+      requestAnimationFrame(() => {
+        try { searchIn.focus(); } catch(_){}
+      });
+    }
   }
+
+  // --- Add item ---
+  const btnAdd = root.querySelector('#btn-add-item');
+  if (btnAdd) btnAdd.addEventListener('click', onAddNew);
+
+  // --- Payment buttons ---
+  root.querySelectorAll('.pay-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      state.payment = btn.getAttribute('data-pay');
+      renderBody();
+    });
+  });
+
+  // --- Calendar trigger buttons ---
+  const dateBtn = root.querySelector('#btn-open-invoice-cal');
+  if (dateBtn) dateBtn.addEventListener('click', () => openCalendar('invoice'));
+
+  const checkBtn = root.querySelector('#btn-open-check-cal');
+  if (checkBtn) checkBtn.addEventListener('click', () => openCalendar('check'));
+
+  const creditBtn = root.querySelector('#btn-open-credit-cal');
+  if (creditBtn) creditBtn.addEventListener('click', () => openCalendar('credit'));
+
+  // --- Check number ---
+  const checkNum = root.querySelector('#chk-num');
+  if (checkNum) checkNum.addEventListener('input', (e) => {
+    state.check.number = e.target.value;
+  });
+
+  // --- Save invoice ---
+  const btnSaveInvoice = root.querySelector('#btn-save-invoice');
+  if (btnSaveInvoice) btnSaveInvoice.addEventListener('click', onInvoiceSave);
 }
 
 /* =========================================================
-   INTERACTION — ITEM LIFECYCLE
+   ITEM LIFECYCLE
    ========================================================= */
 function onOpenEdit(id){
-  if (state.editing) return; // ignore; one active at a time
+  if (state.editing) return;
   const it = state.items.find(x => x.id === id);
   if (!it) return;
   state.editing = {
@@ -1396,7 +1149,7 @@ function onAddNew(){
   };
   renderBody();
   requestAnimationFrame(() => {
-    const el = document.querySelector('.item-row.is-active [data-action="qty"]');
+    const el = document.querySelector('.item-row.is-active [data-field="qty"]');
     if (el) el.focus();
   });
 }
@@ -1428,7 +1181,6 @@ function onSaveActive(){
     showToast('تعداد باید بیشتر از صفر باشد');
     return;
   }
-
   if (state.editing.isNew){
     state.items.push({ ...draft });
   } else {
@@ -1438,6 +1190,13 @@ function onSaveActive(){
   state.editing = null;
   renderBody();
   showToast('ذخیره شد');
+}
+
+function toggleDropdown(){
+  if (!state.editing) return;
+  state.editing.dropdownOpen = !state.editing.dropdownOpen;
+  if (state.editing.dropdownOpen) state.editing.search = '';
+  renderBody();
 }
 
 function onPickProduct(pid){
@@ -1454,53 +1213,42 @@ function onPickProduct(pid){
   state.editing.search = '';
   renderBody();
   requestAnimationFrame(() => {
-    const el = document.querySelector('.item-row.is-active [data-action="qty"]');
+    const el = document.querySelector('.item-row.is-active [data-field="qty"]');
     if (el) el.focus();
   });
 }
 
 /* =========================================================
-   INTERACTION — INPUTS
+   INPUTS
    ========================================================= */
 function onQtyInput(e){
   if (!state.editing) return;
   const v = parseNum(e.target.value);
   state.editing.draft.qty = v;
-  const activeRow = e.target.closest('.item-row.is-active');
-  if (activeRow){
-    const lt = activeRow.querySelector('[data-line-total]');
-    if (lt) lt.textContent = fmt(getLineTotal(state.editing.draft)) + ' ت';
-  }
+  const lt = document.getElementById('line-total-val');
+  if (lt) lt.textContent = fmt(getLineTotal(state.editing.draft)) + ' ت';
   updateSummaryLive();
 }
 function onPriceInput(e){
   if (!state.editing) return;
   const v = parseNum(e.target.value);
   state.editing.draft.price = v;
-  const activeRow = e.target.closest('.item-row.is-active');
-  if (activeRow){
-    const lt = activeRow.querySelector('[data-line-total]');
-    if (lt) lt.textContent = fmt(getLineTotal(state.editing.draft)) + ' ت';
-  }
+  const lt = document.getElementById('line-total-val');
+  if (lt) lt.textContent = fmt(getLineTotal(state.editing.draft)) + ' ت';
   updateSummaryLive();
 }
 function onSearchInput(e){
   if (!state.editing) return;
   state.editing.search = e.target.value;
-  // Re-render just the dropdown list, preserving input focus
-  const dd = document.querySelector('.pd-dropdown');
-  if (!dd) return;
-  const newDropdown = renderDropdown();
-  const oldList = dd.querySelector('.pd-list');
-  const oldPopular = dd.querySelector('.pd-popular');
-  const q = (state.editing.search || '').trim();
-
-  // Simplest safe approach: replace the whole dropdown innerHTML
-  // but re-focus the search input and restore caret.
   const caret = e.target.selectionStart;
-  dd.outerHTML = newDropdown;
+  // Re-render just the dropdown by replacing the whole active row body
+  // but preserving search field text & caret.
+  const activeRow = document.querySelector('.item-row.is-active');
+  if (!activeRow) return;
+  // Simplest reliable approach: re-render body, then restore focus + caret.
+  renderBody();
   requestAnimationFrame(() => {
-    const inp = document.querySelector('[data-action="search"]');
+    const inp = document.getElementById('pd-search-input');
     if (inp){
       inp.focus();
       try { inp.setSelectionRange(caret, caret); } catch(_){}
@@ -1513,17 +1261,20 @@ function updateSummaryLive(){
   const grand = getGrandTotal();
   const profit = getProfit();
   const margin = getMargin();
-  const rows = document.querySelectorAll('.summary .sum-row .val');
-  if (rows[0]) rows[0].textContent = fmt(sub);
-  if (rows[1]) rows[1].textContent = fmt(getDiscount());
-  if (rows[2]) rows[2].textContent = fmt(grand);
-  const profitRows = document.querySelectorAll('.profit-block .profit-row .val');
-  if (profitRows[0]) profitRows[0].textContent = fmt(profit) + ' ت';
-  if (profitRows[1]) profitRows[1].textContent = fmt(Math.round(margin * 1000) / 10) + '٪';
+  const subEl = document.getElementById('val-subtotal');
+  const discEl = document.getElementById('val-discount');
+  const grandEl = document.getElementById('val-grand');
+  const profitEl = document.getElementById('val-profit');
+  const marginEl = document.getElementById('val-margin');
+  if (subEl) subEl.textContent = fmt(sub);
+  if (discEl) discEl.textContent = fmt(getDiscount());
+  if (grandEl) grandEl.textContent = fmt(grand);
+  if (profitEl) profitEl.textContent = fmt(profit) + ' ت';
+  if (marginEl) marginEl.textContent = fmt(Math.round(margin * 1000) / 10) + '٪';
 }
 
 /* =========================================================
-   INTERACTION — CALENDAR
+   CALENDAR
    ========================================================= */
 function openCalendar(target){
   if (!target) return;
@@ -1539,53 +1290,50 @@ function openCalendar(target){
   state.calendar.target = target;
   state.calendar.pending = { ...base };
   renderCalendarHost();
-  bindCalendar();
 }
 
 function bindCalendar(){
   const host = document.getElementById('cal-sheet');
   if (!host) return;
-  host.onclick = (e) => {
-    const actionEl = e.target.closest('[data-action]');
-    const cellEl = e.target.closest('[data-cal-jy]');
 
-    if (cellEl){
-      state.calendar.pending = {
-        jy: +cellEl.getAttribute('data-cal-jy'),
-        jm: +cellEl.getAttribute('data-cal-jm'),
-        jd: +cellEl.getAttribute('data-cal-jd'),
-      };
-      // If user tapped an outside-month cell, move to that month
-      if (+cellEl.getAttribute('data-cal-jm') !== state.calendar.jm ||
-          +cellEl.getAttribute('data-cal-jy') !== state.calendar.jy){
-        state.calendar.jy = +cellEl.getAttribute('data-cal-jy');
-        state.calendar.jm = +cellEl.getAttribute('data-cal-jm');
+  const scrim = host.querySelector('#cal-scrim');
+  if (scrim) scrim.addEventListener('click', () => closeCalendar(false));
+
+  const cancel = host.querySelector('#cal-cancel');
+  if (cancel) cancel.addEventListener('click', () => closeCalendar(false));
+
+  const confirm = host.querySelector('#cal-confirm');
+  if (confirm) confirm.addEventListener('click', () => closeCalendar(true));
+
+  const prev = host.querySelector('#cal-prev');
+  if (prev) prev.addEventListener('click', () => {
+    let jy = state.calendar.jy, jm = state.calendar.jm - 1;
+    if (jm < 1){ jm = 12; jy--; }
+    state.calendar.jy = jy; state.calendar.jm = jm;
+    renderCalendarHost();
+  });
+
+  const next = host.querySelector('#cal-next');
+  if (next) next.addEventListener('click', () => {
+    let jy = state.calendar.jy, jm = state.calendar.jm + 1;
+    if (jm > 12){ jm = 1; jy++; }
+    state.calendar.jy = jy; state.calendar.jm = jm;
+    renderCalendarHost();
+  });
+
+  host.querySelectorAll('.cal-cell').forEach(cell => {
+    cell.addEventListener('click', () => {
+      const jy = +cell.getAttribute('data-cal-jy');
+      const jm = +cell.getAttribute('data-cal-jm');
+      const jd = +cell.getAttribute('data-cal-jd');
+      state.calendar.pending = { jy, jm, jd };
+      if (jm !== state.calendar.jm || jy !== state.calendar.jy){
+        state.calendar.jy = jy;
+        state.calendar.jm = jm;
       }
       renderCalendarHost();
-      bindCalendar();
-      return;
-    }
-
-    if (actionEl){
-      const action = actionEl.getAttribute('data-action');
-      if (action === 'cal-cancel'){ closeCalendar(false); return; }
-      if (action === 'cal-confirm'){ closeCalendar(true); return; }
-      if (action === 'cal-prev'){
-        let jy = state.calendar.jy, jm = state.calendar.jm - 1;
-        if (jm < 1){ jm = 12; jy--; }
-        state.calendar.jy = jy; state.calendar.jm = jm;
-        renderCalendarHost(); bindCalendar();
-        return;
-      }
-      if (action === 'cal-next'){
-        let jy = state.calendar.jy, jm = state.calendar.jm + 1;
-        if (jm > 12){ jm = 1; jy++; }
-        state.calendar.jy = jy; state.calendar.jm = jm;
-        renderCalendarHost(); bindCalendar();
-        return;
-      }
-    }
-  };
+    });
+  });
 }
 
 function closeCalendar(commit){
@@ -1601,10 +1349,6 @@ function closeCalendar(commit){
     else if (target === 'check') state.check.due = { ...pending };
     else if (target === 'credit') state.credit.due = { ...pending };
   }
-
-  // Detach handler on the (now dismissed) calendar host
-  const host = document.getElementById('cal-sheet');
-  if (host) host.onclick = null;
 
   renderBody();
   renderCalendarHost();
