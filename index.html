@@ -3,71 +3,67 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>BAGHERI — Invoice 6 — Focus Flow</title>
+<title>BAGHERI — Invoice Prototype V2</title>
 <style>
 /* =========================================================
-   THEME TOKENS
+   TOKENS
    ========================================================= */
 :root{
-  --brand-blue:#0070D2;
-  --brand-orange:#FF5C35;
+  --blue:#0070D2;
+  --orange:#FF5C35;
+  --danger:#D52B36;
+  --success:#0F7A4A;
+
+  --text:#1F2937;
+  --text-2:#667085;
+  --text-3:#98A2B3;
 
   --bg:#F5F7FA;
   --surface:#FFFFFF;
   --surface-2:#F8FAFC;
-  --surface-3:#F2F4F7;
-  --text:#1F2937;
-  --text-2:#667085;
-  --text-3:#98A2B3;
+
   --divider:rgba(15,23,42,.08);
   --divider-soft:rgba(15,23,42,.05);
-  --danger:#D52B36;
-  --success:#0F7A4A;
   --tap:rgba(15,23,42,.04);
-  --shade:rgba(15,23,42,.06);
 }
 [data-theme="dark"]{
-  --bg:#000000;
-  --surface:#1C1C1E;
-  --surface-2:#2C2C2E;
-  --surface-3:#3A3A3C;
+  --blue:#4FA3FF;
+  --danger:#FF6B6B;
+  --success:#4ADE80;
+
   --text:#F2F2F7;
   --text-2:#9AA0A6;
   --text-3:#6E7378;
+
+  --bg:#000000;
+  --surface:#1C1C1E;
+  --surface-2:#2C2C2E;
+
   --divider:rgba(255,255,255,.10);
   --divider-soft:rgba(255,255,255,.06);
-  --danger:#FF6B6B;
-  --success:#4ADE80;
   --tap:rgba(255,255,255,.05);
-  --shade:rgba(0,0,0,.4);
-  --brand-blue:#4FA3FF;
 }
 
 /* =========================================================
    RESET / BASE
    ========================================================= */
 *,*::before,*::after{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-html{ -webkit-text-size-adjust:100%; }
+html{-webkit-text-size-adjust:100%;}
 html,body{margin:0;padding:0;}
 body{
   font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Vazirmatn','Segoe UI',Tahoma,sans-serif;
-  font-size:15px;
-  line-height:1.4;
-  color:var(--text);
+  font-size:15px;line-height:1.4;color:var(--text);
   background:#E8EBF0;
   font-variant-numeric:tabular-nums;
   -webkit-font-smoothing:antialiased;
 }
-[data-theme="dark"] body{ background:#111; }
-button{font-family:inherit;}
-input,select,button{font-family:inherit;}
-.sr-only{
-  position:absolute;width:1px;height:1px;padding:0;margin:-1px;
-  overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;
-}
+[data-theme="dark"] body{background:#0a0a0a;}
+button{font-family:inherit;color:inherit;}
+input,select{font-family:inherit;}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
 
 /* =========================================================
-   DEV BAR (outside phone)
+   DEV BAR (prototype-only)
    ========================================================= */
 .dev-bar{
   position:fixed;top:0;left:0;right:0;z-index:1000;
@@ -83,24 +79,23 @@ input,select,button{font-family:inherit;}
   border:1px solid rgba(255,255,255,.14);
   padding:5px 10px;border-radius:6px;
   font-size:11px;cursor:pointer;
-  transition:background-color 140ms ease,color 140ms ease,border-color 140ms ease;
+  transition:background-color 140ms ease;
 }
 .dev-bar button.active{
-  background:var(--brand-blue);border-color:var(--brand-blue);color:#FFF;font-weight:600;
+  background:var(--blue);border-color:var(--blue);color:#FFF;font-weight:600;
 }
 
 /* =========================================================
    PHONE FRAME
    ========================================================= */
 .phone-wrap{
-  padding:60px 12px 24px;
+  padding:56px 12px 24px;
   display:flex;justify-content:center;
   min-height:100vh;
 }
 .phone{
   width:390px;
-  height:calc(100vh - 84px);
-  max-height:880px;
+  height:min(calc(100vh - 100px), 880px);
   background:var(--bg);
   border-radius:28px;
   overflow:hidden;
@@ -116,13 +111,7 @@ input,select,button{font-family:inherit;}
 @media (max-width:520px){
   .dev-bar{position:sticky;}
   .phone-wrap{padding:0;min-height:0;}
-  .phone{
-    width:100% !important;
-    height:calc(100vh - 42px);
-    max-height:none;
-    border-radius:0;
-    box-shadow:none;
-  }
+  .phone{width:100% !important;height:calc(100vh - 42px);max-height:none;border-radius:0;box-shadow:none;}
 }
 
 /* =========================================================
@@ -130,505 +119,561 @@ input,select,button{font-family:inherit;}
    ========================================================= */
 .invoice{
   display:flex;flex-direction:column;
-  height:100%;
-  background:var(--bg);
+  height:100%;background:var(--bg);
 }
 
 /* ---------- Header ---------- */
-.inv-hd{
+.hdr{
   flex:0 0 auto;
-  display:flex;align-items:center;
-  gap:8px;
+  display:flex;align-items:center;gap:8px;
   padding:10px 12px;
   padding-top:calc(10px + env(safe-area-inset-top,0px));
   background:var(--surface);
   border-bottom:0.5px solid var(--divider);
-  position:relative;
-  z-index:10;
+  position:relative;z-index:10;
 }
-.inv-hd-btn{
+.hdr-btn{
   flex:0 0 auto;
   background:transparent;border:none;
-  padding:8px 10px;
-  min-height:36px;
-  border-radius:10px;
-  color:var(--text-2);
-  font-size:15px;
+  padding:8px 10px;min-height:36px;
+  border-radius:8px;
+  color:var(--text-2);font-size:15px;
   cursor:pointer;
   transition:background-color 140ms ease;
 }
-.inv-hd-btn:active{background:var(--tap);}
-.inv-hd-btn.primary{
-  color:var(--brand-blue);
-  font-weight:600;
-}
-.inv-hd-btn.primary:active{
-  background:rgba(0,112,210,.08);
-}
-.inv-hd-center{
-  flex:1;min-width:0;
-  display:flex;flex-direction:column;align-items:center;
-  gap:1px;
-}
-.inv-hd-title{
+.hdr-btn:active{background:var(--tap);}
+.hdr-btn.primary{color:var(--blue);font-weight:600;}
+.hdr-title{
+  flex:1;min-width:0;text-align:center;
   font-size:15px;font-weight:600;
   color:var(--text);
-  line-height:1.2;
-}
-.inv-hd-meter{
-  font-size:11px;
-  color:var(--text-2);
-  line-height:1.3;
-  white-space:nowrap;
-  overflow:hidden;text-overflow:ellipsis;
-  max-width:100%;
-  font-variant-numeric:tabular-nums;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
 
 /* ---------- Body ---------- */
-.inv-body{
+.body{
   flex:1;min-height:0;
-  overflow-y:auto;
-  -webkit-overflow-scrolling:touch;
+  overflow-y:auto;-webkit-overflow-scrolling:touch;
   overscroll-behavior:contain;
-  padding:16px 14px calc(32px + env(safe-area-inset-bottom,0px));
+  padding:14px 14px calc(28px + env(safe-area-inset-bottom,0px));
 }
 
 /* ---------- Customer ---------- */
-.cust{
-  display:flex;align-items:center;gap:10px;
-  padding:0 4px 14px;
-}
-.cust-av{
-  flex:0 0 36px;width:36px;height:36px;
-  border-radius:50%;
-  background:rgba(0,112,210,.10);
-  color:var(--brand-blue);
-  display:flex;align-items:center;justify-content:center;
-  font-weight:600;font-size:15px;
-}
-.cust-info{flex:1;min-width:0;}
-.cust-name{
-  font-size:15px;font-weight:600;
-  color:var(--text);line-height:1.3;
-  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-}
-.cust-status{
-  font-size:12px;color:var(--success);
-  margin-top:1px;
-}
+.customer{padding:2px 4px 14px;}
+.cust-label{font-size:12px;color:var(--text-2);margin-bottom:2px;}
+.cust-value{font-size:15px;color:var(--text);font-weight:500;}
 
 /* ---------- Date row ---------- */
 .date-row{
-  display:flex;justify-content:space-between;align-items:center;
-  gap:10px;
-  padding:10px 14px;
-  margin-bottom:18px;
+  display:flex;align-items:center;gap:10px;
+  width:100%;
+  padding:12px 14px;
   background:var(--surface);
-  border-radius:10px;
-  font-size:13px;
+  border:none;border-radius:10px;
+  margin-bottom:18px;
+  font-family:inherit;font-size:14px;
+  cursor:pointer;text-align:right;
+  transition:background-color 140ms ease;
 }
-.date-row .lbl{color:var(--text-2);}
-.date-row .val{color:var(--text);font-weight:500;}
+.date-row:active{background:var(--tap);}
+.date-lbl{color:var(--text-2);}
+.date-val{color:var(--text);font-weight:500;margin-inline-start:auto;}
+.date-chev{color:var(--text-3);font-size:18px;line-height:1;}
 
 /* ---------- Section label ---------- */
-.sec-lbl{
-  padding:0 4px 8px;
-  font-size:12px;
-  color:var(--text-2);
-  font-weight:500;
-  display:flex;justify-content:space-between;align-items:baseline;
+.section-label{
+  font-size:12px;color:var(--text-2);font-weight:500;
+  margin:0 4px 8px;
 }
-.sec-lbl .count{color:var(--text-3);font-weight:400;}
 
-/* =========================================================
-   ITEMS CARD
-   ========================================================= */
+/* ---------- Items card ---------- */
 .items-card{
   background:var(--surface);
   border-radius:14px;
-  overflow:hidden;
   margin-bottom:18px;
-}
-
-/* ---------- Collapsed row ---------- */
-.inv-row{
   position:relative;
-  border-bottom:0.5px solid var(--divider-soft);
 }
-.inv-row:last-child{border-bottom:none;}
-
-.inv-row-compact{
+.item-row{
   display:grid;
   grid-template-columns:22px minmax(0,1fr) auto;
-  gap:10px;
-  align-items:center;
-  padding:11px 14px;
-  min-height:58px;
+  gap:10px;align-items:center;
+  padding:12px 14px;
+  min-height:60px;
   cursor:pointer;
-  background:var(--surface);
+  border-bottom:0.5px solid var(--divider-soft);
   transition:background-color 140ms ease;
+  position:relative;
 }
-.inv-row-compact:active{background:var(--tap);}
+.item-row:last-child{border-bottom:none;}
+.item-row:active{background:var(--tap);}
+.item-row:first-child{border-top-left-radius:14px;border-top-right-radius:14px;}
+.item-row:last-child{border-bottom-left-radius:14px;border-bottom-right-radius:14px;}
 
-.inv-num{
-  font-size:12px;
-  color:var(--text-3);
-  font-weight:500;
-  text-align:center;
-  line-height:1;
+.row-num{
+  font-size:12px;color:var(--text-3);
+  font-weight:500;text-align:center;
+  font-variant-numeric:tabular-nums;
 }
-.inv-name{
+.row-info{min-width:0;}
+.row-name{
   display:block;
-  font-size:15px;
-  font-weight:500;
-  color:var(--text);
-  line-height:1.3;
+  font-size:15px;font-weight:500;
+  color:var(--text);line-height:1.3;
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
 }
-.inv-calc{
+.row-calc{
   display:block;
-  font-size:12px;
-  color:var(--text-2);
-  line-height:1.35;
-  margin-top:2px;
+  font-size:12px;color:var(--text-2);
+  line-height:1.35;margin-top:2px;
   font-variant-numeric:tabular-nums;
 }
-.inv-total{
-  font-size:15px;
-  font-weight:600;
+.row-total{
+  font-size:15px;font-weight:600;
   color:var(--text);
   font-variant-numeric:tabular-nums;
-  white-space:nowrap;
-  text-align:left;
+  white-space:nowrap;text-align:left;
 }
 
-/* ---------- Active row ---------- */
-.inv-row.is-active{background:var(--surface);}
-.inv-row.is-active::before{
-  content:'';
-  position:absolute;
-  inset-inline-start:0;
-  top:8px;bottom:8px;
-  width:2.5px;
-  border-radius:2px;
-  background:var(--brand-blue);
-  z-index:1;
-}
-.inv-row.is-active .inv-row-compact{
-  cursor:default;
-  background:transparent;
-  padding-bottom:6px;
-  min-height:auto;
-}
-.inv-row.is-active .inv-row-compact:active{background:transparent;}
-
-.inv-hd-close{
-  background:transparent;
-  border:none;
-  color:var(--text-2);
-  font-size:22px;
-  line-height:1;
-  width:36px;height:36px;
-  border-radius:50%;
-  cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  transition:background-color 140ms ease;
-}
-.inv-hd-close:active{background:var(--tap);}
-
-/* ---------- Active body ---------- */
-.inv-row-body{
-  padding:2px 14px 14px;
-  animation:rowExpand 220ms cubic-bezier(.22,1,.36,1);
-}
-@keyframes rowExpand{
-  from{opacity:.5;transform:translateY(-3px);}
-  to{opacity:1;transform:translateY(0);}
-}
-
-/* Product rail */
-.act-label{
-  font-size:11px;
-  color:var(--text-2);
-  margin:10px 0 6px;
+/* ---------- Edit (active) row ---------- */
+.item-row.is-active{
   display:block;
-}
-.prod-rail{
-  display:flex;
-  gap:6px;
-  overflow-x:auto;
-  -webkit-overflow-scrolling:touch;
-  scrollbar-width:none;
-  padding-bottom:2px;
-  margin:0 -14px 0 -14px;
-  padding-inline:14px;
-}
-.prod-rail::-webkit-scrollbar{display:none;}
-.prod-chip{
-  flex:0 0 auto;
+  padding:12px 14px 14px;
   background:var(--surface-2);
-  border:0.5px solid var(--divider);
-  color:var(--text);
-  padding:7px 12px;
-  min-height:36px;
-  border-radius:999px;
-  font-size:13px;
-  font-weight:500;
-  white-space:nowrap;
-  cursor:pointer;
-  transition:background-color 140ms ease,color 140ms ease,border-color 140ms ease;
+  cursor:default;
+  border-radius:0;
 }
-.prod-chip:active{background:var(--surface-3);}
-.prod-chip.selected{
-  background:var(--brand-blue);
-  border-color:var(--brand-blue);
-  color:#FFF;
-  font-weight:600;
+.item-row.is-active:first-child{border-top-left-radius:14px;border-top-right-radius:14px;}
+.item-row.is-active:last-child{border-bottom-left-radius:14px;border-bottom-right-radius:14px;}
+.item-row.is-active::before{
+  content:'';position:absolute;
+  top:10px;bottom:10px;
+  inset-inline-start:0;width:2.5px;
+  background:var(--blue);border-radius:2px;
 }
+.item-row.is-active:active{background:var(--surface-2);}
 
-/* Qty / Price */
-.act-grid{
-  display:grid;
-  grid-template-columns:minmax(0,1fr) minmax(0,1.5fr);
-  gap:10px;
-  margin-top:14px;
+.row-head{
+  display:flex;align-items:center;gap:10px;
+  margin-bottom:12px;
 }
-.act-field{display:flex;flex-direction:column;gap:5px;min-width:0;}
-.act-field label{
-  font-size:11px;color:var(--text-2);
-}
-.act-field input{
+.row-product-wrap{flex:1;min-width:0;position:relative;}
+.row-product{
   width:100%;
-  min-height:44px;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:8px;
+  padding:10px 12px;min-height:42px;
+  background:var(--surface);
+  border:0.5px solid var(--divider);
+  border-radius:10px;
+  color:var(--text);font-family:inherit;
+  font-size:14px;cursor:pointer;text-align:right;
+  transition:border-color 140ms ease;
+}
+.row-product:active{border-color:rgba(0,112,210,.35);}
+.rp-text{
+  flex:1;min-width:0;font-weight:500;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.rp-text.placeholder{color:var(--text-3);font-weight:400;}
+.rp-caret{color:var(--text-3);font-size:12px;line-height:1;}
+
+.row-fields{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);
+  gap:10px;margin-bottom:12px;
+}
+.row-field{display:flex;flex-direction:column;gap:5px;min-width:0;}
+.row-field label{font-size:11px;color:var(--text-2);}
+.row-field input{
+  width:100%;min-height:44px;
   padding:10px 12px;
   border:0.5px solid var(--divider);
   border-radius:10px;
-  background:var(--surface-2);
+  background:var(--surface);
   color:var(--text);
-  font-size:15px;
-  font-weight:500;
+  font-family:inherit;font-size:15px;font-weight:500;
   text-align:center;
   font-variant-numeric:tabular-nums;
   transition:border-color 140ms ease,box-shadow 140ms ease;
 }
-.act-field input:focus{
+.row-field input:focus{
   outline:none;
   border-color:rgba(0,112,210,.5);
   box-shadow:0 0 0 3px rgba(0,112,210,.10);
 }
 
-/* Hint */
-.act-hint{
-  font-size:11px;
-  color:var(--text-2);
-  text-align:center;
-  margin-top:8px;
-  font-variant-numeric:tabular-nums;
-}
-.act-hint b{color:var(--text);font-weight:600;}
-
-/* Line total preview */
-.act-line-total{
+.row-line-total{
   display:flex;justify-content:space-between;align-items:baseline;
   gap:12px;
-  padding:12px 0 0;
-  margin-top:10px;
+  padding:12px 0;
   border-top:0.5px solid var(--divider-soft);
   font-size:13px;
 }
-.act-line-total .lbl{color:var(--text-2);}
-.act-line-total .val{
+.row-line-total .lbl{color:var(--text-2);}
+.row-line-total .val{
   font-size:16px;font-weight:700;
   color:var(--text);
   font-variant-numeric:tabular-nums;
 }
 
-/* Price info disclosure */
-.act-price-info{
-  margin-top:10px;
-  border-top:0.5px solid var(--divider-soft);
+.row-actions{
+  display:flex;gap:10px;margin-top:4px;
 }
-.act-price-info summary{
-  list-style:none;
-  cursor:pointer;
-  padding:10px 0;
-  font-size:13px;
-  font-weight:500;
-  color:var(--brand-blue);
-  display:flex;justify-content:space-between;align-items:center;
-  user-select:none;
-  -webkit-user-select:none;
-}
-.act-price-info summary::-webkit-details-marker{display:none;}
-.act-price-info summary::after{
-  content:'⌄';
-  font-size:12px;
-  color:var(--text-2);
-  transition:transform 180ms ease;
-}
-.act-price-info[open] summary::after{transform:rotate(180deg);}
-.pi-body{padding:2px 0 10px;}
-.pi-row{
-  display:flex;justify-content:space-between;align-items:baseline;
-  gap:12px;
-  padding:5px 0;
-  font-size:13px;
-}
-.pi-row .k{color:var(--text-2);}
-.pi-row .v{
-  color:var(--text);
-  font-weight:500;
-  font-variant-numeric:tabular-nums;
-  white-space:nowrap;
-}
-.pi-row .v .date{
-  color:var(--text-3);
-  font-weight:400;
-  font-size:11px;
-  margin-inline-start:4px;
-}
-.pi-row .v.empty{color:var(--text-3);font-weight:400;}
-.pi-row .v.pos{color:var(--success);}
-.pi-row .v.neg{color:var(--danger);}
-
-/* Actions */
-.act-actions{
-  display:flex;gap:8px;margin-top:12px;
-}
-.act-actions button{
-  flex:1;
-  min-height:44px;
-  padding:10px 14px;
+.row-actions button{
+  flex:1;min-height:44px;
   border-radius:10px;
-  font-size:14px;
-  font-weight:600;
+  font-family:inherit;font-size:14px;font-weight:600;
   cursor:pointer;
-  border:none;
   transition:opacity 140ms ease,background-color 140ms ease;
 }
-.act-del{
-  flex:0 0 40% !important;
+.btn-del{
   background:transparent;
   color:var(--danger);
-  border:0.5px solid var(--divider) !important;
+  border:0.5px solid var(--divider);
   font-weight:500;
 }
-.act-del:active{background:var(--tap);}
-.act-save{
-  background:var(--brand-blue);
-  color:#FFF;
-}
-.act-save:active{opacity:.85;}
+.btn-del:active{background:var(--tap);}
+.btn-save{background:var(--blue);color:#FFF;border:none;}
+.btn-save:active{opacity:.85;}
 
-/* =========================================================
-   ADD NEW LINE
-   ========================================================= */
-.add-line{
+/* ---------- Product dropdown ---------- */
+.pd-dropdown{
+  position:absolute;
+  top:calc(100% + 6px);
+  inset-inline:0;
+  background:var(--surface);
+  border:0.5px solid var(--divider);
+  border-radius:12px;
+  box-shadow:0 12px 32px rgba(15,23,42,.14);
+  z-index:20;
+  overflow:hidden;
+  display:flex;flex-direction:column;
+  max-height:360px;
+  animation:ddIn 180ms cubic-bezier(.22,1,.36,1);
+}
+@keyframes ddIn{
+  from{opacity:.4;transform:translateY(-3px);}
+  to{opacity:1;transform:translateY(0);}
+}
+.pd-popular{
+  padding:9px 12px 7px;
+  border-bottom:0.5px solid var(--divider-soft);
+}
+.pd-popular-lbl{
+  font-size:10px;color:var(--text-3);
+  font-weight:500;letter-spacing:.04em;
+  margin-bottom:6px;
+}
+.pd-chips{
+  display:flex;gap:5px;overflow-x:auto;
+  scrollbar-width:none;
+  margin:0 -12px;padding:0 12px;
+}
+.pd-chips::-webkit-scrollbar{display:none;}
+.pd-chip{
+  flex:0 0 auto;
+  padding:5px 10px;
+  background:var(--surface-2);
+  border:0.5px solid var(--divider);
+  border-radius:999px;
+  font-family:inherit;font-size:12px;
+  color:var(--text);cursor:pointer;
+  white-space:nowrap;
+}
+.pd-chip:active{background:var(--divider);}
+.pd-search{
+  padding:8px 10px;
+  border-bottom:0.5px solid var(--divider-soft);
+}
+.pd-search input{
+  width:100%;padding:8px 10px;
+  background:var(--surface-2);
+  border:0.5px solid var(--divider);
+  border-radius:8px;
+  font-family:inherit;font-size:13px;
+  color:var(--text);
+  min-height:36px;
+}
+.pd-search input:focus{
+  outline:none;
+  border-color:rgba(0,112,210,.5);
+}
+.pd-list{
+  flex:1;overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+  max-height:220px;
+}
+.pd-item{
   width:100%;
-  display:flex;align-items:center;gap:10px;
-  padding:14px 16px;
-  min-height:54px;
-  background:transparent;
-  border:none;
-  border-top:0.5px solid var(--divider-soft);
-  color:var(--brand-blue);
-  font-size:15px;font-weight:500;
-  cursor:pointer;
+  display:flex;justify-content:space-between;align-items:center;
+  gap:12px;
+  padding:10px 12px;min-height:42px;
+  background:none;border:none;
+  border-bottom:0.5px solid var(--divider-soft);
+  font-family:inherit;font-size:13px;
+  color:var(--text);cursor:pointer;
   text-align:right;
   transition:background-color 140ms ease;
 }
-.add-line:active{background:rgba(0,112,210,.05);}
-.add-line-plus{
-  flex:0 0 auto;
-  width:22px;height:22px;
+.pd-item:last-child{border-bottom:none;}
+.pd-item:active{background:var(--tap);}
+.pd-item.selected{color:var(--blue);font-weight:600;}
+.pd-item-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.pd-item-price{
+  color:var(--text-2);font-size:12px;
+  font-variant-numeric:tabular-nums;
+  white-space:nowrap;
+}
+.pd-empty{
+  padding:20px 12px;text-align:center;
+  font-size:12px;color:var(--text-3);
+}
+
+/* ---------- Add item ---------- */
+.add-item{
+  width:100%;
+  display:flex;align-items:center;gap:10px;
+  padding:14px 16px;min-height:54px;
+  background:none;border:none;
+  border-top:0.5px solid var(--divider-soft);
+  color:var(--blue);
+  font-family:inherit;font-size:15px;font-weight:500;
+  cursor:pointer;text-align:right;
+  border-bottom-left-radius:14px;border-bottom-right-radius:14px;
+  transition:background-color 140ms ease;
+}
+.add-item:active{background:rgba(0,112,210,.05);}
+.add-plus{
+  width:22px;height:22px;flex:0 0 22px;
   border-radius:50%;
-  background:var(--brand-blue);
-  color:#FFF;
+  background:var(--blue);color:#FFF;
   display:flex;align-items:center;justify-content:center;
-  font-size:15px;font-weight:400;line-height:1;
+  font-size:15px;line-height:1;font-weight:400;
   padding-bottom:1px;
 }
 
-/* =========================================================
-   SUMMARY
-   ========================================================= */
+/* ---------- Summary ---------- */
 .summary{
   background:var(--surface);
   border-radius:14px;
-  padding:2px 14px;
-  margin-bottom:18px;
+  padding:4px 14px;
+  margin-bottom:12px;
 }
 .sum-row{
   display:flex;justify-content:space-between;align-items:baseline;
-  gap:12px;
-  padding:11px 0;
+  gap:12px;padding:11px 0;
   font-size:14px;
   border-bottom:0.5px solid var(--divider-soft);
 }
 .sum-row:last-child{border-bottom:none;}
 .sum-row .lbl{color:var(--text-2);}
 .sum-row .val{
-  color:var(--text);
-  font-weight:500;
-  font-variant-numeric:tabular-nums;
-  white-space:nowrap;
+  color:var(--text);font-weight:500;
+  font-variant-numeric:tabular-nums;white-space:nowrap;
 }
-.sum-row.grand{
-  padding:13px 0;
-  font-size:16px;
-}
+.sum-row.grand{padding:14px 0;font-size:16px;}
 .sum-row.grand .lbl{color:var(--text);font-weight:600;}
 .sum-row.grand .val{font-weight:700;font-size:17px;}
 
-/* =========================================================
-   PAYMENT (2x2)
-   ========================================================= */
-.pay-sec{
+/* ---------- Profit (secondary) ---------- */
+.profit-block{
+  background:var(--surface-2);
+  border-radius:10px;
+  padding:8px 14px;
+  margin-bottom:18px;
+}
+.profit-row{
+  display:flex;justify-content:space-between;align-items:baseline;
+  gap:12px;padding:3px 0;
+  font-size:12px;color:var(--text-2);
+}
+.profit-row .val{
+  color:var(--text);font-weight:500;
+  font-variant-numeric:tabular-nums;white-space:nowrap;
+}
+
+/* ---------- Payment ---------- */
+.pay-grid{
+  display:flex;gap:6px;
   margin-bottom:14px;
 }
-.pay-sec-lbl{
-  font-size:12px;color:var(--text-2);
-  margin:0 4px 8px;
-}
-.pay-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:8px;
-}
 .pay-btn{
-  display:flex;align-items:center;gap:10px;
-  padding:12px 14px;
-  min-height:56px;
+  flex:1 1 0;min-width:0;
+  display:flex;align-items:center;justify-content:center;
+  gap:5px;
+  padding:10px 4px;min-height:44px;
   background:var(--surface);
   border:0.5px solid var(--divider);
-  border-radius:12px;
+  border-radius:10px;
   color:var(--text);
-  font-size:14px;font-weight:500;
+  font-family:inherit;font-size:12px;font-weight:500;
   cursor:pointer;
-  text-align:right;
-  transition:border-color 140ms ease,background-color 140ms ease,color 140ms ease;
+  transition:background-color 140ms ease,border-color 140ms ease,color 140ms ease;
 }
 .pay-btn:active{background:var(--tap);}
 .pay-btn.selected{
-  border-color:var(--brand-blue);
-  color:var(--brand-blue);
-  background:rgba(0,112,210,.05);
+  background:rgba(0,112,210,.08);
+  border-color:var(--blue);
+  color:var(--blue);
 }
-.pay-btn.selected .pay-ico{
-  background:var(--brand-blue);
-  color:#FFF;
+.pay-btn .pay-ico{
+  width:16px;height:16px;
+  display:flex;align-items:center;justify-content:center;
 }
-.pay-ico{
-  flex:0 0 26px;
-  width:26px;height:26px;
+.pay-btn .pay-ico svg{
+  width:16px;height:16px;
+  stroke:currentColor;stroke-width:1.7;
+  fill:none;stroke-linecap:round;stroke-linejoin:round;
+}
+
+/* Payment conditional details */
+.pay-details{
+  background:var(--surface);
+  border-radius:10px;
+  padding:12px 14px;
+  margin-bottom:18px;
+  display:flex;flex-direction:column;gap:10px;
+  animation:slideDown 200ms cubic-bezier(.22,1,.36,1);
+}
+@keyframes slideDown{
+  from{opacity:0;transform:translateY(-4px);}
+  to{opacity:1;transform:translateY(0);}
+}
+.pay-field{display:flex;flex-direction:column;gap:5px;}
+.pay-field label{font-size:11px;color:var(--text-2);}
+.pay-field input,
+.pay-field .date-btn{
+  width:100%;min-height:40px;
+  padding:10px 12px;
+  background:var(--surface-2);
+  border:0.5px solid var(--divider);
+  border-radius:8px;
+  font-family:inherit;font-size:14px;
+  color:var(--text);text-align:right;
+}
+.pay-field input:focus{
+  outline:none;
+  border-color:rgba(0,112,210,.5);
+}
+.date-btn{
+  display:flex;justify-content:space-between;align-items:center;
+  cursor:pointer;
+}
+.date-btn .date-chev{
+  color:var(--text-3);font-size:16px;line-height:1;
+}
+
+/* ---------- Save button ---------- */
+.save-btn{
+  width:100%;min-height:48px;
+  padding:12px;
+  background:var(--blue);color:#FFF;
+  border:none;border-radius:12px;
+  font-family:inherit;font-size:15px;font-weight:600;
+  cursor:pointer;
+  margin-top:4px;
+  transition:opacity 140ms ease;
+}
+.save-btn:active{opacity:.9;}
+
+/* ---------- Empty state ---------- */
+.items-empty{
+  padding:28px 16px;
+  text-align:center;
+  font-size:13px;
+  color:var(--text-3);
+}
+
+/* =========================================================
+   CALENDAR
+   ========================================================= */
+.cal-sheet{
+  position:absolute;inset:0;
+  z-index:50;
+  pointer-events:none;
+}
+.cal-sheet.open{pointer-events:auto;}
+.cal-scrim{
+  position:absolute;inset:0;
+  background:rgba(0,0,0,0);
+  transition:background-color 220ms ease;
+}
+.cal-sheet.open .cal-scrim{background:rgba(0,0,0,.35);}
+.cal-panel{
+  position:absolute;left:0;right:0;bottom:0;
+  background:var(--surface);
+  border-radius:18px 18px 0 0;
+  padding-bottom:calc(12px + env(safe-area-inset-bottom,0px));
+  transform:translateY(100%);
+  transition:transform 280ms cubic-bezier(.22,1,.36,1);
+  max-height:90%;
+  overflow-y:auto;
+}
+.cal-sheet.open .cal-panel{transform:translateY(0);}
+.cal-handle{
+  width:36px;height:4px;
+  background:var(--divider);
+  border-radius:2px;
+  margin:8px auto 0;
+}
+.cal-hd{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:8px;padding:8px 14px 12px;
+  border-bottom:0.5px solid var(--divider-soft);
+}
+.cal-hd-title{
+  font-size:15px;font-weight:600;color:var(--text);
+}
+.cal-hd-btn{
+  background:none;border:none;
+  padding:8px 10px;min-height:36px;
+  font-family:inherit;font-size:14px;
+  color:var(--text-2);cursor:pointer;
+}
+.cal-hd-btn.primary{color:var(--blue);font-weight:600;}
+
+.cal-nav{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 14px 8px;
+}
+.cal-nav-title{
+  font-size:15px;font-weight:600;color:var(--text);
+}
+.cal-nav-btn{
+  width:36px;height:36px;
   border-radius:50%;
   background:var(--surface-2);
-  color:var(--text-2);
+  border:none;color:var(--text-2);
+  font-size:20px;line-height:1;
+  cursor:pointer;
   display:flex;align-items:center;justify-content:center;
-  transition:background-color 140ms ease,color 140ms ease;
 }
-.pay-ico svg{width:15px;height:15px;stroke:currentColor;stroke-width:1.7;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+.cal-weekdays{
+  display:grid;grid-template-columns:repeat(7,1fr);
+  padding:4px 14px 6px;
+  text-align:center;
+  font-size:11px;color:var(--text-3);
+}
+.cal-grid{
+  display:grid;grid-template-columns:repeat(7,1fr);
+  padding:0 14px 14px;
+  gap:2px;
+}
+.cal-cell{
+  aspect-ratio:1;
+  display:flex;align-items:center;justify-content:center;
+  border-radius:50%;
+  background:none;border:none;
+  font-family:inherit;font-size:14px;
+  color:var(--text);cursor:pointer;
+  font-variant-numeric:tabular-nums;
+  transition:background-color 120ms ease;
+  min-height:40px;
+}
+.cal-cell:active{background:var(--tap);}
+.cal-cell.outside{color:var(--text-3);}
+.cal-cell.today{color:var(--blue);font-weight:700;}
+.cal-cell.selected{background:var(--blue);color:#FFF;font-weight:700;}
 
 /* =========================================================
    TOAST
@@ -637,14 +682,11 @@ input,select,button{font-family:inherit;}
   position:absolute;
   left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));
   transform:translateX(-50%) translateY(12px);
-  background:rgba(15,23,42,.92);
-  color:#FFF;
+  background:rgba(15,23,42,.92);color:#FFF;
   padding:10px 18px;
   border-radius:22px;
   font-size:13px;
-  font-weight:500;
-  opacity:0;
-  pointer-events:none;
+  opacity:0;pointer-events:none;
   transition:opacity 220ms ease,transform 220ms ease;
   z-index:100;
   white-space:nowrap;
@@ -652,18 +694,12 @@ input,select,button{font-family:inherit;}
   overflow:hidden;text-overflow:ellipsis;
 }
 [data-theme="dark"] .toast{background:rgba(242,242,247,.94);color:#1C1C1E;}
-.toast.show{
-  opacity:1;
-  transform:translateX(-50%) translateY(0);
-}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 </style>
 </head>
 <body data-theme="light">
 
-<!-- ============================================================
-     DEV BAR
-     ============================================================ -->
-<div class="dev-bar" role="toolbar" aria-label="Developer preview controls">
+<div class="dev-bar" role="toolbar" aria-label="Developer controls">
   <div class="grp">
     <span class="lbl">عرض:</span>
     <button data-w="320">320</button>
@@ -678,28 +714,19 @@ input,select,button{font-family:inherit;}
   </div>
 </div>
 
-<!-- ============================================================
-     PHONE
-     ============================================================ -->
 <div class="phone-wrap">
   <div class="phone" id="phone" data-w="390">
     <div class="invoice">
-
-      <header class="inv-hd">
-        <button class="inv-hd-btn" id="hd-cancel">لغو</button>
-        <div class="inv-hd-center">
-          <div class="inv-hd-title">فاکتور جدید</div>
-          <div class="inv-hd-meter" id="hd-meter">—</div>
-        </div>
-        <button class="inv-hd-btn primary" id="hd-save">ثبت</button>
+      <header class="hdr">
+        <button class="hdr-btn" id="hd-cancel" type="button">لغو</button>
+        <h1 class="hdr-title">فاکتور جدید</h1>
+        <button class="hdr-btn primary" id="hd-save" type="button">ثبت</button>
       </header>
-
-      <div class="inv-body" id="inv-body">
-        <!-- rendered by JS -->
-      </div>
-
+      <main class="body" id="body"></main>
     </div>
+
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <div class="cal-sheet" id="cal-sheet" aria-hidden="true"></div>
   </div>
 </div>
 
@@ -707,87 +734,65 @@ input,select,button{font-family:inherit;}
 'use strict';
 
 /* =========================================================
-   1. DATA
+   DATA (mock, no external access)
    ========================================================= */
-const CUSTOMER = {
-  name: 'فروشگاه مرکزی چالوس',
-  status: 'مشتری فعال',
-  initial: 'م',
-};
+const CATALOG = [
+  { id:'p1',  name:'لوبیا چیتی',    unit:'کیلو',  price:200000,  fifo:175000  },
+  { id:'p2',  name:'نخود ابوگوشتی', unit:'کیلو',  price:180000,  fifo:158000  },
+  { id:'p3',  name:'کشمش پلویی',    unit:'',      price:2400000, fifo:2150000 },
+  { id:'p4',  name:'عدس',           unit:'کیلو',  price:210000,  fifo:145000  },
+  { id:'p5',  name:'لوبیا قرمز',    unit:'کیلو',  price:195000,  fifo:165000  },
+  { id:'p6',  name:'لوبیا سفید',    unit:'کیلو',  price:190000,  fifo:160000  },
+  { id:'p7',  name:'نخود دو آتیشه', unit:'کیلو',  price:220000,  fifo:190000  },
+  { id:'p8',  name:'برنج ایرانی',   unit:'کیلو',  price:240000,  fifo:200000  },
+  { id:'p9',  name:'برنج هاشمی',    unit:'کیلو',  price:280000,  fifo:240000  },
+  { id:'p10', name:'ماش',           unit:'کیلو',  price:250000,  fifo:210000  },
+];
 
-const DATE_LABEL = '۲۶ شهریور ۱۴۰۵';
-
-const PRODUCTS = {
-  'لوبیا چیتی':   { sale:200000,  fifo:175000,  lastSale:{price:220000,date:'۲۰ شهریور'},  lastToThis:{price:200000,date:'۱۵ مرداد'} },
-  'نخود ابوگوشتی':{ sale:180000,  fifo:158000,  lastSale:{price:185000,date:'۱۸ شهریور'}, lastToThis:null },
-  'کشمش پلویی':   { sale:2400000, fifo:2150000, lastSale:{price:2450000,date:'۲۵ شهریور'},lastToThis:{price:2400000,date:'۲۵ شهریور'} },
-  'عدس':          { sale:210000,  fifo:145000,  lastSale:{price:215000,date:'۲۲ شهریور'}, lastToThis:{price:205000,date:'۵ شهریور'} },
-  'لوبیا قرمز':   { sale:195000,  fifo:165000,  lastSale:{price:200000,date:'۲۰ شهریور'}, lastToThis:null },
-  'نخود دو آتیشه':{ sale:220000,  fifo:190000,  lastSale:{price:225000,date:'۲۳ شهریور'}, lastToThis:null },
-};
-const PRODUCT_KEYS = Object.keys(PRODUCTS);
+/* Popular placeholder (ids only) */
+const POPULAR_IDS = ['p1', 'p2', 'p4'];
 
 /* =========================================================
-   2. STATE
+   STATE
    ========================================================= */
+const INITIAL_ITEMS = [
+  { id:'i1', productId:'p1', name:'لوبیا چیتی',    unit:'کیلو',  qty:5, price:200000  },
+  { id:'i2', productId:'p2', name:'نخود ابوگوشتی', unit:'کیلو',  qty:3, price:180000  },
+  { id:'i3', productId:'p3', name:'کشمش پلویی',    unit:'',      qty:1, price:2400000 },
+];
+
 let state = {
-  items: [
-    { id:'i1', name:'لوبیا چیتی',    qty:5, price:200000 },
-    { id:'i2', name:'نخود ابوگوشتی', qty:3, price:180000 },
-    { id:'i3', name:'کشمش پلویی',    qty:1, price:2400000 },
-  ],
-  editing: null,
-  // editing = { id, isNew, draft: { id, name, qty, price } }
-  payment: 'credit', // credit | cash | card | check
-  width: 390,
-  theme: 'light',
+  date:      { jy: 1405, jm: 6, jd: 27 },
+  items:     JSON.parse(JSON.stringify(INITIAL_ITEMS)),
+  editing:   null,           // { id, isNew, draft, dropdownOpen, search }
+  payment:   'cash',         // cash | card | check | credit
+  check:     { number:'', due:{ jy:1405, jm:7, jd:5 } },
+  credit:    { due:{ jy:1405, jm:7, jd:5 } },
+  calendar:  { open:false, jy:1405, jm:6, target:null, pending:null },
+  theme:     'light',
+  width:     390,
 };
 
 let uidCounter = 100;
-function uid(){ return 'u' + (++uidCounter); }
+const uid = () => 'u' + (++uidCounter);
 
 /* =========================================================
-   3. FORMAT / CALC
+   HELPERS
    ========================================================= */
 const FA_DIGITS = '۰۱۲۳۴۵۶۷۸۹';
-function toFa(s){
-  return String(s).replace(/[0-9]/g, d => FA_DIGITS[+d]);
-}
-function toEnDigits(s){
-  return String(s).replace(/[۰-۹]/g, d => FA_DIGITS.indexOf(d));
-}
+const toFa = s => String(s).replace(/[0-9]/g, d => FA_DIGITS[+d]);
+const toEnDigits = s => String(s).replace(/[۰-۹]/g, d => FA_DIGITS.indexOf(d));
+
 function fmt(n){
-  const s = Math.round(Number(n) || 0).toLocaleString('en-US');
-  return toFa(s).replace(/,/g, '٬');
+  const v = Math.round(Number(n) || 0);
+  return toFa(v.toLocaleString('en-US')).replace(/,/g, '٬');
 }
-function fmtPlain(n){
-  return toFa(Math.round(Number(n) || 0));
-}
+function fmtPlain(n){ return toFa(Math.round(Number(n) || 0)); }
 function parseNum(s){
   return parseFloat(
-    toEnDigits(String(s))
-      .replace(/[٬,]/g, '')
-      .replace(/[^\d.\-]/g, '')
+    toEnDigits(String(s)).replace(/[٬,]/g, '').replace(/[^\d.\-]/g, '')
   ) || 0;
 }
-
-function computeTotals(){
-  const editingId = state.editing ? state.editing.id : null;
-  const live = [];
-  state.items.forEach(it => {
-    if (editingId && it.id === editingId) return; // draft supersedes
-    live.push(it);
-  });
-  if (state.editing && state.editing.draft.name){
-    live.push(state.editing.draft);
-  }
-  const subtotal = live.reduce((s, it) => s + it.qty * it.price, 0);
-  return { count: live.length, subtotal };
-}
-
-/* =========================================================
-   4. UI HELPERS
-   ========================================================= */
 function escapeHtml(s){
   return String(s == null ? '' : s)
     .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
@@ -804,336 +809,611 @@ function showToast(msg){
 }
 
 /* =========================================================
-   5. RENDER
+   JALALI DATE
+   ========================================================= */
+const JALALI_MONTHS = [
+  'فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور',
+  'مهر','آبان','آذر','دی','بهمن','اسفند'
+];
+
+function jalaliToGregorian(jy, jm, jd){
+  jy = +jy; jm = +jm; jd = +jd;
+  const jy2 = jy + 1595;
+  let days = -355668 + (365 * jy2) + Math.floor(jy2/33)*8
+    + Math.floor(((jy2%33)+3)/4) + jd
+    + (jm < 7 ? (jm-1)*31 : (jm-7)*30 + 186);
+  let gy = 400 * Math.floor(days/146097);
+  days %= 146097;
+  if (days > 36524){
+    gy += 100 * Math.floor(--days/36524);
+    days %= 36524;
+    if (days >= 365) days++;
+  }
+  gy += 4 * Math.floor(days/1461);
+  days %= 1461;
+  if (days > 365){
+    gy += Math.floor((days-1)/365);
+    days = (days-1) % 365;
+  }
+  let gd = days + 1;
+  const sal_a = [0,31,
+    ((gy%4===0 && gy%100!==0) || gy%400===0) ? 29 : 28,
+    31,30,31,30,31,31,30,31,30,31];
+  let gm = 1;
+  for (; gm < 13 && gd > sal_a[gm]; gm++) gd -= sal_a[gm];
+  return [gy, gm, gd];
+}
+
+function jalaliMonthLength(jy, jm){
+  if (jm <= 6) return 31;
+  if (jm <= 11) return 30;
+  const r = ((jy % 33) + 33) % 33;
+  return [1,5,9,13,17,22,26,30].indexOf(r) !== -1 ? 30 : 29;
+}
+
+/* 0 = شنبه, 6 = جمعه */
+function jalaliWeekday(jy, jm, jd){
+  const [gy, gm, gd] = jalaliToGregorian(jy, jm, jd);
+  const d = new Date(gy, gm-1, gd);
+  return (d.getDay() + 1) % 7;
+}
+
+function formatDateJalali(d){
+  return toFa(`${d.jy}/${String(d.jm).padStart(2,'0')}/${String(d.jd).padStart(2,'0')}`);
+}
+function formatDateLong(d){
+  return `${toFa(d.jd)} ${JALALI_MONTHS[d.jm-1]} ${toFa(d.jy)}`;
+}
+
+/* =========================================================
+   CALCULATIONS
+   ========================================================= */
+function getLiveItems(){
+  if (!state.editing) return state.items.slice();
+  const editingId = state.editing.id;
+  return state.items.filter(x => x.id !== editingId);
+}
+
+function getLineTotal(item){
+  return (Number(item.qty) || 0) * (Number(item.price) || 0);
+}
+
+function getSubtotal(){
+  const live = getLiveItems();
+  const itemsTotal = live.reduce((s, x) => s + getLineTotal(x), 0);
+  // include draft only if it has a product selected
+  if (state.editing && state.editing.draft.name){
+    itemsTotal += getLineTotal(state.editing.draft);
+  }
+  return itemsTotal;
+}
+function getDiscount(){ return 0; }
+function getGrandTotal(){ return Math.max(0, getSubtotal() - getDiscount()); }
+
+function getProfit(){
+  const live = getLiveItems();
+  let profit = live.reduce((s, it) => {
+    const cat = CATALOG.find(c => c.id === it.productId);
+    if (!cat) return s;
+    return s + (it.price - cat.fifo) * it.qty;
+  }, 0);
+  if (state.editing && state.editing.draft.name){
+    const cat = CATALOG.find(c => c.id === state.editing.draft.productId);
+    if (cat) profit += (state.editing.draft.price - cat.fifo) * state.editing.draft.qty;
+  }
+  return profit;
+}
+function getMargin(){
+  const sub = getSubtotal();
+  if (!sub) return 0;
+  return getProfit() / sub;
+}
+
+/* =========================================================
+   RENDER — MAIN
    ========================================================= */
 function render(){
-  renderHeaderMeter();
   renderBody();
+  renderCalendarHost();
   bindHeader();
 }
 
-function renderHeaderMeter(){
-  const t = computeTotals();
-  const el = document.getElementById('hd-meter');
-  if (!t.count){
-    el.textContent = 'بدون قلم';
-    return;
-  }
-  el.textContent = `${fmtPlain(t.count)} قلم · ${fmt(t.subtotal)} ت`;
-}
-
 function renderBody(){
-  const root = document.getElementById('inv-body');
+  const root = document.getElementById('body');
   const itemsHtml = state.items.map((it, idx) => {
     if (state.editing && state.editing.id === it.id){
-      return renderActiveRow(state.editing.draft, idx, false);
+      return renderEditRow(state.editing.draft, idx, false);
     }
     return renderCollapsedRow(it, idx);
   }).join('');
 
-  const activeNew = state.editing && state.editing.isNew
-    ? renderActiveRow(state.editing.draft, state.items.length, true)
+  const activeNewHtml = (state.editing && state.editing.isNew)
+    ? renderEditRow(state.editing.draft, state.items.length, true)
     : '';
 
-  const addBtnHtml = state.editing && state.editing.isNew
+  const addBtnHtml = (state.editing && state.editing.isNew)
     ? ''
-    : `<button type="button" class="add-line" id="add-line">
-         <span class="add-line-plus" aria-hidden="true">+</span>
+    : `<button type="button" class="add-item" data-action="add">
+         <span class="add-plus" aria-hidden="true">+</span>
          افزودن قلم جدید
        </button>`;
 
-  const { subtotal } = computeTotals();
-  const discount = 0;
-  const shipping = 0;
-  const grand = Math.max(0, subtotal - discount + shipping);
+  const itemsEmpty = (state.items.length === 0 && !state.editing);
+
+  const subtotal = getSubtotal();
+  const discount = getDiscount();
+  const grand    = getGrandTotal();
+  const profit   = getProfit();
+  const margin   = getMargin();
 
   root.innerHTML = `
-    <div class="cust">
-      <div class="cust-av" aria-hidden="true">${escapeHtml(CUSTOMER.initial)}</div>
-      <div class="cust-info">
-        <div class="cust-name">${escapeHtml(CUSTOMER.name)}</div>
-        <div class="cust-status">${escapeHtml(CUSTOMER.status)}</div>
-      </div>
+    <div class="customer">
+      <div class="cust-label">مشتری</div>
+      <div class="cust-value">فروشگاه نمونه</div>
     </div>
 
-    <div class="date-row">
-      <span class="lbl">تاریخ فاکتور</span>
-      <span class="val">${escapeHtml(DATE_LABEL)}</span>
-    </div>
+    <button type="button" class="date-row" data-action="open-calendar" data-target="invoice">
+      <span class="date-lbl">تاریخ فاکتور</span>
+      <span class="date-val">${escapeHtml(formatDateJalali(state.date))}</span>
+      <span class="date-chev" aria-hidden="true">›</span>
+    </button>
 
-    <div class="sec-lbl">
-      <span>اقلام فاکتور</span>
-      <span class="count">${fmtPlain(state.items.length)} قلم</span>
-    </div>
+    <div class="section-label">اقلام فاکتور</div>
 
     <div class="items-card">
+      ${itemsEmpty ? '<div class="items-empty">هنوز قلمی اضافه نشده</div>' : ''}
       ${itemsHtml}
-      ${activeNew}
+      ${activeNewHtml}
       ${addBtnHtml}
     </div>
 
     <div class="summary">
-      <div class="sum-row"><span class="lbl">جمع اقلام</span><span class="val">${fmt(subtotal)} ت</span></div>
-      <div class="sum-row"><span class="lbl">تخفیف</span><span class="val">${fmt(discount)} ت</span></div>
-      <div class="sum-row"><span class="lbl">هزینه ارسال</span><span class="val">${fmt(shipping)} ت</span></div>
-      <div class="sum-row grand"><span class="lbl">مبلغ نهایی</span><span class="val">${fmt(grand)} ت</span></div>
+      <div class="sum-row"><span class="lbl">جمع کالاها</span><span class="val">${fmt(subtotal)}</span></div>
+      <div class="sum-row"><span class="lbl">تخفیف</span><span class="val">${fmt(discount)}</span></div>
+      <div class="sum-row grand"><span class="lbl">مبلغ نهایی</span><span class="val">${fmt(grand)}</span></div>
     </div>
 
-    <div class="pay-sec">
-      <div class="pay-sec-lbl">روش پرداخت</div>
-      <div class="pay-grid" id="pay-grid">
-        ${renderPayBtn('credit','اعتباری','<path d="M12 3v18M5 8h14M5 16h14"/>')}
-        ${renderPayBtn('cash','نقدی','<rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/>')}
-        ${renderPayBtn('card','کارت / انتقال','<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/>')}
-        ${renderPayBtn('check','چک','<rect x="4" y="5" width="16" height="14" rx="2"/><path d="M8 15h4M8 12h8"/>')}
-      </div>
+    <div class="profit-block">
+      <div class="profit-row"><span>سود فاکتور</span><span class="val">${fmt(profit)} ت</span></div>
+      <div class="profit-row"><span>حاشیه سود</span><span class="val">${fmt(Math.round(margin * 1000) / 10)}٪</span></div>
     </div>
+
+    <div class="section-label">پرداخت</div>
+    <div class="pay-grid">
+      ${renderPayBtn('cash',   'نقدی',           '<rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/>')}
+      ${renderPayBtn('card',   'کارت',           '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/>')}
+      ${renderPayBtn('check',  'چک',             '<rect x="4" y="5" width="16" height="14" rx="2"/><path d="M8 15h4M8 12h8"/>')}
+      ${renderPayBtn('credit', 'نسیه',           '<rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 10h8M8 14h5"/>')}
+    </div>
+
+    ${renderPayDetails()}
+
+    <button type="button" class="save-btn" data-action="save-invoice">ثبت فاکتور</button>
   `;
 
   bindBody();
 }
 
-function renderPayBtn(key, label, svg){
-  const cls = state.payment === key ? ' selected' : '';
-  return `<button type="button" class="pay-btn${cls}" data-pay="${key}">
-    <span class="pay-ico" aria-hidden="true"><svg viewBox="0 0 24 24">${svg}</svg></span>
+function renderPayBtn(method, label, svgInner){
+  const sel = state.payment === method ? ' selected' : '';
+  return `<button type="button" class="pay-btn${sel}" data-pay="${method}">
+    <span class="pay-ico" aria-hidden="true"><svg viewBox="0 0 24 24">${svgInner}</svg></span>
     <span>${escapeHtml(label)}</span>
   </button>`;
 }
 
+function renderPayDetails(){
+  if (state.payment === 'check'){
+    return `
+      <div class="pay-details">
+        <div class="pay-field">
+          <label for="chk-num">شماره چک</label>
+          <input id="chk-num" type="text" inputmode="numeric"
+                 value="${escapeHtml(state.check.number)}"
+                 placeholder="اختیاری" data-pay-input="check-number">
+        </div>
+        <div class="pay-field">
+          <label>تاریخ سررسید</label>
+          <button type="button" class="date-btn" data-action="open-calendar" data-target="check">
+            <span>${escapeHtml(formatDateJalali(state.check.due))}</span>
+            <span class="date-chev" aria-hidden="true">›</span>
+          </button>
+        </div>
+      </div>
+    `;
+  }
+  if (state.payment === 'credit'){
+    return `
+      <div class="pay-details">
+        <div class="pay-field">
+          <label>تاریخ سررسید</label>
+          <button type="button" class="date-btn" data-action="open-calendar" data-target="credit">
+            <span>${escapeHtml(formatDateJalali(state.credit.due))}</span>
+            <span class="date-chev" aria-hidden="true">›</span>
+          </button>
+        </div>
+      </div>
+    `;
+  }
+  return '';
+}
+
+/* =========================================================
+   RENDER — ITEM ROWS
+   ========================================================= */
 function renderCollapsedRow(it, idx){
-  const total = it.qty * it.price;
-  return `<div class="inv-row" data-id="${escapeHtml(it.id)}">
-    <div class="inv-row-compact" data-action="edit">
-      <span class="inv-num">${fmtPlain(idx + 1)}</span>
-      <span class="inv-info">
-        <span class="inv-name">${escapeHtml(it.name)}</span>
-        <span class="inv-calc">${fmtPlain(it.qty)} × ${fmt(it.price)}</span>
-      </span>
-      <span class="inv-total">${fmt(total)}</span>
+  const lineTotal = getLineTotal(it);
+  const qtyLabel = it.unit
+    ? `${fmtPlain(it.qty)} ${escapeHtml(it.unit)}`
+    : fmtPlain(it.qty);
+  const calc = `${qtyLabel} × ${fmt(it.price)}`;
+  return `<div class="item-row" data-id="${escapeHtml(it.id)}" data-action="edit">
+    <span class="row-num">${fmtPlain(idx + 1)}</span>
+    <span class="row-info">
+      <span class="row-name">${escapeHtml(it.name)}</span>
+      <span class="row-calc">${calc}</span>
+    </span>
+    <span class="row-total">${fmt(lineTotal)}</span>
+  </div>`;
+}
+
+function renderEditRow(draft, idx, isNew){
+  const lineTotal = getLineTotal(draft);
+  const hasProduct = !!draft.name;
+  const placeholder = hasProduct ? '' : ' placeholder';
+
+  return `<div class="item-row is-active" data-id="${escapeHtml(draft.id)}" data-new="${isNew ? '1' : '0'}">
+    <div class="row-head">
+      <span class="row-num">${fmtPlain(idx + 1)}</span>
+      <div class="row-product-wrap">
+        <button type="button" class="row-product"
+                data-action="toggle-dropdown"
+                aria-haspopup="listbox"
+                aria-expanded="${state.editing.dropdownOpen ? 'true' : 'false'}">
+          <span class="rp-text${placeholder}">${hasProduct ? escapeHtml(draft.name) : 'انتخاب کالا'}</span>
+          <span class="rp-caret" aria-hidden="true">⌄</span>
+        </button>
+        ${state.editing.dropdownOpen ? renderDropdown() : ''}
+      </div>
+    </div>
+
+    <div class="row-fields">
+      <div class="row-field">
+        <label for="q-${escapeHtml(draft.id)}">تعداد / وزن</label>
+        <input id="q-${escapeHtml(draft.id)}" type="text" inputmode="decimal"
+               value="${hasProduct ? fmtPlain(draft.qty) : ''}"
+               data-action="qty" autocomplete="off">
+      </div>
+      <div class="row-field">
+        <label for="pr-${escapeHtml(draft.id)}">قیمت واحد</label>
+        <input id="pr-${escapeHtml(draft.id)}" type="text" inputmode="decimal"
+               value="${hasProduct ? fmt(draft.price) : ''}"
+               data-action="price" autocomplete="off">
+      </div>
+    </div>
+
+    <div class="row-line-total">
+      <span class="lbl">جمع این قلم</span>
+      <span class="val" data-line-total>${fmt(lineTotal)} ت</span>
+    </div>
+
+    <div class="row-actions">
+      <button type="button" class="btn-save" data-action="save">ذخیره</button>
+      <button type="button" class="btn-del"  data-action="${isNew ? 'cancel' : 'delete'}">
+        ${isNew ? 'انصراف' : 'حذف'}
+      </button>
     </div>
   </div>`;
 }
 
-function renderActiveRow(draft, idx, isNew){
-  const it = draft;
-  const productsData = it.name ? PRODUCTS[it.name] : null;
+function renderDropdown(){
+  const q = (state.editing.search || '').trim().toLowerCase();
+  const filtered = q
+    ? CATALOG.filter(p => p.name.toLowerCase().includes(q))
+    : CATALOG.slice();
 
-  const rail = PRODUCT_KEYS.map(k => {
-    const sel = (k === it.name) ? ' selected' : '';
-    return `<button type="button" class="prod-chip${sel}" data-prod="${escapeHtml(k)}">${escapeHtml(k)}</button>`;
-  }).join('');
+  const popular = q
+    ? ''
+    : `<div class="pd-popular">
+         <div class="pd-popular-lbl">پرفروش‌ها</div>
+         <div class="pd-chips">
+           ${POPULAR_IDS.map(pid => {
+             const p = CATALOG.find(c => c.id === pid);
+             if (!p) return '';
+             return `<button type="button" class="pd-chip" data-action="pick" data-pid="${escapeHtml(p.id)}">${escapeHtml(p.name)}</button>`;
+           }).join('')}
+         </div>
+       </div>`;
 
-  const selectOptions = ['<option value="">— انتخاب کالا —</option>']
-    .concat(PRODUCT_KEYS.map(k => {
-      const sel = (k === it.name) ? ' selected' : '';
-      return `<option value="${escapeHtml(k)}"${sel}>${escapeHtml(k)}</option>`;
-    })).join('');
+  const list = filtered.length
+    ? filtered.map(p => {
+        const selected = p.id === state.editing.draft.productId ? ' selected' : '';
+        return `<button type="button" class="pd-item${selected}" data-action="pick" data-pid="${escapeHtml(p.id)}">
+          <span class="pd-item-name">${escapeHtml(p.name)}</span>
+          <span class="pd-item-price">${fmt(p.price)}</span>
+        </button>`;
+      }).join('')
+    : '<div class="pd-empty">کالایی پیدا نشد</div>';
 
-  const total = it.qty * it.price;
-
-  const fifoHint = productsData
-    ? `قیمت خرید FIFO: <b>${fmt(productsData.fifo)}</b> ت`
-    : '';
-
-  let priceInfoHtml = '';
-  if (productsData){
-    const last = productsData.lastSale;
-    const lastThis = productsData.lastToThis;
-    const profitPerUnit = it.price - productsData.fifo;
-    const profitTotal = profitPerUnit * it.qty;
-    const profitSign = profitTotal < 0 ? '−' : (profitTotal > 0 ? '+' : '');
-    const profitCls = profitTotal < 0 ? 'neg' : (profitTotal > 0 ? 'pos' : '');
-
-    priceInfoHtml = `
-      <details class="act-price-info">
-        <summary>اطلاعات قیمت و سود</summary>
-        <div class="pi-body">
-          <div class="pi-row"><span class="k">قیمت مرجع</span><span class="v">${fmt(productsData.sale)} ت</span></div>
-          <div class="pi-row"><span class="k">قیمت خرید FIFO</span><span class="v">${fmt(productsData.fifo)} ت</span></div>
-          <div class="pi-row"><span class="k">آخرین فروش</span><span class="v">${last ? `${fmt(last.price)} ت<span class="date">${escapeHtml(last.date)}</span>` : '<span class="v empty">ثبت نشده</span>'}</span></div>
-          <div class="pi-row"><span class="k">آخرین فروش به این مشتری</span><span class="v">${lastThis ? `${fmt(lastThis.price)} ت<span class="date">${escapeHtml(lastThis.date)}</span>` : '<span class="v empty">ثبت نشده</span>'}</span></div>
-          <div class="pi-row"><span class="k">سود این قلم</span><span class="v ${profitCls}">${profitSign}${fmt(Math.abs(profitTotal))} ت</span></div>
-        </div>
-      </details>
-    `;
-  }
-
-  return `<div class="inv-row is-active" data-id="${escapeHtml(it.id)}" data-new="${isNew ? '1' : '0'}">
-    <div class="inv-row-compact">
-      <span class="inv-num">${fmtPlain(idx + 1)}</span>
-      <span class="inv-info">
-        <span class="inv-name">${it.name ? escapeHtml(it.name) : 'قلم جدید'}</span>
-        <span class="inv-calc">${it.qty ? fmtPlain(it.qty) + ' × ' + fmt(it.price) : 'تکمیل کنید'}</span>
-      </span>
-      <button type="button" class="inv-hd-close" data-action="cancel" aria-label="بستن">×</button>
+  return `<div class="pd-dropdown" role="listbox">
+    ${popular}
+    <div class="pd-search">
+      <input type="text" placeholder="جستجوی کالا..." value="${escapeHtml(state.editing.search || '')}" data-action="search" autocomplete="off">
     </div>
-
-    <div class="inv-row-body">
-      <label class="act-label" for="sel-prod-${escapeHtml(it.id)}">کالا</label>
-      <select id="sel-prod-${escapeHtml(it.id)}" class="sr-only" data-action="select-product">
-        ${selectOptions}
-      </select>
-
-      <div class="prod-rail" role="listbox" aria-label="انتخاب کالا">
-        ${rail}
-      </div>
-
-      <div class="act-grid">
-        <div class="act-field">
-          <label for="in-qty-${escapeHtml(it.id)}">تعداد / وزن</label>
-          <input id="in-qty-${escapeHtml(it.id)}" type="text" inputmode="decimal"
-                 value="${fmtPlain(it.qty)}" data-action="qty" autocomplete="off">
-        </div>
-        <div class="act-field">
-          <label for="in-price-${escapeHtml(it.id)}">قیمت واحد (تومان)</label>
-          <input id="in-price-${escapeHtml(it.id)}" type="text" inputmode="decimal"
-                 value="${fmt(it.price)}" data-action="price" autocomplete="off">
-        </div>
-      </div>
-
-      ${fifoHint ? `<div class="act-hint">${fifoHint}</div>` : ''}
-
-      <div class="act-line-total">
-        <span class="lbl">جمع این قلم</span>
-        <span class="val" data-line-total>${fmt(total)} ت</span>
-      </div>
-
-      ${priceInfoHtml}
-
-      <div class="act-actions">
-        ${isNew
-          ? `<button type="button" class="act-del" data-action="cancel">انصراف</button>`
-          : `<button type="button" class="act-del" data-action="delete">حذف</button>`}
-        <button type="button" class="act-save" data-action="save">ذخیره تغییرات</button>
-      </div>
-    </div>
+    <div class="pd-list">${list}</div>
   </div>`;
 }
 
 /* =========================================================
-   6. INTERACTION
+   RENDER — CALENDAR
    ========================================================= */
+function renderCalendarHost(){
+  const host = document.getElementById('cal-sheet');
+  if (!state.calendar.open){
+    host.classList.remove('open');
+    host.setAttribute('aria-hidden', 'true');
+    // clear after transition
+    if (host._clearTimer) clearTimeout(host._clearTimer);
+    host._clearTimer = setTimeout(() => {
+      if (!state.calendar.open) host.innerHTML = '';
+    }, 320);
+    return;
+  }
+  host.classList.add('open');
+  host.setAttribute('aria-hidden', 'false');
+  host.innerHTML = renderCalendar();
 
-function bindHeader(){
-  const btnCancel = document.getElementById('hd-cancel');
-  const btnSave = document.getElementById('hd-save');
-  btnCancel.onclick = onInvoiceCancel;
-  btnSave.onclick = onInvoiceSave;
+  // reveal animation on next frame
+  requestAnimationFrame(() => host.classList.add('open'));
 }
 
+function renderCalendar(){
+  const { jy, jm } = state.calendar;
+  const monthLen = jalaliMonthLength(jy, jm);
+  const firstWeekday = jalaliWeekday(jy, jm, 1);
+
+  const prevJy = jm === 1 ? jy - 1 : jy;
+  const prevJm = jm === 1 ? 12 : jm - 1;
+  const prevLen = jalaliMonthLength(prevJy, prevJm);
+
+  const nextJy = jm === 12 ? jy + 1 : jy;
+  const nextJm = jm === 12 ? 1 : jm + 1;
+
+  const today = { jy: 1405, jm: 6, jd: 27 }; // "today" for prototype
+  const sel = state.calendar.pending;
+
+  const cells = [];
+  for (let i = 0; i < firstWeekday; i++){
+    cells.push({ jy: prevJy, jm: prevJm, jd: prevLen - firstWeekday + 1 + i, outside: true });
+  }
+  for (let d = 1; d <= monthLen; d++){
+    cells.push({ jy, jm, jd: d, outside: false });
+  }
+  let nd = 1;
+  while (cells.length < 42){
+    cells.push({ jy: nextJy, jm: nextJm, jd: nd++, outside: true });
+  }
+
+  const grid = cells.map(c => {
+    const isToday = c.jy === today.jy && c.jm === today.jm && c.jd === today.jd;
+    const isSelected = sel && c.jy === sel.jy && c.jm === sel.jm && c.jd === sel.jd;
+    const cls = 'cal-cell'
+      + (c.outside ? ' outside' : '')
+      + (isToday ? ' today' : '')
+      + (isSelected ? ' selected' : '');
+    return `<button type="button" class="${cls}"
+              data-cal-jy="${c.jy}" data-cal-jm="${c.jm}" data-cal-jd="${c.jd}">
+              ${fmtPlain(c.jd)}
+            </button>`;
+  }).join('');
+
+  return `
+    <div class="cal-scrim" data-action="cal-cancel"></div>
+    <div class="cal-panel" role="dialog" aria-modal="true" aria-label="انتخاب تاریخ">
+      <div class="cal-handle"></div>
+      <div class="cal-hd">
+        <button type="button" class="cal-hd-btn" data-action="cal-cancel">لغو</button>
+        <span class="cal-hd-title">انتخاب تاریخ</span>
+        <button type="button" class="cal-hd-btn primary" data-action="cal-confirm">تأیید</button>
+      </div>
+      <div class="cal-nav">
+        <button type="button" class="cal-nav-btn" data-action="cal-prev" aria-label="ماه قبل">‹</button>
+        <span class="cal-nav-title">${escapeHtml(JALALI_MONTHS[jm-1])} ${toFa(jy)}</span>
+        <button type="button" class="cal-nav-btn" data-action="cal-next" aria-label="ماه بعد">›</button>
+      </div>
+      <div class="cal-weekdays" aria-hidden="true">
+        <span>ش</span><span>ی</span><span>د</span><span>س</span><span>چ</span><span>پ</span><span>ج</span>
+      </div>
+      <div class="cal-grid">${grid}</div>
+    </div>
+  `;
+}
+
+/* =========================================================
+   INTERACTION — HEADER
+   ========================================================= */
+function bindHeader(){
+  document.getElementById('hd-cancel').onclick = onInvoiceCancel;
+  document.getElementById('hd-save').onclick   = onInvoiceSave;
+}
+
+function onInvoiceCancel(){
+  if (!window.confirm('فاکتور لغو شود؟ تغییرات ذخیره نمی‌شود.')) return;
+  state.items = JSON.parse(JSON.stringify(INITIAL_ITEMS));
+  state.editing = null;
+  state.payment = 'cash';
+  state.check = { number:'', due:{ jy:1405, jm:7, jd:5 } };
+  state.credit = { due:{ jy:1405, jm:7, jd:5 } };
+  state.date = { jy: 1405, jm: 6, jd: 27 };
+  render();
+  showToast('لغو شد');
+}
+
+function onInvoiceSave(){
+  if (state.editing){
+    showToast('ابتدا قلم در حال ویرایش را ذخیره یا لغو کنید');
+    return;
+  }
+  const live = getLiveItems();
+  if (live.length === 0){
+    showToast('فاکتور بدون قلم است');
+    return;
+  }
+  const grand = getGrandTotal();
+  showToast(`فاکتور ثبت شد · ${fmt(grand)} ت`);
+}
+
+/* =========================================================
+   INTERACTION — BODY
+   ========================================================= */
 function bindBody(){
-  const root = document.getElementById('inv-body');
+  const root = document.getElementById('body');
 
-  // Delegated click for the whole body
+  // Delegated click handler
   root.onclick = (e) => {
-    const row = e.target.closest('.inv-row');
-    const btn = e.target.closest('[data-action]');
-    const prodChip = e.target.closest('[data-prod]');
-    const payBtn = e.target.closest('[data-pay]');
-    const addBtn = e.target.closest('#add-line');
+    const actionEl = e.target.closest('[data-action]');
+    const payEl    = e.target.closest('[data-pay]');
+    const rowEl    = e.target.closest('.item-row');
 
-    // Payment button
-    if (payBtn){
-      state.payment = payBtn.getAttribute('data-pay');
+    // Payment method
+    if (payEl){
+      state.payment = payEl.getAttribute('data-pay');
       renderBody();
       return;
     }
 
-    // Add new line
-    if (addBtn){
-      onAddNew();
-      return;
-    }
+    // Action buttons (need data-action)
+    if (actionEl){
+      const action = actionEl.getAttribute('data-action');
 
-    // Product chip inside active row
-    if (prodChip && row && row.classList.contains('is-active')){
-      const name = prodChip.getAttribute('data-prod');
-      onSelectProduct(name);
-      return;
-    }
+      // Calendar triggers
+      if (action === 'open-calendar'){
+        openCalendar(actionEl.getAttribute('data-target'));
+        return;
+      }
 
-    // Action button inside active row
-    if (btn && row && row.classList.contains('is-active')){
-      const action = btn.getAttribute('data-action');
-      if (action === 'cancel') { onCancelActive(); return; }
-      if (action === 'delete') { onDeleteActive(); return; }
-      if (action === 'save')   { onSaveActive();    return; }
-      return;
-    }
+      // Add new item
+      if (action === 'add'){
+        if (state.editing) return;
+        onAddNew();
+        return;
+      }
 
-    // Tap on collapsed row → open for edit
-    if (row && !row.classList.contains('is-active')){
-      const id = row.getAttribute('data-id');
-      onOpenEdit(id);
-      return;
+      // Product pick
+      if (action === 'pick'){
+        const pid = actionEl.getAttribute('data-pid');
+        onPickProduct(pid);
+        return;
+      }
+
+      // Toggle dropdown
+      if (action === 'toggle-dropdown'){
+        if (!state.editing) return;
+        state.editing.dropdownOpen = !state.editing.dropdownOpen;
+        if (state.editing.dropdownOpen) state.editing.search = '';
+        renderBody();
+        if (state.editing.dropdownOpen){
+          requestAnimationFrame(() => {
+            const inp = document.querySelector('[data-action="search"]');
+            if (inp) inp.focus();
+          });
+        }
+        return;
+      }
+
+      // Row actions inside active row
+      if (rowEl && rowEl.classList.contains('is-active')){
+        if (action === 'cancel') { onCancelActive(); return; }
+        if (action === 'delete') { onDeleteActive(); return; }
+        if (action === 'save')   { onSaveActive();    return; }
+      }
+
+      // Open edit row from collapsed
+      if (action === 'edit'){
+        const id = rowEl.getAttribute('data-id');
+        onOpenEdit(id);
+        return;
+      }
+
+      // Save whole invoice
+      if (action === 'save-invoice'){
+        onInvoiceSave();
+        return;
+      }
     }
   };
 
-  // Input listeners inside the active row
-  const activeRow = root.querySelector('.inv-row.is-active');
+  // Input handlers inside active row
+  const activeRow = root.querySelector('.item-row.is-active');
   if (activeRow){
-    const qtyInput   = activeRow.querySelector('[data-action="qty"]');
-    const priceInput = activeRow.querySelector('[data-action="price"]');
-    const selectEl   = activeRow.querySelector('[data-action="select-product"]');
+    const qtyIn   = activeRow.querySelector('[data-action="qty"]');
+    const priceIn = activeRow.querySelector('[data-action="price"]');
+    if (qtyIn)   qtyIn.addEventListener('input', onQtyInput);
+    if (priceIn) priceIn.addEventListener('input', onPriceInput);
+  }
 
-    if (qtyInput)   qtyInput.addEventListener('input', onQtyInput);
-    if (priceInput) priceInput.addEventListener('input', onPriceInput);
-    if (selectEl)   selectEl.addEventListener('change', (e) => onSelectProduct(e.target.value));
+  // Search input inside dropdown
+  const searchIn = root.querySelector('[data-action="search"]');
+  if (searchIn){
+    searchIn.addEventListener('input', onSearchInput);
+  }
+
+  // Payment check number input
+  const checkNumIn = root.querySelector('[data-pay-input="check-number"]');
+  if (checkNumIn){
+    checkNumIn.addEventListener('input', (e) => {
+      state.check.number = e.target.value;
+    });
   }
 }
 
-/* ---------- Item lifecycle ---------- */
-
+/* =========================================================
+   INTERACTION — ITEM LIFECYCLE
+   ========================================================= */
 function onOpenEdit(id){
-  if (state.editing && state.editing.id === id) return;
-  // If there's a pending draft, resolve it first
-  if (state.editing) state.editing = null;
-
+  if (state.editing) return; // ignore; one active at a time
   const it = state.items.find(x => x.id === id);
   if (!it) return;
   state.editing = {
     id: it.id,
     isNew: false,
     draft: { ...it },
+    dropdownOpen: false,
+    search: '',
   };
-  render();
+  renderBody();
 }
 
 function onAddNew(){
-  if (state.editing) return; // ignore; there's already an active row
+  if (state.editing) return;
   const newId = uid();
   state.editing = {
     id: newId,
     isNew: true,
-    draft: { id: newId, name: '', qty: 1, price: 0 },
+    draft: { id: newId, productId: '', name: '', unit: '', qty: 1, price: 0 },
+    dropdownOpen: false,
+    search: '',
   };
-  render();
-  // Focus qty field
+  renderBody();
   requestAnimationFrame(() => {
-    const el = document.querySelector(`#in-qty-${CSS.escape(newId)}`);
+    const el = document.querySelector('.item-row.is-active [data-action="qty"]');
     if (el) el.focus();
   });
 }
 
 function onCancelActive(){
   state.editing = null;
-  render();
+  renderBody();
 }
 
 function onDeleteActive(){
   if (!state.editing) return;
-  if (state.editing.isNew){
-    state.editing = null;
-    render();
-    return;
-  }
   const it = state.items.find(x => x.id === state.editing.id);
   const label = it ? it.name : 'این قلم';
   if (!window.confirm(`«${label}» از فاکتور حذف شود؟`)) return;
   state.items = state.items.filter(x => x.id !== state.editing.id);
   state.editing = null;
-  render();
+  renderBody();
   showToast('قلم حذف شد');
 }
 
@@ -1152,83 +1432,186 @@ function onSaveActive(){
   if (state.editing.isNew){
     state.items.push({ ...draft });
   } else {
-    const i = state.items.findIndex(x => x.id === state.editing.id);
+    const i = state.items.findIndex(x => x.id === draft.id);
     if (i >= 0) state.items[i] = { ...draft };
   }
   state.editing = null;
-  render();
+  renderBody();
   showToast('ذخیره شد');
 }
 
-function onSelectProduct(name){
+function onPickProduct(pid){
   if (!state.editing) return;
-  if (!name) return;
-  const data = PRODUCTS[name];
-  if (!data) return;
-  state.editing.draft.name = name;
-  state.editing.draft.price = data.sale;
-  // Preserve qty; if 0, default to 1
-  if (!(state.editing.draft.qty > 0)) state.editing.draft.qty = 1;
-  render();
-  // Refocus qty after re-render
+  const cat = CATALOG.find(c => c.id === pid);
+  if (!cat) return;
+  const draft = state.editing.draft;
+  draft.productId = cat.id;
+  draft.name = cat.name;
+  draft.unit = cat.unit;
+  draft.price = cat.price;
+  if (!(draft.qty > 0)) draft.qty = 1;
+  state.editing.dropdownOpen = false;
+  state.editing.search = '';
+  renderBody();
   requestAnimationFrame(() => {
-    const el = document.querySelector(`#in-qty-${CSS.escape(state.editing.id)}`);
+    const el = document.querySelector('.item-row.is-active [data-action="qty"]');
     if (el) el.focus();
   });
 }
 
+/* =========================================================
+   INTERACTION — INPUTS
+   ========================================================= */
 function onQtyInput(e){
   if (!state.editing) return;
   const v = parseNum(e.target.value);
   state.editing.draft.qty = v;
-  // Update line total inline without full re-render (preserves focus)
-  const activeRow = e.target.closest('.inv-row.is-active');
+  const activeRow = e.target.closest('.item-row.is-active');
   if (activeRow){
     const lt = activeRow.querySelector('[data-line-total]');
-    if (lt) lt.textContent = fmt(v * state.editing.draft.price) + ' ت';
+    if (lt) lt.textContent = fmt(getLineTotal(state.editing.draft)) + ' ت';
   }
-  renderHeaderMeter();
+  updateSummaryLive();
 }
-
 function onPriceInput(e){
   if (!state.editing) return;
   const v = parseNum(e.target.value);
   state.editing.draft.price = v;
-  const activeRow = e.target.closest('.inv-row.is-active');
+  const activeRow = e.target.closest('.item-row.is-active');
   if (activeRow){
     const lt = activeRow.querySelector('[data-line-total]');
-    if (lt) lt.textContent = fmt(state.editing.draft.qty * v) + ' ت';
+    if (lt) lt.textContent = fmt(getLineTotal(state.editing.draft)) + ' ت';
   }
-  renderHeaderMeter();
+  updateSummaryLive();
+}
+function onSearchInput(e){
+  if (!state.editing) return;
+  state.editing.search = e.target.value;
+  // Re-render just the dropdown list, preserving input focus
+  const dd = document.querySelector('.pd-dropdown');
+  if (!dd) return;
+  const newDropdown = renderDropdown();
+  const oldList = dd.querySelector('.pd-list');
+  const oldPopular = dd.querySelector('.pd-popular');
+  const q = (state.editing.search || '').trim();
+
+  // Simplest safe approach: replace the whole dropdown innerHTML
+  // but re-focus the search input and restore caret.
+  const caret = e.target.selectionStart;
+  dd.outerHTML = newDropdown;
+  requestAnimationFrame(() => {
+    const inp = document.querySelector('[data-action="search"]');
+    if (inp){
+      inp.focus();
+      try { inp.setSelectionRange(caret, caret); } catch(_){}
+    }
+  });
 }
 
-/* ---------- Invoice-level ---------- */
-
-function onInvoiceCancel(){
-  const t = computeTotals();
-  if (t.count === 0 && !state.editing){
-    showToast('لغو شد');
-    return;
-  }
-  if (!window.confirm('فاکتور لغو شود؟ تغییرات ذخیره نمی‌شود.')) return;
-  showToast('لغو شد');
-}
-
-function onInvoiceSave(){
-  const t = computeTotals();
-  if (t.count === 0){
-    showToast('فاکتور بدون قلم است');
-    return;
-  }
-  if (state.editing){
-    showToast('ابتدا قلم در حال ویرایش را ذخیره یا لغو کنید');
-    return;
-  }
-  showToast(`فاکتور ثبت شد · ${fmt(t.subtotal)} ت`);
+function updateSummaryLive(){
+  const sub = getSubtotal();
+  const grand = getGrandTotal();
+  const profit = getProfit();
+  const margin = getMargin();
+  const rows = document.querySelectorAll('.summary .sum-row .val');
+  if (rows[0]) rows[0].textContent = fmt(sub);
+  if (rows[1]) rows[1].textContent = fmt(getDiscount());
+  if (rows[2]) rows[2].textContent = fmt(grand);
+  const profitRows = document.querySelectorAll('.profit-block .profit-row .val');
+  if (profitRows[0]) profitRows[0].textContent = fmt(profit) + ' ت';
+  if (profitRows[1]) profitRows[1].textContent = fmt(Math.round(margin * 1000) / 10) + '٪';
 }
 
 /* =========================================================
-   7. DEV CONTROLS
+   INTERACTION — CALENDAR
+   ========================================================= */
+function openCalendar(target){
+  if (!target) return;
+  let base;
+  if (target === 'invoice') base = state.date;
+  else if (target === 'check') base = state.check.due;
+  else if (target === 'credit') base = state.credit.due;
+  else return;
+
+  state.calendar.open = true;
+  state.calendar.jy = base.jy;
+  state.calendar.jm = base.jm;
+  state.calendar.target = target;
+  state.calendar.pending = { ...base };
+  renderCalendarHost();
+  bindCalendar();
+}
+
+function bindCalendar(){
+  const host = document.getElementById('cal-sheet');
+  if (!host) return;
+  host.onclick = (e) => {
+    const actionEl = e.target.closest('[data-action]');
+    const cellEl = e.target.closest('[data-cal-jy]');
+
+    if (cellEl){
+      state.calendar.pending = {
+        jy: +cellEl.getAttribute('data-cal-jy'),
+        jm: +cellEl.getAttribute('data-cal-jm'),
+        jd: +cellEl.getAttribute('data-cal-jd'),
+      };
+      // If user tapped an outside-month cell, move to that month
+      if (+cellEl.getAttribute('data-cal-jm') !== state.calendar.jm ||
+          +cellEl.getAttribute('data-cal-jy') !== state.calendar.jy){
+        state.calendar.jy = +cellEl.getAttribute('data-cal-jy');
+        state.calendar.jm = +cellEl.getAttribute('data-cal-jm');
+      }
+      renderCalendarHost();
+      bindCalendar();
+      return;
+    }
+
+    if (actionEl){
+      const action = actionEl.getAttribute('data-action');
+      if (action === 'cal-cancel'){ closeCalendar(false); return; }
+      if (action === 'cal-confirm'){ closeCalendar(true); return; }
+      if (action === 'cal-prev'){
+        let jy = state.calendar.jy, jm = state.calendar.jm - 1;
+        if (jm < 1){ jm = 12; jy--; }
+        state.calendar.jy = jy; state.calendar.jm = jm;
+        renderCalendarHost(); bindCalendar();
+        return;
+      }
+      if (action === 'cal-next'){
+        let jy = state.calendar.jy, jm = state.calendar.jm + 1;
+        if (jm > 12){ jm = 1; jy++; }
+        state.calendar.jy = jy; state.calendar.jm = jm;
+        renderCalendarHost(); bindCalendar();
+        return;
+      }
+    }
+  };
+}
+
+function closeCalendar(commit){
+  const target = state.calendar.target;
+  const pending = state.calendar.pending;
+
+  state.calendar.open = false;
+  state.calendar.target = null;
+  state.calendar.pending = null;
+
+  if (commit && pending && target){
+    if (target === 'invoice') state.date = { ...pending };
+    else if (target === 'check') state.check.due = { ...pending };
+    else if (target === 'credit') state.credit.due = { ...pending };
+  }
+
+  // Detach handler on the (now dismissed) calendar host
+  const host = document.getElementById('cal-sheet');
+  if (host) host.onclick = null;
+
+  renderBody();
+  renderCalendarHost();
+}
+
+/* =========================================================
+   DEV CONTROLS
    ========================================================= */
 document.querySelectorAll('[data-w]').forEach(btn => {
   btn.addEventListener('click', () => {
@@ -1238,7 +1621,6 @@ document.querySelectorAll('[data-w]').forEach(btn => {
     document.getElementById('phone').setAttribute('data-w', String(state.width));
   });
 });
-
 document.querySelectorAll('[data-theme-btn]').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('[data-theme-btn]').forEach(x => x.classList.remove('active'));
@@ -1249,10 +1631,9 @@ document.querySelectorAll('[data-theme-btn]').forEach(btn => {
 });
 
 /* =========================================================
-   8. BOOT
+   BOOT
    ========================================================= */
 render();
-
 </script>
 </body>
 </html>
